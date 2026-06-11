@@ -103,12 +103,27 @@ a, button, .demo-pill, .btn-pill, .cta-p, .botao-bloco { cursor: var(--cur-seta)
 .nav .escapando .pisca { width: 7px; height: 7px; border-radius: 50%; background: var(--fogo); align-self: center; animation: pisca 1.2s infinite; }
 @keyframes pisca { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
 .nav .escapando .valor { font-family: var(--cond); font-weight: 800; font-size: 17px; color: var(--fogo); }
+.nav-acoes { display: flex; align-items: center; gap: 14px; }
+.nav-entrar {
+  font-size: 13.5px; font-weight: 600; text-decoration: none; color: var(--tinta);
+  padding: 8px 2px; white-space: nowrap; border-bottom: 2px solid transparent; transition: all .2s;
+}
+.nav-entrar:hover { border-bottom-color: var(--fogo); }
+.nav-demo {
+  font-size: 13px; font-weight: 700; text-decoration: none; letter-spacing: .04em;
+  border: 1.5px solid var(--tinta); color: var(--tinta); padding: 9px 18px; border-radius: 999px;
+  display: inline-block; white-space: nowrap; transition: all .2s;
+}
+.nav-demo:hover { background: var(--tinta); color: var(--papel); }
 .nav .demo-pill {
   font-size: 13px; font-weight: 700; text-decoration: none; letter-spacing: .04em;
-  background: var(--tinta); color: var(--papel); padding: 10px 22px; border-radius: 999px;
-  display: inline-block; white-space: nowrap;
+  background: var(--fogo); color: var(--tinta); padding: 10px 22px; border-radius: 999px;
+  display: inline-block; white-space: nowrap; box-shadow: 0 6px 18px -6px rgba(255,90,31,.6);
+  transition: all .2s;
 }
-@media (max-width: 760px) { .nav .escapando { display: none; } }
+.nav .demo-pill:hover { background: var(--tinta); color: var(--papel); }
+@media (max-width: 980px) { .nav .escapando { display: none; } }
+@media (max-width: 640px) { .nav-demo { display: none; } }
 
 /* ---------- grade exposta ---------- */
 .grade { position: absolute; inset: 0; pointer-events: none; display: grid; grid-template-columns: repeat(12, 1fr); padding: 0 2.5vw; }
@@ -169,6 +184,10 @@ section, header.capa { position: relative; }
 }
 .btn-pill .seta { transition: transform .3s; }
 .btn-pill:hover .seta { transform: translateX(6px); }
+.btn-pill.laranja { background: var(--fogo); color: var(--tinta); box-shadow: 0 10px 26px -8px rgba(255,90,31,.65); }
+.btn-pill.laranja:hover { background: var(--tinta); color: var(--papel); }
+.btn-pill.fantasma { background: transparent; color: var(--tinta); border: 1.5px solid var(--tinta); }
+.btn-pill.fantasma:hover { background: var(--tinta); color: var(--papel); }
 .capa-nota { font-size: 13px; color: rgba(13,13,15,.55); font-weight: 500; }
 
 /* ticker da capa */
@@ -440,6 +459,8 @@ section, header.capa { position: relative; }
 }
 .sim-payback b { color: var(--fogo); }
 .sim-cta-row { margin-top: 3.4vh; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.sim-link-demo { font-size: 13.5px; font-weight: 600; color: inherit; opacity: .6; text-decoration: underline; text-underline-offset: 3px; transition: all .2s; }
+.sim-link-demo:hover { opacity: 1; color: var(--fogo); }
 .sim.alarme { --sim-bg: var(--tinta); --sim-tinta: var(--papel); --sim-fio: rgba(255,255,255,.4); }
 .sim.alarme .grade i { border-color: rgba(255,255,255,.06); }
 .sim-alerta { display: inline-flex; align-items: center; gap: 8px; margin-top: 2vh; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--fogo); opacity: 0; transform: translateY(8px); transition: all .5s; }
@@ -768,7 +789,11 @@ section, header.capa { position: relative; }
     <span>Uma loja média já deixou escapar hoje:</span>
     <span class="valor" id="nav-contador">R$ 0,00</span>
   </div>
-  <a class="demo-pill" data-magnetic href="https://app.upvendas.app.br/demo">ABRIR A DEMO →</a>
+  <div class="nav-acoes">
+    <a class="nav-entrar" href="https://app.upvendas.app.br/login">Entrar</a>
+    <a class="nav-demo" href="https://app.upvendas.app.br/demo">VER A DEMO</a>
+    <a class="demo-pill" data-magnetic href="https://app.upvendas.app.br/cadastro">COMEÇAR GRÁTIS →</a>
+  </div>
 </nav>
 
 <!-- ================= 01 · CAPA ================= -->
@@ -802,8 +827,9 @@ section, header.capa { position: relative; }
       </span>
     </h1>
     <div class="capa-cta">
-      <a class="btn-pill" data-magnetic href="https://app.upvendas.app.br/demo">ABRIR A DEMO — 1 CLIQUE, SEM CADASTRO <span class="seta">→</span></a>
-      <span class="capa-nota">Sem cartão. Sem conversa com vendedor.</span>
+      <a class="btn-pill laranja" data-magnetic href="https://app.upvendas.app.br/cadastro">COMEÇAR GRÁTIS — 14 DIAS <span class="seta">→</span></a>
+      <a class="btn-pill fantasma" data-magnetic href="https://app.upvendas.app.br/demo">VER A DEMO AO VIVO — 1 CLIQUE</a>
+      <span class="capa-nota">Sem cartão. Sem fidelidade. A demo abre sem cadastro.</span>
     </div>
   </div>
   <div class="ticker" aria-hidden="true">
@@ -990,7 +1016,8 @@ section, header.capa { position: relative; }
       <div class="sim-payback num" id="sim-payback">O CRESCIMENTO CUSTA R$ 347 — <b>SE PAGA EM 2 DIAS.</b></div>
       <div><span class="sim-alerta"><i></i>ALERTA: PREJUÍZO ACIMA DE R$ 30 MIL/MÊS</span></div>
       <div class="sim-cta-row">
-        <a class="btn-pill" data-magnetic href="https://app.upvendas.app.br/demo">PARAR DE PERDER → ABRIR A DEMO</a>
+        <a class="btn-pill laranja" data-magnetic href="https://app.upvendas.app.br/cadastro">PARAR DE PERDER — COMEÇAR GRÁTIS →</a>
+        <a class="sim-link-demo" href="https://app.upvendas.app.br/demo">ou veja a demonstração primeiro →</a>
       </div>
     </div>
   </div>
@@ -1117,7 +1144,8 @@ section, header.capa { position: relative; }
       </div>
     </div>
   </div>
-  <p class="planos-pe">Tudo que você viu nesta página está <b>nos três planos</b>. A diferença é só o tamanho da sua operação. Sem fidelidade — seus dados saem com você em planilha.</p>
+  <p class="planos-pe">Tudo que você viu nesta página está <b>nos três planos</b>. A diferença é só o tamanho da sua operação. Sem fidelidade — seus dados saem com você em planilha.<br>
+  Prefere ver funcionando antes? <a href="https://app.upvendas.app.br/demo" style="color:var(--fogo); font-weight:700; text-decoration:underline; text-underline-offset:3px">Abra a demonstração — 1 clique</a> · Já tem conta? <a href="https://app.upvendas.app.br/login" style="color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px">Entre aqui</a></p>
 </section>
 
 <!-- ================= 08 · FAQ ================= -->
@@ -1142,9 +1170,9 @@ section, header.capa { position: relative; }
     <span class="valor-fc num" id="fogo-contador">R$ 0,00</span>
     <span class="estancou" id="estancou">ESTANCOU.</span>
   </div>
-  <p class="fogo-micro">A DEMO ABRE COM 1 CLIQUE. SEM CADASTRO. SEM CARTÃO.</p>
-  <a class="botao-bloco" id="botao-bloco" href="https://app.upvendas.app.br/demo">
-    <span class="bb-txt">DESCOBRIR AGORA <span class="bb-seta">→</span></span>
+  <p class="fogo-micro">14 DIAS GRÁTIS · SEM CARTÃO · <a href="https://app.upvendas.app.br/demo" style="color:inherit; text-decoration:underline; text-underline-offset:3px">QUER VER ANTES? ABRA A DEMO →</a></p>
+  <a class="botao-bloco" id="botao-bloco" href="https://app.upvendas.app.br/cadastro">
+    <span class="bb-txt">CRIAR MINHA LOJA AGORA <span class="bb-seta">→</span></span>
   </a>
 </section>
 
