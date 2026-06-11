@@ -1060,47 +1060,47 @@ section, header.capa { position: relative; }
       <small>Peça por peça</small>
     </div>
     <div class="stack-item">
-      <div><div class="nome-s">Painel ao vivo + raio-x da venda perdida</div>
-      <p class="desc-s">Cada atendimento com hora real, motivo do não e horário de ouro da loja. <b>É o trabalho de um analista comercial, rodando sozinho.</b></p></div>
-      <span class="vale num">R$ 800<small>consultoria de varejo /mês</small></span>
+      <div><div class="nome-s">Sistema de caixa + catálogo + cupom</div>
+      <p class="desc-s">Abertura, sangria, fechamento, código de barras e baixa de estoque automática. O básico que toda loja já paga pra ter.</p></div>
+      <span class="vale num">R$ 150<small>o que um PDV comum cobra /mês</small></span>
     </div>
     <div class="stack-item">
-      <div><div class="nome-s">Caixa completo + catálogo + cupom</div>
-      <p class="desc-s">Abertura, sangria, fechamento, código de barras, baixa de estoque automática e alerta de produto parado.</p></div>
-      <span class="vale num">R$ 250<small>PDV de mercado /mês</small></span>
+      <div><div class="nome-s">Cadastro de clientes + aniversariantes</div>
+      <p class="desc-s">O "volto depois" vira lista de quem chamar amanhã, com nome e telefone. Aniversariante vira mensagem pronta.</p></div>
+      <span class="vale num">R$ 120<small>o que um CRM simples cobra /mês</small></span>
     </div>
     <div class="stack-item">
-      <div><div class="nome-s">CRM de follow-up + aniversariantes</div>
-      <p class="desc-s">O "volto depois" vira lista de quem chamar amanhã. Cada venda perdida ganha uma segunda chance com nome e telefone.</p></div>
-      <span class="vale num">R$ 300<small>ferramenta de CRM /mês</small></span>
+      <div><div class="nome-s">Metas e ranking da equipe</div>
+      <p class="desc-s">Conversão e ticket por vendedor, ritmo de meta diário e modo TV pra parede da loja. <b>A disputa boa, sem planilha.</b></p></div>
+      <span class="vale num">R$ 90<small>o que um app de metas cobra /mês</small></span>
     </div>
     <div class="stack-item">
-      <div><div class="nome-s">Ranking, metas e ritmo da equipe</div>
-      <p class="desc-s">Conversão e ticket por vendedor, meta com ritmo diário e modo TV pra parede da loja. <b>A disputa boa, sem planilha.</b></p></div>
-      <span class="vale num">R$ 200<small>gestão de equipe /mês</small></span>
-    </div>
-    <div class="stack-item">
-      <div><div class="nome-s">Lâmpadas "como usar" em cada relatório</div>
-      <p class="desc-s">Cada número explica o que significa e qual ação tomar amanhã. <b>Um consultor de bolso embutido no sistema.</b></p></div>
-      <span class="vale num">R$ 500<small>consultor avulso /mês</small></span>
-    </div>
-    <div class="stack-item">
-      <div><div class="nome-s">Bônus: curso de implantação completo</div>
+      <div><div class="nome-s">Curso de implantação completo</div>
       <p class="desc-s">Dia 1 → Semana 1 → Mês 1, dentro do sistema. Sua equipe lançando no primeiro dia, sem consultor e sem TI.</p></div>
-      <span class="vale num">R$ 497<small>onboarding pago, única vez</small></span>
+      <span class="vale num">incluso<small>onboarding que outros cobram à parte</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">O registro da venda perdida — com motivo e hora real</div>
+      <p class="desc-s"><b>Isso não existe pra comprar separado.</b> Nenhum PDV, CRM ou planilha registra o atendimento que NÃO virou venda — e é exatamente aí que mora o dinheiro do simulador ali de cima.</p></div>
+      <span class="vale num" style="color:var(--fogo)">só aqui<small>não se compra em outro lugar</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Lâmpadas "como usar" em cada número</div>
+      <p class="desc-s">Cada relatório explica o que o número significa e qual ação tomar amanhã — em português de dono de loja, não de planilha.</p></div>
+      <span class="vale num" style="color:var(--fogo)">só aqui<small>vem junto, não é módulo pago</small></span>
     </div>
     <div class="stack-total">
       <div class="lado-soma">
-        <span class="rot">Somando cada peça separada</span>
+        <span class="rot">Só as peças que existem por aí, somadas</span>
         <span class="stack-soma num"><span id="soma-val">R$ 0</span><i class="risco" id="soma-risco"></i></span>
       </div>
       <div class="lado-preco">
-        <span class="rot">Aqui, tudo junto, a partir de</span>
+        <span class="rot">Aqui, tudo junto — e com o que não se compra</span>
         <span class="stack-preco num" id="stack-preco">R$ 247/MÊS</span>
       </div>
     </div>
-    <p class="stack-frase">Você não está comprando ferramenta. <b>Está comprando de volta a venda que ia escapar</b> — e o simulador ali em cima já te disse quanto isso vale.</p>
-    <span class="stack-nota">*comparáveis de mercado, valores médios</span>
+    <p class="stack-frase"><b>Na prática: uns R$ 8 por dia</b> — um lanche — pra enxergar onde sua loja perde 100 vezes isso. E o que nenhuma das peças avulsas faz, que é registrar a venda perdida, <b>vem de fábrica.</b></p>
+    <span class="stack-nota">*referências de preço de ferramentas avulsas no Brasil, valores médios</span>
   </div>
 
   <div class="planos-zona">
@@ -1788,7 +1788,7 @@ if (!reduz) {
         const tl = gsap.timeline();
         tl.to('.stack-item', { autoAlpha: 1, y: 0, duration: .55, stagger: .14, ease: 'power3.out' })
           .to(soma, {
-            v: 2050, duration: 1.4, ease: 'power2.out',
+            v: 360, duration: 1.2, ease: 'power2.out',
             onUpdate: () => $('#soma-val').textContent = 'R$ ' + fmt(Math.round(soma.v)) + '/mês'
           }, '-=0.4')
           .to('#soma-risco', { scaleX: 1, duration: .45, ease: 'power3.inOut' }, '+=0.25')
@@ -1797,7 +1797,7 @@ if (!reduz) {
       }
     });
   } else {
-    $('#soma-val').textContent = 'R$ 2.050/mês';
+    $('#soma-val').textContent = 'R$ 360/mês';
     gsap.set('#soma-risco', { scaleX: 1 });
   }
 
