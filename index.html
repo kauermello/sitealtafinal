@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AltaVendas — O PDV que enxerga a venda que você está perdendo</title>
+<meta name="description" content="Todo PDV registra o que você vendeu. Nenhum registra o que você DEIXOU de vender. O AltaVendas registra cada atendimento e transforma venda perdida em venda recuperada.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   ALTAVENDAS — O JORNAL DA VENDA PERDIDA · EDIÇÃO Nº 001
+   Papel → Tinta → Fogo. A tipografia é a interface.
+   ========================================================================== */
+:root {
+  --fogo: #FF5A1F;
+  --fogo-2: #E8451A;
+  --tinta: #0D0D0F;
+  --papel: #FFFFFF;
+  --papel-2: #F6F5F2;
+  --hairline: rgba(13,13,15,.14);
+  --hairline-soft: rgba(13,13,15,.07);
+  --cond: 'Barlow Condensed', sans-serif;
+  --txt: 'Barlow', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scrollbar-width: thin; scrollbar-color: var(--tinta) var(--papel); }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--papel); }
+::-webkit-scrollbar-thumb { background: var(--tinta); }
+::-webkit-scrollbar-thumb:hover { background: var(--fogo); }
+::selection { background: var(--fogo); color: var(--tinta); }
+body {
+  font-family: var(--txt);
+  background: var(--papel);
+  color: var(--tinta);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body.travado { overflow: hidden; }
+a { color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+
+h1,h2,h3,.cond { font-family: var(--cond); text-transform: uppercase; line-height: .88; letter-spacing: -.005em; }
+
+/* ---------- grain global ---------- */
+.grain {
+  position: fixed; inset: -100px; z-index: 9990; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .05; mix-blend-mode: overlay;
+  animation: grao 0.7s steps(2) infinite;
+}
+@keyframes grao {
+  0% { transform: translate(0,0); } 25% { transform: translate(-40px,30px); }
+  50% { transform: translate(30px,-50px); } 75% { transform: translate(-30px,-20px); }
+  100% { transform: translate(0,0); }
+}
+
+/* ---------- cursor contextual (sem perseguição, sem delay) ----------
+   O cursor nativo fica normal e SE TRANSFORMA sobre cada tipo de alvo:
+   seta laranja em links/botões, "+" nos acordeões, "↔" nos sliders.
+   É o cursor do sistema — resposta instantânea. */
+:root {
+  --cur-seta: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15" fill="%23FF5A1F"/><path d="M11 17h11m-4.5-4.5L22 17l-4.5 4.5" stroke="white" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') 17 17;
+  --cur-mais: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15" fill="%230D0D0F"/><path d="M17 10v14M10 17h14" stroke="%23FF5A1F" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>') 17 17;
+  --cur-arrasta: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="38" height="26" viewBox="0 0 38 26"><rect x="1" y="1" width="36" height="24" rx="12" fill="%23FF5A1F"/><path d="M9 13h20M13 8.5 8.5 13l4.5 4.5M25 8.5l4.5 4.5-4.5 4.5" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>') 19 13;
+}
+a, button, .demo-pill, .btn-pill, .cta-p, .botao-bloco { cursor: var(--cur-seta), pointer; }
+.linha-rec, .faq-perg { cursor: var(--cur-mais), pointer; }
+.regua-campo input[type=range] { cursor: var(--cur-arrasta), ew-resize; }
+
+/* ---------- preloader ---------- */
+.preloader { position: fixed; inset: 0; z-index: 9995; pointer-events: none; }
+.preloader .coluna { position: absolute; top: 0; bottom: 0; width: 34%; background: var(--tinta); }
+.preloader .coluna:nth-child(1) { left: 0; } .preloader .coluna:nth-child(2) { left: 33%; } .preloader .coluna:nth-child(3) { left: 66%; width: 34.5%; }
+.pre-conteudo { position: absolute; left: 4vw; bottom: 6vh; z-index: 2; }
+.pre-status {
+  font-size: 13px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.55); margin-bottom: 1vh;
+}
+.pre-num {
+  font-family: var(--cond); font-weight: 900; font-size: 13vw; line-height: .9;
+  color: var(--papel); font-variant-numeric: tabular-nums;
+}
+.pre-num .lar { color: var(--fogo); }
+.pre-regua { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--fogo); transform-origin: left; transform: scaleX(0); z-index: 2; }
+
+/* ---------- nav de jornal ---------- */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900; height: 56px;
+  background: var(--papel);
+  border-bottom: 1px solid var(--tinta);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5vw; gap: 16px;
+}
+.nav .marca { font-family: var(--cond); font-weight: 800; font-size: 24px; text-transform: uppercase; text-decoration: none; letter-spacing: .01em; }
+.nav .marca b { color: var(--fogo); }
+.nav .escapando {
+  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  display: flex; gap: 8px; align-items: baseline; white-space: nowrap;
+}
+.nav .escapando .pisca { width: 7px; height: 7px; border-radius: 50%; background: var(--fogo); align-self: center; animation: pisca 1.2s infinite; }
+@keyframes pisca { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+.nav .escapando .valor { font-family: var(--cond); font-weight: 800; font-size: 17px; color: var(--fogo); }
+.nav .demo-pill {
+  font-size: 13px; font-weight: 700; text-decoration: none; letter-spacing: .04em;
+  background: var(--tinta); color: var(--papel); padding: 10px 22px; border-radius: 999px;
+  display: inline-block; white-space: nowrap;
+}
+@media (max-width: 760px) { .nav .escapando { display: none; } }
+
+/* ---------- grade exposta ---------- */
+.grade { position: absolute; inset: 0; pointer-events: none; display: grid; grid-template-columns: repeat(12, 1fr); padding: 0 2.5vw; }
+.grade i { border-left: 1px solid var(--hairline-soft); transform-origin: top; }
+.grade i:first-child { border-left: none; }
+.tinta-sec .grade i { border-color: rgba(255,255,255,.07); }
+
+section, header.capa { position: relative; }
+.miolo { position: relative; padding: 0 2.5vw; }
+
+.kicker {
+  font-size: 12px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.kicker::before { content: ''; width: 34px; height: 1px; background: currentColor; }
+
+/* ==========================================================================
+   01 · CAPA
+   ========================================================================== */
+.capa { min-height: 100svh; background: var(--papel); padding-top: 56px; display: flex; flex-direction: column; }
+.masthead {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 14px 2.5vw; border-bottom: 1px solid var(--tinta);
+  font-size: 11.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+}
+.masthead .meio { color: var(--fogo); }
+@media (max-width: 760px) { .masthead .meio { display: none; } }
+
+.capa-miolo { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 6vh 2.5vw 4vh; position: relative; }
+.capa-kicker { margin-bottom: 4vh; }
+.manchete { position: relative; }
+.manchete .linha { overflow: hidden; display: block; }
+.manchete .linha > span { display: block; will-change: transform; }
+.l1 { font-size: 10.5vw; font-weight: 900; }
+.l2 { font-size: 10.5vw; font-weight: 900; margin-left: 24vw; }
+.l3 { font-size: 6.2vw; font-weight: 800; margin-top: 1.2vh; }
+.l4 { position: relative; margin-top: .4vh; }
+.l4 .fantasma, .l4 .cheio {
+  font-family: var(--cond); font-weight: 900; font-size: 12.6vw; line-height: .85;
+  text-transform: uppercase; letter-spacing: -.012em; white-space: nowrap; display: block;
+}
+.l4 .fantasma { color: transparent; -webkit-text-stroke: 2px var(--tinta); }
+.l4 .cheio {
+  position: absolute; inset: 0; color: var(--fogo);
+  clip-path: inset(0 100% 0 0); will-change: clip-path;
+}
+/* mockup entalado na manchete */
+.capa-mock {
+  position: absolute; right: 7vw; top: 16%;
+  width: 300px; transform: rotate(-4deg); z-index: -1;
+}
+.capa-cta { margin-top: 6vh; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+.btn-pill {
+  display: inline-flex; align-items: center; gap: 12px; text-decoration: none;
+  background: var(--tinta); color: var(--papel);
+  font-weight: 700; font-size: 15px; letter-spacing: .03em;
+  padding: 18px 34px; border-radius: 999px; position: relative;
+}
+.btn-pill .seta { transition: transform .3s; }
+.btn-pill:hover .seta { transform: translateX(6px); }
+.capa-nota { font-size: 13px; color: rgba(13,13,15,.55); font-weight: 500; }
+
+/* ticker da capa */
+.ticker { border-top: 1px solid var(--tinta); border-bottom: 1px solid var(--tinta); height: 62px; overflow: hidden; display: flex; align-items: center; background: var(--papel); }
+.ticker-faixa { display: flex; white-space: nowrap; will-change: transform; }
+.ticker-faixa span {
+  font-family: var(--cond); font-weight: 800; font-size: 26px; text-transform: uppercase;
+  letter-spacing: .04em; padding-right: 18px;
+}
+.ticker-faixa .sep { color: var(--fogo); }
+
+/* ---------- mockups do app (linguagem exclusiva do produto) ---------- */
+.mock {
+  background: #131316; border-radius: 8px; padding: 16px; color: #fff;
+  border: 1px solid rgba(255,255,255,.09);
+  box-shadow: 0 30px 60px -20px rgba(13,13,15,.4);
+  font-family: var(--txt);
+}
+.mock-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.mock-logo { font-family: var(--cond); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+.mock-logo b { color: var(--fogo); }
+.mock-live { display: flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; color: #4ade80; }
+.mock-live i { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; animation: pisca 1.4s infinite; }
+.mock-kpis { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 10px; }
+.mock-kpi { background: rgba(255,255,255,.05); border-radius: 6px; padding: 8px; }
+.mock-kpi small { display: block; font-size: 8px; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.45); margin-bottom: 3px; }
+.mock-kpi b { font-family: var(--cond); font-weight: 800; font-size: 16px; }
+.mock-kpi b.lar { color: var(--fogo); } .mock-kpi b.verm { color: #f87171; }
+.mock-barras { display: flex; align-items: flex-end; gap: 4px; height: 64px; background: rgba(255,255,255,.04); border-radius: 6px; padding: 8px; }
+.mock-barras i { flex: 1; border-radius: 2px; background: linear-gradient(to top, rgba(255,90,31,.5), var(--fogo)); transform-origin: bottom; }
+.mock-barras i.off { background: rgba(255,255,255,.16); }
+.mock-rank { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.mock-rank .vend { display: flex; align-items: center; gap: 7px; font-size: 9px; }
+.mock-rank .ava { width: 18px; height: 18px; border-radius: 50%; background: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 8px; flex-shrink: 0; }
+.mock-rank .vend:nth-child(2) .ava { background: #3b82f6; } .mock-rank .vend:nth-child(3) .ava { background: #8b5cf6; }
+.mock-rank .trilho { flex: 1; height: 4px; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; }
+.mock-rank .trilho i { display: block; height: 100%; background: var(--fogo); border-radius: 99px; }
+.mock-rank .val { font-family: var(--cond); font-weight: 700; color: rgba(255,255,255,.8); }
+
+/* ==========================================================================
+   02 · A DOR — nota fiscal de tinta (pinned)
+   ========================================================================== */
+.dor { background: var(--tinta); color: var(--papel); }
+.dor-tela { height: 100vh; display: flex; align-items: center; overflow: hidden; position: relative; }
+.dor-wrap { display: grid; grid-template-columns: minmax(260px, 30%) 1fr; gap: 4vw; width: 100%; padding: 0 2.5vw; align-items: center; }
+.dor-lede { max-width: 30ch; font-size: 17px; line-height: 1.65; color: rgba(255,255,255,.66); }
+.dor-lede .destaque { color: #fff; font-weight: 600; position: relative; white-space: nowrap; }
+.dor-lede .destaque i { position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: var(--fogo); transform-origin: left; transform: scaleX(0); }
+.dor-lede .kicker { color: var(--fogo); margin-bottom: 3vh; display: inline-flex; }
+.nota { position: relative; padding-bottom: 42px; }
+.nota-linhas { display: flex; flex-direction: column; }
+.nota-item { padding: 1.6vh 0; position: relative; }
+.nota-item .rotulo { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.42); display: block; margin-bottom: .4vh; }
+.nota-item .valor { font-family: var(--cond); font-weight: 900; font-size: 11vw; line-height: .85; text-align: right; display: block; }
+.nota-item:nth-child(2) .valor { font-size: 7vw; color: rgba(255,255,255,.85); }
+.nota-item .outline { color: transparent; -webkit-text-stroke: 2px var(--papel); }
+.nota-item .fio { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(255,255,255,.3); transform-origin: left; transform: scaleX(0); }
+.nota-total { position: relative; padding-top: 2vh; }
+.nota-total .rotulo { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--fogo); display: block; margin-bottom: .4vh; }
+.nota-total .valor-wrap { position: relative; text-align: right; }
+.nota-total .fant, .nota-total .chei {
+  font-family: var(--cond); font-weight: 900; font-size: 16vw; line-height: .85;
+  white-space: nowrap; display: block;
+}
+.nota-total .fant { color: transparent; -webkit-text-stroke: 2px var(--papel); }
+.nota-total .chei { position: absolute; inset: 0; color: var(--fogo); clip-path: inset(0 100% 0 0); }
+.nota-serrilha {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: var(--papel); opacity: .12;
+  clip-path: polygon(0 0,2.5% 100%,5% 0,7.5% 100%,10% 0,12.5% 100%,15% 0,17.5% 100%,20% 0,22.5% 100%,25% 0,27.5% 100%,30% 0,32.5% 100%,35% 0,37.5% 100%,40% 0,42.5% 100%,45% 0,47.5% 100%,50% 0,52.5% 100%,55% 0,57.5% 100%,60% 0,62.5% 100%,65% 0,67.5% 100%,70% 0,72.5% 100%,75% 0,77.5% 100%,80% 0,82.5% 100%,85% 0,87.5% 100%,90% 0,92.5% 100%,95% 0,97.5% 100%,100% 0);
+}
+.dor-flash { position: absolute; inset: 0; background: var(--fogo); opacity: 0; pointer-events: none; }
+.selo {
+  position: absolute; left: 3vw; bottom: 6vh; width: 110px; height: 110px; opacity: .8;
+}
+.selo text { font-family: var(--txt); font-weight: 600; font-size: 10.5px; letter-spacing: .28em; fill: var(--fogo); text-transform: uppercase; }
+@media (max-width: 980px) {
+  .dor-wrap { grid-template-columns: 1fr; gap: 5vh; }
+  .nota-item .valor { font-size: 17vw; } .nota-total .fant, .nota-total .chei { font-size: 21vw; }
+  .selo { display: none; }
+}
+
+/* ==========================================================================
+   03 · COMO FUNCIONA — spreads horizontais
+   ========================================================================== */
+.metodo-banda {
+  background: var(--tinta); color: var(--papel);
+  padding: 18px 2.5vw; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.metodo-banda .cond { font-weight: 800; font-size: 22px; }
+.metodo-banda .cond b { color: var(--fogo); font-weight: 800; }
+.spreads { background: var(--papel); overflow: hidden; }
+.spreads-vp { height: 100vh; overflow: hidden; position: relative; }
+.spreads-track { display: flex; height: 100%; width: 300vw; will-change: transform; }
+.spread { width: 100vw; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; display: flex; align-items: center; }
+.spread .numeral {
+  position: absolute; font-family: var(--cond); font-weight: 900; font-size: 32vw; line-height: 1;
+  color: transparent; -webkit-text-stroke: 1.5px var(--hairline); user-select: none; pointer-events: none;
+}
+.spread-titulo { font-size: 9vw; font-weight: 900; position: relative; z-index: 2; }
+.spread-desc { max-width: 34ch; font-size: 16.5px; line-height: 1.6; color: rgba(13,13,15,.62); position: relative; z-index: 2; }
+.spread-desc b { color: var(--tinta); }
+
+.spread-1 .numeral { right: 4vw; top: -4vh; }
+.spread-1 .conteudo { display: grid; grid-template-columns: 1fr 1fr; width: 100%; padding: 0 5vw; gap: 4vw; align-items: center; }
+.spread-1 .lado-b { justify-self: end; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 3vh; }
+.mock-lanc { width: min(330px, 38vw); position: relative; }
+.mock-lanc .etapa { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,255,255,.05); margin-bottom: 8px; font-size: 12px; position: relative; }
+.mock-lanc .etapa .icone { width: 28px; height: 28px; border-radius: 6px; background: rgba(255,90,31,.16); color: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 13px; flex-shrink: 0; }
+.mock-lanc .etapa small { display: block; color: rgba(255,255,255,.45); font-size: 10px; }
+.mock-lanc .etapa .check { margin-left: auto; color: #4ade80; font-weight: 700; opacity: 0; }
+.mock-lanc .etapa.feita .check { opacity: 1; }
+.mock-lanc .ripple { position: absolute; width: 36px; height: 36px; border: 2px solid var(--fogo); border-radius: 50%; pointer-events: none; opacity: 0; }
+.mock-lanc .cron { text-align: center; font-family: var(--cond); font-weight: 800; font-size: 20px; color: #4ade80; padding-top: 6px; }
+.mock-lanc .cron small { display: block; font-family: var(--txt); font-weight: 600; font-size: 9px; letter-spacing: .14em; color: rgba(255,255,255,.4); text-transform: uppercase; }
+
+.spread-2 { background: var(--tinta); color: var(--papel); }
+.spread-2 .fantasma-txt {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  font-family: var(--cond); font-weight: 900; font-size: 13vw; white-space: nowrap;
+  color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.13); text-transform: uppercase;
+  pointer-events: none;
+}
+.spread-2 .conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 3vh; }
+.painel-grande { width: min(680px, 58vw); transform-style: preserve-3d; }
+.painel-grande .mock { padding: 22px; box-shadow: 0 50px 110px -30px rgba(0,0,0,.7); }
+.painel-grande .mock-kpi b { font-size: 24px; }
+.painel-grande .mock-barras { height: 110px; }
+.spread-2 .legenda { font-size: 14px; color: rgba(255,255,255,.55); text-align: center; }
+.spread-2 .legenda b { color: #fff; }
+
+.spread-3 .numeral { left: 50%; top: 50%; transform: translate(-50%,-54%); }
+.spread-3 .conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 3vh; }
+.spread-3 .spread-titulo .lar { color: var(--fogo); }
+.card-lampada {
+  background: var(--papel); border: 1px solid var(--tinta); padding: 26px 30px; max-width: 460px;
+  text-align: left; position: relative;
+}
+.card-lampada .topo { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+.card-lampada .bulbo { width: 38px; height: 38px; flex-shrink: 0; }
+.card-lampada .bulbo path { stroke: var(--tinta); stroke-width: 1.6; fill: none; transition: all .3s; }
+.card-lampada.acesa .bulbo path { stroke: var(--fogo); fill: rgba(255,90,31,.14); filter: drop-shadow(0 0 14px rgba(255,90,31,.65)); }
+.card-lampada .titulo-c { font-family: var(--cond); font-weight: 800; font-size: 19px; text-transform: uppercase; }
+.card-lampada p { font-size: 14.5px; line-height: 1.55; color: rgba(13,13,15,.66); }
+.card-lampada p b { color: var(--tinta); }
+.spread-fecho { font-size: 15px; font-weight: 600; }
+.spread-fecho i { color: var(--fogo); font-style: normal; }
+
+.regua-prog { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(13,13,15,.1); z-index: 5; }
+.regua-prog i { display: block; height: 100%; background: var(--fogo); transform-origin: left; transform: scaleX(0); }
+.regua-marcas { position: absolute; bottom: 14px; left: 2.5vw; display: flex; gap: 18px; z-index: 5; }
+.regua-marcas span { font-family: var(--cond); font-weight: 800; font-size: 13px; letter-spacing: .1em; color: rgba(13,13,15,.35); transition: color .3s; }
+.spreads.fase-2 .regua-marcas span { color: rgba(255,255,255,.35); }
+.regua-marcas span.ativa { color: var(--fogo) !important; }
+
+/* mobile: spreads empilham */
+@media (max-width: 980px) {
+  .spreads-vp { height: auto; overflow: visible; }
+  .spreads-track { display: block; width: 100%; height: auto; transform: none !important; }
+  .spread { width: 100%; min-height: 92svh; height: auto; padding: 10vh 0; }
+  .spread .numeral { font-size: 56vw; }
+  .spread-1 .conteudo { grid-template-columns: 1fr; }
+  .spread-1 .lado-b { justify-self: start; text-align: left; align-items: flex-start; }
+  .spread-titulo { font-size: 16vw; }
+  .mock-lanc, .painel-grande { width: 100%; max-width: 420px; }
+  .regua-prog, .regua-marcas { display: none; }
+}
+
+/* ==========================================================================
+   04 · RECURSOS — índice de classificados
+   ========================================================================== */
+.indice { background: var(--papel); padding: 16vh 0 14vh; }
+.indice-cab { padding: 0 2.5vw 6vh; max-width: 1100px; }
+.indice-cab h2 { font-size: 4.6vw; font-weight: 800; line-height: .95; }
+.indice-cab h2 .lar { color: var(--fogo); }
+.indice-vert {
+  position: absolute; left: 1vw; top: 18vh; writing-mode: vertical-rl; transform: rotate(180deg);
+  font-family: var(--cond); font-weight: 800; font-size: 15px; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(13,13,15,.3);
+}
+.linha-rec { border-top: 1px solid var(--tinta); position: relative; cursor: var(--cur-mais), pointer; }
+.linha-rec:last-child { border-bottom: 1px solid var(--tinta); }
+.linha-rec .capa-linha {
+  display: grid; grid-template-columns: 7ch 1fr auto auto; align-items: center; gap: 2vw;
+  padding: 3vh 2.5vw; position: relative; z-index: 2; transition: color .35s;
+}
+.linha-rec .idx { font-family: var(--cond); font-weight: 700; font-size: 2vw; color: var(--fogo); }
+.linha-rec .nome { font-family: var(--cond); font-weight: 800; font-size: 4vw; text-transform: uppercase; line-height: .9; transition: transform .35s cubic-bezier(.16,1,.3,1); }
+.linha-rec .tag { font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(13,13,15,.4); transition: color .35s; }
+.linha-rec .mais-rec {
+  width: 34px; height: 34px; border: 1px solid var(--hairline); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 400;
+  transition: all .35s;
+}
+.linha-rec::before {
+  content: ''; position: absolute; inset: 0; background: var(--tinta);
+  transform: scaleY(0); transform-origin: bottom; transition: transform .38s cubic-bezier(.16,1,.3,1); z-index: 1;
+}
+.linha-rec:hover::before, .linha-rec.aberta::before { transform: scaleY(1); }
+.linha-rec:hover .capa-linha, .linha-rec.aberta .capa-linha { color: var(--papel); }
+.linha-rec:hover .nome { transform: translateX(20px); }
+.linha-rec:hover .tag, .linha-rec.aberta .tag { color: rgba(255,255,255,.5); }
+.linha-rec:hover .mais-rec, .linha-rec.aberta .mais-rec { border-color: rgba(255,255,255,.4); color: var(--papel); }
+.linha-rec.aberta .mais-rec { transform: rotate(45deg); background: var(--fogo); border-color: var(--fogo); }
+.rec-corpo { height: 0; overflow: hidden; position: relative; z-index: 2; }
+.rec-corpo-in { display: grid; grid-template-columns: 7ch 1fr auto; gap: 2vw; padding: 0 2.5vw 4vh; align-items: center; }
+.rec-corpo p { grid-column: 2; max-width: 52ch; font-size: 16.5px; line-height: 1.6; color: rgba(255,255,255,.72); }
+.rec-corpo p b { color: #fff; }
+.rec-diagrama { width: 120px; height: 80px; }
+.rec-diagrama path, .rec-diagrama circle, .rec-diagrama line, .rec-diagrama polyline, .rec-diagrama rect { stroke: var(--fogo); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.preview-rec {
+  position: fixed; top: 0; left: 0; width: 230px; pointer-events: none; z-index: 950;
+  opacity: 0; will-change: transform;
+}
+@media (max-width: 980px) {
+  .indice-cab h2 { font-size: 8.4vw; }
+  .linha-rec .capa-linha { grid-template-columns: 5ch 1fr auto; }
+  .linha-rec .tag { display: none; }
+  .linha-rec .nome { font-size: 7.4vw; }
+  .linha-rec .idx { font-size: 4.4vw; }
+  .rec-corpo-in { grid-template-columns: 1fr; }
+  .rec-corpo p { grid-column: 1; }
+  .indice-vert { display: none; }
+}
+
+/* ==========================================================================
+   05 · SIMULADOR — balcão de cotação
+   ========================================================================== */
+.sim {
+  --sim-bg: var(--papel); --sim-tinta: var(--tinta); --sim-fio: var(--tinta);
+  background: var(--sim-bg); color: var(--sim-tinta); padding: 14vh 0 12vh;
+  transition: background .65s, color .65s;
+}
+.sim .titulo-sim { font-size: 7.8vw; font-weight: 900; padding: 0 2.5vw; margin-bottom: 8vh; perspective: 700px; }
+.sim .titulo-sim .lar { color: var(--fogo); }
+.sim-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 5vw; padding: 0 2.5vw; align-items: start; }
+.regua-campo { position: relative; padding: 3.2vh 0 4.2vh; }
+.regua-campo .rotulo { font-size: 11.5px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: inherit; opacity: .55; display: block; margin-bottom: .6vh; }
+.regua-campo .leitura { font-family: var(--cond); font-weight: 800; font-size: 5.4vw; line-height: .9; display: block; }
+.regua-campo .trilho-wrap { position: relative; height: 26px; margin-top: 1.4vh; }
+.regua-campo .trilho { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--sim-fio); transform-origin: left; }
+.regua-campo .trilho-fill { position: absolute; left: 0; top: 50%; height: 3px; transform: translateY(-1px); background: var(--fogo); width: calc(var(--p, .5) * 100%); }
+.regua-campo .thumb {
+  position: absolute; top: 50%; left: calc(var(--p, .5) * 100%);
+  width: 22px; height: 22px; background: var(--fogo); transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.regua-campo input[type=range] {
+  position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0;
+  cursor: var(--cur-arrasta), ew-resize;
+}
+.sim-resultado { position: sticky; top: 100px; }
+.sim-resultado .rotulo-res { font-size: 12px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; opacity: .55; }
+.odometro {
+  display: flex; align-items: baseline; overflow: hidden;
+  font-family: var(--cond); font-weight: 900; font-size: clamp(64px, 11vw, 170px); line-height: 1;
+  color: var(--fogo); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.odometro .od-static { display: inline-block; }
+.od-col { display: inline-block; height: 1em; overflow: hidden; vertical-align: bottom; }
+.od-strip { display: flex; flex-direction: column; will-change: transform; }
+.od-strip i { font-style: normal; height: 1em; line-height: 1; display: block; }
+.sim-sub { font-family: var(--cond); font-weight: 700; font-size: 2vw; text-transform: uppercase; letter-spacing: .04em; margin-top: .6vh; }
+.sim-frase { margin-top: 2.4vh; font-size: 16px; line-height: 1.6; max-width: 50ch; opacity: .75; }
+.sim-frase b { opacity: 1; }
+.sim-payback {
+  margin-top: 3.4vh; display: inline-block; background: var(--sim-tinta); color: var(--sim-bg);
+  font-family: var(--cond); font-weight: 700; font-size: 19px; text-transform: uppercase; letter-spacing: .04em;
+  padding: 14px 22px; transition: background .65s, color .65s;
+}
+.sim-payback b { color: var(--fogo); }
+.sim-cta-row { margin-top: 3.4vh; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.sim.alarme { --sim-bg: var(--tinta); --sim-tinta: var(--papel); --sim-fio: rgba(255,255,255,.4); }
+.sim.alarme .grade i { border-color: rgba(255,255,255,.06); }
+.sim-alerta { display: inline-flex; align-items: center; gap: 8px; margin-top: 2vh; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--fogo); opacity: 0; transform: translateY(8px); transition: all .5s; }
+.sim.alarme .sim-alerta { opacity: 1; transform: none; }
+.sim-alerta i { width: 8px; height: 8px; background: var(--fogo); animation: pisca 1s infinite; }
+@media (max-width: 980px) {
+  .sim .titulo-sim { font-size: 13vw; }
+  .sim-grid { grid-template-columns: 1fr; gap: 7vh; }
+  .regua-campo .leitura { font-size: 13vw; }
+  .sim-sub { font-size: 5vw; }
+  .sim-resultado { position: static; }
+}
+
+/* ==========================================================================
+   06 · PROVA — reportagem ProSpeed
+   ========================================================================== */
+.prova { background: var(--papel); padding: 16vh 0 0; }
+.prova-cab { padding: 0 2.5vw; }
+.prova-cab .manchete-2 { font-size: 7.6vw; font-weight: 900; line-height: .88; }
+.prova-cab .manchete-2 .r2 { display: block; margin-left: 12vw; }
+.prova-cab .manchete-2 .lar { color: var(--fogo); }
+.byline {
+  display: flex; gap: 14px; align-items: center; margin: 3.4vh 0 5vh;
+  padding: 12px 0; border-top: 1px solid var(--tinta); border-bottom: 1px solid var(--hairline);
+  font-size: 11.5px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+}
+.byline b { color: var(--fogo); }
+.prova-corpo { display: grid; grid-template-columns: 1.2fr .8fr; gap: 5vw; padding: 0 2.5vw; align-items: start; }
+.prova-texto { columns: 2; column-gap: 3vw; font-size: 15.5px; line-height: 1.75; color: rgba(13,13,15,.75); max-width: 75ch; }
+.prova-texto p + p { margin-top: 1em; }
+.prova-texto b { color: var(--tinta); }
+/* nav do carrossel de cases */
+.cases-nav { display: flex; align-items: center; gap: 18px; }
+.cases-nav .contagem { font-family: var(--cond); font-weight: 800; font-size: 17px; letter-spacing: .1em; font-variant-numeric: tabular-nums; }
+.cases-nav .contagem b { color: var(--fogo); }
+.cases-nav button {
+  width: 46px; height: 46px; border: 1px solid var(--tinta); background: var(--papel);
+  display: flex; align-items: center; justify-content: center; font-size: 19px;
+  transition: all .25s;
+}
+.cases-nav button:hover { background: var(--tinta); color: var(--papel); }
+.cases-nav button:disabled { opacity: .25; pointer-events: none; }
+.case-corpo-wrap { min-height: 380px; }
+.case-stats { display: flex; flex-direction: column; gap: 14px; }
+.case-stat { border: 1px solid var(--tinta); padding: 18px 22px; }
+.case-stat b { font-family: var(--cond); font-weight: 900; font-size: clamp(30px, 2.8vw, 44px); color: var(--fogo); display: block; line-height: 1; }
+.case-stat span { font-size: 13px; color: rgba(13,13,15,.6); font-weight: 600; }
+/* fala de pessoa — citação de gente, não título */
+.fala { position: relative; margin: 7vh 0 0; padding: 4.5vh 2.5vw; border-top: 1px solid var(--tinta); display: grid; grid-template-columns: auto 1fr; gap: 2.4vw; align-items: start; max-width: 980px; }
+.fala .foto {
+  width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--cond); font-weight: 900; font-size: 30px; color: #fff;
+  background: var(--tinta); position: relative;
+}
+.fala .foto::after { content: ''; position: absolute; inset: -6px; border: 1px solid var(--fogo); border-radius: 50%; }
+.fala blockquote { font-family: var(--txt); font-style: italic; font-weight: 400; font-size: clamp(19px, 1.8vw, 25px); line-height: 1.5; color: var(--tinta); }
+.fala blockquote .marca-txt { background: linear-gradient(transparent 58%, rgba(255,90,31,.3) 58%); font-style: italic; }
+.fala blockquote::before { content: '“'; color: var(--fogo); font-family: var(--cond); font-weight: 900; font-style: normal; font-size: 1.6em; line-height: 0; vertical-align: -0.32em; margin-right: 6px; }
+.fala .quem { margin-top: 1.8vh; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.fala .quem b { font-style: normal; font-size: 15px; font-weight: 700; }
+.fala .quem span { font-size: 13px; color: rgba(13,13,15,.5); font-weight: 500; }
+.fala .quem .traco { width: 26px; height: 1px; background: var(--fogo); align-self: center; }
+@media (max-width: 980px) { .fala { grid-template-columns: 1fr; } .fala .foto { width: 60px; height: 60px; font-size: 24px; } }
+.grafico-horas { position: relative; }
+.grafico-horas .titulo-g { font-size: 11.5px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(13,13,15,.5); margin-bottom: 2vh; }
+.gh-barras { display: flex; align-items: flex-end; gap: 6px; height: 240px; border-bottom: 1px solid var(--tinta); padding-bottom: 0; }
+.gh-barras i { flex: 1; background: var(--tinta); transform-origin: bottom; position: relative; }
+.gh-barras i.lar { background: var(--fogo); }
+.gh-barras i.lar .pino {
+  position: absolute; top: -34px; left: 50%; transform: translateX(-50%);
+  font-family: var(--cond); font-weight: 800; font-size: 15px; color: var(--fogo); letter-spacing: .06em;
+}
+.gh-rotulos { display: flex; gap: 6px; margin-top: 8px; }
+.gh-rotulos span { flex: 1; text-align: center; font-size: 9.5px; font-weight: 600; color: rgba(13,13,15,.4); }
+.gh-anota { margin-top: 2.4vh; font-style: italic; font-size: 15px; color: rgba(13,13,15,.65); overflow: hidden; }
+.gh-anota span { display: inline-block; }
+.placar { background: var(--tinta); color: var(--papel); margin-top: 10vh; padding: 7vh 2.5vw; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4vw; }
+.placar .item .n { font-family: var(--cond); font-weight: 900; font-size: 7vw; line-height: .9; color: var(--papel); }
+.placar .item .n .lar { color: var(--fogo); }
+.placar .item small { display: block; margin-top: 1vh; font-size: 11.5px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+@media (max-width: 980px) {
+  .prova-cab .manchete-2 { font-size: 11.5vw; }
+  .prova-corpo { grid-template-columns: 1fr; }
+  .prova-texto { columns: 1; }
+  .pull-quote blockquote { font-size: 8.4vw; max-width: none; }
+  .placar { grid-template-columns: 1fr; gap: 5vh; }
+  .placar .item .n { font-size: 16vw; }
+}
+
+/* ==========================================================================
+   07 · PLANOS — classificados assimétricos
+   ========================================================================== */
+.planos { background: var(--papel); padding: 16vh 0 14vh; position: relative; }
+.planos-cab { padding: 0 2.5vw; margin-bottom: 9vh; }
+.planos-cab h2 { font-size: 7vw; font-weight: 900; }
+.planos-cab h2 .lar { color: var(--fogo); }
+/* ---------- empilhamento Hormozi ---------- */
+.stack { margin: 0 2.5vw 10vh; border: 1px solid var(--tinta); background: var(--papel); position: relative; }
+.stack-cab {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 2.6vh 2vw; border-bottom: 1px solid var(--tinta);
+}
+.stack-cab .t { font-family: var(--cond); font-weight: 800; font-size: 24px; text-transform: uppercase; }
+.stack-cab .t b { color: var(--fogo); }
+.stack-cab small { font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(13,13,15,.4); }
+.stack-item {
+  display: grid; grid-template-columns: 1fr auto; gap: 2vw; align-items: baseline;
+  padding: 2.2vh 2vw; position: relative;
+}
+.stack-item + .stack-item::before { content: ''; position: absolute; left: 2vw; right: 2vw; top: 0; height: 1px; background: var(--hairline); }
+.stack-item .nome-s { font-family: var(--cond); font-weight: 800; font-size: clamp(19px, 1.9vw, 27px); text-transform: uppercase; }
+.stack-item .desc-s { font-size: 14px; color: rgba(13,13,15,.55); margin-top: 3px; max-width: 56ch; line-height: 1.5; }
+.stack-item .desc-s b { color: var(--tinta); }
+.stack-item .vale {
+  font-family: var(--cond); font-weight: 700; font-size: clamp(18px, 1.8vw, 26px);
+  white-space: nowrap; color: rgba(13,13,15,.75); font-variant-numeric: tabular-nums;
+}
+.stack-item .vale small { display: block; text-align: right; font-family: var(--txt); font-weight: 600; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(13,13,15,.38); }
+.stack-total {
+  display: flex; justify-content: space-between; align-items: center; gap: 3vw; flex-wrap: wrap;
+  padding: 3.4vh 2vw; border-top: 1px solid var(--tinta); background: var(--papel-2);
+}
+.stack-total .lado-soma .rot { font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(13,13,15,.45); display: block; margin-bottom: 4px; }
+.stack-soma {
+  position: relative; display: inline-block;
+  font-family: var(--cond); font-weight: 900; font-size: clamp(34px, 4vw, 58px);
+  font-variant-numeric: tabular-nums; line-height: 1; color: var(--tinta);
+}
+.stack-soma .risco {
+  position: absolute; left: -3%; right: -3%; top: 50%; height: .1em;
+  background: var(--fogo); transform: scaleX(0); transform-origin: left; border-radius: 3px;
+}
+.stack-total .lado-preco { text-align: right; }
+.stack-total .lado-preco .rot { font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--fogo); display: block; margin-bottom: 4px; }
+.stack-preco {
+  display: inline-block; background: var(--fogo); color: var(--tinta);
+  font-family: var(--cond); font-weight: 900; font-size: clamp(34px, 4vw, 58px); line-height: 1;
+  padding: .12em .3em; transform: rotate(-1.5deg);
+}
+.stack-frase { padding: 2vh 2vw 2.6vh; font-size: 15.5px; color: rgba(13,13,15,.6); }
+.stack-frase b { color: var(--tinta); }
+.stack-nota { position: absolute; right: 2vw; bottom: .8vh; font-size: 10px; color: rgba(13,13,15,.3); }
+@media (max-width: 980px) {
+  .stack-item { grid-template-columns: 1fr; gap: 6px; }
+  .stack-item .vale small { text-align: left; }
+  .stack-total { flex-direction: column; align-items: flex-start; }
+  .stack-total .lado-preco { text-align: left; }
+}
+
+.planos-zona { position: relative; padding: 0 2.5vw; }
+.banda-tinta {
+  position: absolute; left: 0; right: 0; top: 38%; height: 13vh; background: var(--tinta);
+  display: flex; align-items: center; overflow: hidden; transform-origin: left;
+}
+.banda-tinta .faixa { display: flex; white-space: nowrap; will-change: transform; }
+.banda-tinta span { font-family: var(--cond); font-weight: 800; font-size: 5vw; color: var(--papel); text-transform: uppercase; padding-right: 4vw; }
+.banda-tinta span b { color: var(--fogo); }
+.planos-grid { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; align-items: end; z-index: 2; }
+.plano { background: var(--papel); border: 1px solid var(--tinta); padding: 4.5vh 2vw 3.5vh; position: relative; transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s; }
+.plano:hover { transform: translateY(-8px); box-shadow: inset 0 0 0 3px var(--fogo); }
+.plano .nome-p { font-family: var(--cond); font-weight: 800; font-size: 26px; text-transform: uppercase; }
+.plano .pra { font-size: 13px; color: rgba(13,13,15,.5); margin-top: 4px; min-height: 34px; }
+.plano .preco { display: flex; align-items: baseline; gap: 8px; margin: 3vh 0 3vh; overflow: hidden; }
+.plano .preco .rs { font-family: var(--cond); font-weight: 700; font-size: 22px; align-self: flex-start; margin-top: 8px; }
+.plano .preco .v { font-family: var(--cond); font-weight: 900; font-size: 7.5vw; line-height: .85; font-variant-numeric: tabular-nums; }
+.plano .preco .mes { font-size: 13px; font-weight: 600; color: rgba(13,13,15,.45); }
+.plano table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.plano table td { padding: 9px 0; border-top: 1px solid var(--hairline); }
+.plano table td:first-child { font-weight: 600; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: rgba(13,13,15,.5); }
+.plano table td:last-child { text-align: right; font-weight: 600; }
+.plano .cta-p {
+  display: block; text-align: center; text-decoration: none; margin-top: 3vh;
+  border: 1px solid var(--tinta); padding: 14px; font-weight: 700; font-size: 14px;
+  letter-spacing: .04em; transition: all .25s;
+}
+.plano .cta-p:hover { background: var(--tinta); color: var(--papel); }
+.plano.destaque { margin-bottom: 64px; transform: scale(1.06); transform-origin: bottom center; z-index: 3; background: var(--papel); }
+.plano.destaque:hover { transform: scale(1.06) translateY(-8px); }
+.plano .tarja {
+  position: absolute; top: -16px; left: 50%; transform: translateX(-50%) rotate(-3deg);
+  background: var(--fogo); color: var(--tinta); font-family: var(--cond); font-weight: 800;
+  font-size: 14px; letter-spacing: .08em; text-transform: uppercase; padding: 8px 18px; white-space: nowrap;
+}
+.plano .cta-p.cheia { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+.plano .cta-p.cheia:hover { background: var(--fogo); border-color: var(--fogo); color: var(--tinta); }
+.planos-pe { text-align: center; margin-top: 7vh; font-size: 14.5px; color: rgba(13,13,15,.55); padding: 0 2.5vw; }
+.planos-pe b { color: var(--tinta); }
+@media (max-width: 980px) {
+  .planos-cab h2 { font-size: 11vw; }
+  .banda-tinta { display: none; }
+  .planos-grid { grid-template-columns: 1fr; gap: 6vh; }
+  .plano .preco .v { font-size: 22vw; }
+  .plano.destaque { margin-bottom: 0; transform: none; }
+  .plano.destaque:hover { transform: translateY(-8px); }
+}
+
+/* ==========================================================================
+   08 · FAQ — cartas do leitor
+   ========================================================================== */
+.faq { background: var(--papel); padding: 14vh 0 16vh; }
+.faq-vert {
+  position: absolute; left: 1vw; top: 14vh; writing-mode: vertical-rl; transform: rotate(180deg);
+  font-family: var(--cond); font-weight: 800; font-size: 15px; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(13,13,15,.3);
+}
+.faq-lista { margin-left: 25%; max-width: 760px; padding: 0 2.5vw; }
+.faq-cab { margin-left: 25%; padding: 0 2.5vw; margin-bottom: 6vh; }
+.faq-cab h2 { font-size: 5.4vw; font-weight: 900; }
+.faq-item { position: relative; border-bottom: 1px solid var(--hairline); }
+.faq-item .q-num {
+  position: absolute; left: -8ch; top: 3vh; font-family: var(--cond); font-weight: 800; font-size: 20px;
+  color: transparent; -webkit-text-stroke: 1px var(--fogo); transition: color .3s;
+}
+.faq-item.aberta .q-num { color: var(--fogo); }
+.faq-perg {
+  width: 100%; text-align: left; background: none; border: none; cursor: var(--cur-mais), pointer;
+  font-family: var(--cond); font-weight: 700; font-size: clamp(20px, 2.6vw, 34px); text-transform: uppercase;
+  padding: 3vh 44px 3vh 0; position: relative; color: var(--tinta); line-height: .95;
+}
+.faq-perg .mais-f {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--txt); font-weight: 400; font-size: 20px; transition: transform .4s cubic-bezier(.16,1,.3,1);
+}
+.faq-item.aberta .mais-f { transform: translateY(-50%) rotate(135deg); color: var(--fogo); }
+.faq-resp { height: 0; overflow: hidden; }
+.faq-resp-in { padding: 0 0 3.6vh; max-width: 60ch; font-size: 16.5px; line-height: 1.7; color: rgba(13,13,15,.68); }
+.faq-resp-in b { display: block; color: var(--tinta); font-size: 18px; margin-bottom: .6em; }
+.faq-item::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--fogo); transform: scaleX(0); transform-origin: left; transition: transform .3s; }
+.faq-item:hover::after { transform: scaleX(1); }
+@media (max-width: 980px) {
+  .faq-vert { display: none; }
+  .faq-cab, .faq-lista { margin-left: 0; }
+  .faq-cab h2 { font-size: 10vw; }
+  .faq-item .q-num { position: static; display: block; padding-top: 2vh; }
+  .faq-perg { padding-top: 1vh; }
+}
+
+/* ==========================================================================
+   09 · CTA FINAL — a página de fogo
+   ========================================================================== */
+.fogo {
+  background: linear-gradient(180deg, var(--fogo) 0%, var(--fogo) 70%, var(--fogo-2) 100%);
+  color: var(--tinta);
+  clip-path: polygon(0 9vh, 100% 0, 100% 100%, 0 100%);
+  margin-top: -9vh; position: relative; z-index: 4;
+  padding: 22vh 0 0;
+}
+.fogo-perg { padding: 0 2.5vw; }
+.fogo-linha { position: relative; display: block; }
+.fogo-linha .fl-out, .fogo-linha .fl-fill {
+  font-family: var(--cond); font-weight: 900; font-size: 12.5vw; line-height: .88;
+  text-transform: uppercase; white-space: nowrap; display: block;
+}
+.fogo-linha .fl-out { color: transparent; -webkit-text-stroke: 2.5px var(--tinta); }
+.fogo-linha .fl-fill { position: absolute; inset: 0; color: var(--tinta); clip-path: inset(0 100% 0 0); }
+.fogo-linha:nth-child(2) { margin-left: 8vw; }
+.fogo-linha:nth-child(3) { margin-left: 16vw; }
+.fogo-contador { padding: 6vh 2.5vw 8vh; display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
+.fogo-contador .rotulo-fc { font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+.fogo-contador .valor-fc { font-family: var(--cond); font-weight: 900; font-size: 4.6vw; font-variant-numeric: tabular-nums; line-height: 1; }
+.fogo-contador .estancou {
+  font-family: var(--cond); font-weight: 800; font-size: 18px; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--tinta); color: var(--fogo); padding: 6px 14px; opacity: 0; transform: translateY(6px) rotate(-2deg);
+}
+.fogo-micro { padding: 0 2.5vw 2.4vh; font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.botao-bloco {
+  display: flex; align-items: center; justify-content: center; gap: 2vw;
+  background: var(--tinta); color: var(--papel); text-decoration: none;
+  height: 19vh; min-height: 120px; overflow: hidden; position: relative;
+}
+.botao-bloco .bb-txt {
+  font-family: var(--cond); font-weight: 900; font-size: 5.6vw; text-transform: uppercase;
+  display: flex; align-items: center; gap: 2.4vw; white-space: nowrap;
+}
+.botao-bloco .bb-seta { display: inline-block; }
+.botao-bloco::after {
+  content: ''; position: absolute; inset: 0; background: var(--fogo-2);
+  transform: scaleY(0); transform-origin: bottom; transition: transform .45s cubic-bezier(.16,1,.3,1);
+}
+.botao-bloco:hover::after { transform: scaleY(1); }
+.botao-bloco .bb-txt { position: relative; z-index: 1; transition: color .3s; }
+.botao-bloco:hover .bb-txt { color: var(--tinta); }
+
+/* footer expediente */
+.expediente { background: var(--fogo-2); color: var(--tinta); padding: 5vh 2.5vw 4vh; position: relative; z-index: 4; }
+.exp-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4vw; padding-bottom: 3.5vh; border-bottom: 1px solid rgba(13,13,15,.35); }
+.exp-grid h4 { font-family: var(--cond); font-weight: 800; font-size: 14px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 1.4vh; }
+.exp-grid a, .exp-grid p { display: block; font-size: 13.5px; font-weight: 500; color: rgba(13,13,15,.75); text-decoration: none; margin-bottom: 8px; }
+.exp-grid a:hover { color: var(--tinta); text-decoration: underline; }
+.exp-marca { font-family: var(--cond); font-weight: 900; font-size: 9vw; line-height: .8; text-transform: uppercase; color: transparent; -webkit-text-stroke: 2px var(--tinta); }
+.exp-base { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 2.4vh; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(13,13,15,.6); }
+@media (max-width: 980px) {
+  .fogo-linha .fl-out, .fogo-linha .fl-fill { font-size: 13.5vw; white-space: normal; }
+  .exp-grid { grid-template-columns: 1fr; }
+  .exp-marca { font-size: 22vw; }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .grain, .selo { animation: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body class="travado">
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ================= PRELOADER ================= -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="coluna"></div><div class="coluna"></div><div class="coluna"></div>
+  <div class="pre-conteudo">
+    <div class="pre-status" id="pre-status">ABRINDO O CAIXA</div>
+    <div class="pre-num">R$ <span id="pre-num" class="lar">0</span></div>
+  </div>
+  <div class="pre-regua" id="pre-regua"></div>
+</div>
+
+<!-- ================= NAV ================= -->
+<nav class="nav" id="nav">
+  <a class="marca" href="#topo">ALTA<b>VENDAS</b></a>
+  <div class="escapando num" aria-live="off">
+    <span class="pisca"></span>
+    <span>Uma loja média já deixou escapar hoje:</span>
+    <span class="valor" id="nav-contador">R$ 0,00</span>
+  </div>
+  <a class="demo-pill" data-magnetic href="https://app.upvendas.app.br/demo">ABRIR A DEMO →</a>
+</nav>
+
+<!-- ================= 01 · CAPA ================= -->
+<header class="capa" id="topo">
+  <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="masthead">
+    <span id="data-hoje">—</span>
+    <span class="meio">PREVISÃO DO DIA: ±11 VENDAS PERDIDAS</span>
+    <span>EDIÇÃO Nº 001 · GRÁTIS</span>
+  </div>
+  <div class="capa-miolo">
+    <div class="capa-mock" aria-hidden="true">
+      <div class="mock">
+        <div class="mock-top"><span class="mock-logo">ALTA<b>VENDAS</b></span><span class="mock-live"><i></i>AO VIVO</span></div>
+        <div class="mock-kpis">
+          <div class="mock-kpi"><small>Vendido</small><b class="num" id="capa-mock-num">R$ 4.380</b></div>
+          <div class="mock-kpi"><small>Conversão</small><b class="lar">58%</b></div>
+          <div class="mock-kpi"><small>Perdidas</small><b class="verm">7</b></div>
+        </div>
+        <div class="mock-barras"><i class="off" style="height:30%"></i><i style="height:46%"></i><i class="off" style="height:38%"></i><i style="height:64%"></i><i style="height:52%"></i><i style="height:84%"></i><i class="off" style="height:44%"></i><i style="height:95%"></i></div>
+      </div>
+    </div>
+    <p class="capa-kicker kicker">O PDV QUE ENXERGA A VENDA QUE VOCÊ ESTÁ PERDENDO</p>
+    <h1 class="manchete">
+      <span class="linha"><span class="l1">TODO PDV REGISTRA</span></span>
+      <span class="linha"><span class="l2">O QUE VOCÊ VENDEU.</span></span>
+      <span class="linha"><span class="l3">NENHUM REGISTRA O QUE VOCÊ</span></span>
+      <span class="linha l4">
+        <span class="fantasma">DEIXOU DE VENDER.</span>
+        <span class="cheio" id="capa-fill" aria-hidden="true">DEIXOU DE VENDER.</span>
+      </span>
+    </h1>
+    <div class="capa-cta">
+      <a class="btn-pill" data-magnetic href="https://app.upvendas.app.br/demo">ABRIR A DEMO — 1 CLIQUE, SEM CADASTRO <span class="seta">→</span></a>
+      <span class="capa-nota">Sem cartão. Sem conversa com vendedor.</span>
+    </div>
+  </div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-faixa" id="ticker-faixa"></div>
+  </div>
+</header>
+
+<!-- ================= 02 · A DOR ================= -->
+<section class="dor tinta-sec" id="dor">
+  <div class="dor-tela">
+    <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="dor-flash" id="dor-flash"></div>
+    <svg class="selo" viewBox="0 0 110 110" aria-hidden="true">
+      <defs><path id="circ" d="M55,55 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
+      <text><textPath href="#circ">DINHEIRO NA MESA · TODO MÊS · DINHEIRO NA MESA ·</textPath></text>
+    </svg>
+    <div class="dor-wrap">
+      <div class="dor-lede">
+        <span class="kicker">A CONTA QUE NINGUÉM IMPRIME</span>
+        <p>Sua loja perde vendas todo dia. A diferença é saber <span class="destaque">quais<i id="dor-sub"></i></span> — e por quê. Esta é a nota fiscal que nenhum sistema emite: a do que saiu da sua loja sem sacola.</p>
+      </div>
+      <div class="nota" id="nota">
+        <div class="nota-linhas">
+          <div class="nota-item">
+            <span class="rotulo">Atendimentos por dia</span>
+            <span class="valor num" id="n1">0</span>
+            <i class="fio"></i>
+          </div>
+          <div class="nota-item">
+            <span class="rotulo">Conversão média</span>
+            <span class="valor num" id="n2">× 0%</span>
+            <i class="fio"></i>
+          </div>
+          <div class="nota-item">
+            <span class="rotulo">Vendas perdidas / dia</span>
+            <span class="valor outline num" id="n3">= 0</span>
+            <i class="fio"></i>
+          </div>
+          <div class="nota-total">
+            <span class="rotulo">Por mês, na mesa</span>
+            <span class="valor-wrap">
+              <span class="fant num">R$ 51.000</span>
+              <span class="chei num" id="n4-fill" aria-hidden="true">R$ 51.000</span>
+            </span>
+          </div>
+        </div>
+        <div class="nota-serrilha" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 · COMO FUNCIONA ================= -->
+<div class="metodo-banda">
+  <span class="cond">TRÊS PASSOS. <b>NENHUMA PLANILHA.</b></span>
+  <span class="cond" style="opacity:.5">O MÉTODO</span>
+</div>
+<section class="spreads" id="metodo">
+  <div class="spreads-vp">
+    <div class="spreads-track" id="spreads-track">
+
+      <!-- SPREAD 01 — REGISTRE -->
+      <article class="spread spread-1">
+        <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="numeral num" data-par="8">01</span>
+        <div class="conteudo">
+          <div class="mock mock-lanc" data-par="-6" aria-hidden="true">
+            <div class="mock-top"><span class="mock-logo">NOVO ATENDIMENTO</span><span class="mock-live"><i></i>14:32</span></div>
+            <div class="etapa feita"><span class="icone">✓</span><div>Venda fechada?<small>Sim — R$ 159,90</small></div><span class="check">✓</span></div>
+            <div class="etapa feita"><span class="icone">▦</span><div>Produto<small>Boné Aba Reta — Preto</small></div><span class="check">✓</span></div>
+            <div class="etapa" id="etapa-3"><span class="icone">◷</span><div>Hora real<small>capturada automaticamente</small></div><span class="check">✓</span></div>
+            <div class="ripple" id="ripple"></div>
+            <div class="cron num">0:08<small>tempo pra lançar</small></div>
+          </div>
+          <div class="lado-b">
+            <h3 class="spread-titulo" data-split>REGISTRE</h3>
+            <p class="spread-desc">O vendedor lança o atendimento em <b>menos de 10 segundos</b> — com a hora real. Comprou ou não, qual produto, qual objeção. <b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b></p>
+          </div>
+        </div>
+      </article>
+
+      <!-- SPREAD 02 — RAIO-X (a página de tinta) -->
+      <article class="spread spread-2">
+        <span class="fantasma-txt" id="fantasma-txt">E SE VOCÊ VISSE?</span>
+        <div class="conteudo">
+          <div class="painel-grande" id="painel-grande">
+            <div class="mock">
+              <div class="mock-top"><span class="mock-logo" style="font-size:16px">ALTA<b>VENDAS</b> · PAINEL</span><span class="mock-live"><i></i>AO VIVO</span></div>
+              <div class="mock-kpis">
+                <div class="mock-kpi"><small>Vendido hoje</small><b class="num" id="pg-k1">R$ 0</b></div>
+                <div class="mock-kpi"><small>Conversão</small><b class="lar num" id="pg-k2">0%</b></div>
+                <div class="mock-kpi"><small>Perdidas hoje</small><b class="verm num" id="pg-k3">0</b></div>
+              </div>
+              <div class="mock-barras" id="pg-barras">
+                <i class="off" style="height:32%"></i><i style="height:48%"></i><i class="off" style="height:40%"></i><i style="height:62%"></i><i style="height:54%"></i><i class="off" style="height:44%"></i><i style="height:78%"></i><i style="height:60%"></i><i style="height:92%"></i><i class="off" style="height:50%"></i>
+              </div>
+              <div class="mock-rank">
+                <div class="vend"><span class="ava">AN</span><span class="trilho"><i style="width:90%"></i></span><span class="val num">R$ 1.840</span></div>
+                <div class="vend"><span class="ava">BR</span><span class="trilho"><i style="width:68%"></i></span><span class="val num">R$ 1.420</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="legenda"><b>RAIO-X:</b> o painel mostra onde a venda morreu — horário, vendedor, objeção. <b>O PDV que enxerga a venda que você está perdendo.</b></p>
+        </div>
+      </article>
+
+      <!-- SPREAD 03 — PLAYBOOK -->
+      <article class="spread spread-3">
+        <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="numeral num">03</span>
+        <div class="conteudo">
+          <h3 class="spread-titulo" data-split>AJA COM O <span class="lar">PLAYBOOK</span></h3>
+          <div class="card-lampada" id="card-lampada">
+            <div class="topo">
+              <svg class="bulbo" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a7 7 0 0 0-4 12.6c.7.5 1 1.5 1 2.4h6c0-.9.3-1.9 1-2.4A7 7 0 0 0 12 3z"/></svg>
+              <span class="titulo-c">Como usar · Venda perdida por preço</span>
+            </div>
+            <p>Terça, 19h: 4 clientes saíram por "preço alto" no mesmo produto. <b>Ação de amanhã:</b> monte uma oferta com bônus (não desconto) e posicione na entrada. <b>O sistema não te dá um número. Te diz o que fazer com ele.</b></p>
+          </div>
+          <p class="spread-fecho">Três passos. <i>Nenhuma planilha.</i></p>
+        </div>
+      </article>
+
+    </div>
+    <div class="regua-prog" aria-hidden="true"><i id="regua-fill"></i></div>
+    <div class="regua-marcas" aria-hidden="true"><span id="m1" class="ativa">01 REGISTRE</span><span id="m2">02 RAIO-X</span><span id="m3">03 PLAYBOOK</span></div>
+  </div>
+</section>
+
+<!-- ================= 04 · RECURSOS ================= -->
+<section class="indice" id="recursos">
+  <span class="indice-vert">O QUE VEM DENTRO</span>
+  <div class="indice-cab">
+    <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">OS CLASSIFICADOS</p>
+    <h2>OUTROS SISTEMAS TE DÃO NÚMEROS.<br>O ALTAVENDAS TE DIZ <span class="lar">O QUE FAZER COM ELES.</span></h2>
+  </div>
+  <div class="indice-lista" id="indice-lista"></div>
+</section>
+
+<!-- ================= 05 · SIMULADOR ================= -->
+<section class="sim" id="simulador">
+  <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <h2 class="titulo-sim" id="titulo-sim">QUANTO ESTÁ<br><span class="lar">ESCAPANDO</span> AGORA?</h2>
+  <div class="sim-grid">
+    <div class="sim-controles">
+      <div class="regua-campo" data-campo="atend">
+        <span class="rotulo">Atendimentos por dia</span>
+        <span class="leitura num" id="lt-atend">25</span>
+        <div class="trilho-wrap">
+          <i class="trilho"></i><i class="trilho-fill"></i><i class="thumb"></i>
+          <input type="range" id="in-atend" min="5" max="100" step="1" value="18" aria-label="Atendimentos por dia">
+        </div>
+      </div>
+      <div class="regua-campo" data-campo="conv">
+        <span class="rotulo">Sua conversão hoje</span>
+        <span class="leitura num" id="lt-conv">55%</span>
+        <div class="trilho-wrap">
+          <i class="trilho"></i><i class="trilho-fill"></i><i class="thumb"></i>
+          <input type="range" id="in-conv" min="20" max="90" step="5" value="60" aria-label="Conversão em porcento">
+        </div>
+      </div>
+      <div class="regua-campo" data-campo="ticket">
+        <span class="rotulo">Ticket médio</span>
+        <span class="leitura num" id="lt-ticket">R$ 180</span>
+        <div class="trilho-wrap">
+          <i class="trilho"></i><i class="trilho-fill"></i><i class="thumb"></i>
+          <input type="range" id="in-ticket" min="50" max="1000" step="10" value="140" aria-label="Ticket médio em reais">
+        </div>
+      </div>
+      <div class="regua-campo" data-campo="dias">
+        <span class="rotulo">Dias abertos no mês</span>
+        <span class="leitura num" id="lt-dias">26</span>
+        <div class="trilho-wrap">
+          <i class="trilho"></i><i class="trilho-fill"></i><i class="thumb"></i>
+          <input type="range" id="in-dias" min="20" max="30" step="1" value="26" aria-label="Dias abertos no mês">
+        </div>
+      </div>
+    </div>
+    <div class="sim-resultado">
+      <span class="rotulo-res">Escapando da sua loja</span>
+      <div class="odometro" id="odometro" aria-live="polite"></div>
+      <div class="sim-sub">/MÊS EM VENDAS PERDIDAS</div>
+      <p class="sim-frase" id="sim-frase">São <b id="sf-qtd">292 atendimentos</b> por mês saindo sem comprar — sem nome, sem motivo, sem segunda chance. <span id="sf-extra"></span></p>
+      <div class="sim-payback num" id="sim-payback">O CRESCIMENTO CUSTA R$ 347 — <b>SE PAGA EM 2 DIAS.</b></div>
+      <div><span class="sim-alerta"><i></i>ALERTA: PREJUÍZO ACIMA DE R$ 30 MIL/MÊS</span></div>
+      <div class="sim-cta-row">
+        <a class="btn-pill" data-magnetic href="https://app.upvendas.app.br/demo">PARAR DE PERDER → ABRIR A DEMO</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 · PROVA ================= -->
+<section class="prova" id="prova">
+  <div class="prova-cab">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:3vw; flex-wrap:wrap">
+      <h2 class="manchete-2" id="case-titulo"></h2>
+      <div class="cases-nav">
+        <span class="contagem num"><b id="case-idx">01</b> — <span id="case-total">03</span></span>
+        <button id="case-prev" aria-label="Case anterior">←</button>
+        <button id="case-next" aria-label="Próximo case">→</button>
+      </div>
+    </div>
+    <div class="byline" id="case-byline"></div>
+  </div>
+  <div class="case-corpo-wrap" id="case-corpo"></div>
+  <div id="case-fala"></div>
+  <div class="placar">
+    <div class="item"><span class="n num"><span id="pl-1">0</span><span class="lar">+</span></span><small>Atendimentos já registrados</small></div>
+    <div class="item"><span class="n num" id="pl-2">&lt;10s</span><small>Pra lançar um atendimento</small></div>
+    <div class="item"><span class="n num"><span id="pl-3">0</span><span class="lar">+</span></span><small>Relatórios com playbook de ação</small></div>
+  </div>
+</section>
+
+<!-- ================= 07 · PLANOS ================= -->
+<section class="planos" id="planos">
+  <div class="planos-cab">
+    <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">TABELA DE PREÇOS — SEM LETRA MIÚDA</p>
+    <h2>FAÇA A CONTA <span class="lar">ANTES DE PAGAR.</span></h2>
+    <p style="margin-top:2.4vh; font-size:17px; max-width:54ch; color:rgba(13,13,15,.6); line-height:1.6">Montar essa operação com ferramentas separadas custa caro — e nenhuma delas enxerga a venda perdida. Aqui vai a sacola completa, peça por peça:</p>
+  </div>
+
+  <!-- O EMPILHAMENTO: cada peça com o que custaria separada -->
+  <div class="stack" id="stack">
+    <div class="stack-cab">
+      <span class="t">O QUE VAI NA SACOLA — <b>EM QUALQUER PLANO</b></span>
+      <small>Peça por peça</small>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Painel ao vivo + raio-x da venda perdida</div>
+      <p class="desc-s">Cada atendimento com hora real, motivo do não e horário de ouro da loja. <b>É o trabalho de um analista comercial, rodando sozinho.</b></p></div>
+      <span class="vale num">R$ 800<small>consultoria de varejo /mês</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Caixa completo + catálogo + cupom</div>
+      <p class="desc-s">Abertura, sangria, fechamento, código de barras, baixa de estoque automática e alerta de produto parado.</p></div>
+      <span class="vale num">R$ 250<small>PDV de mercado /mês</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">CRM de follow-up + aniversariantes</div>
+      <p class="desc-s">O "volto depois" vira lista de quem chamar amanhã. Cada venda perdida ganha uma segunda chance com nome e telefone.</p></div>
+      <span class="vale num">R$ 300<small>ferramenta de CRM /mês</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Ranking, metas e ritmo da equipe</div>
+      <p class="desc-s">Conversão e ticket por vendedor, meta com ritmo diário e modo TV pra parede da loja. <b>A disputa boa, sem planilha.</b></p></div>
+      <span class="vale num">R$ 200<small>gestão de equipe /mês</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Lâmpadas "como usar" em cada relatório</div>
+      <p class="desc-s">Cada número explica o que significa e qual ação tomar amanhã. <b>Um consultor de bolso embutido no sistema.</b></p></div>
+      <span class="vale num">R$ 500<small>consultor avulso /mês</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Bônus: curso de implantação completo</div>
+      <p class="desc-s">Dia 1 → Semana 1 → Mês 1, dentro do sistema. Sua equipe lançando no primeiro dia, sem consultor e sem TI.</p></div>
+      <span class="vale num">R$ 497<small>onboarding pago, única vez</small></span>
+    </div>
+    <div class="stack-total">
+      <div class="lado-soma">
+        <span class="rot">Somando cada peça separada</span>
+        <span class="stack-soma num"><span id="soma-val">R$ 0</span><i class="risco" id="soma-risco"></i></span>
+      </div>
+      <div class="lado-preco">
+        <span class="rot">Aqui, tudo junto, a partir de</span>
+        <span class="stack-preco num" id="stack-preco">R$ 247/MÊS</span>
+      </div>
+    </div>
+    <p class="stack-frase">Você não está comprando ferramenta. <b>Está comprando de volta a venda que ia escapar</b> — e o simulador ali em cima já te disse quanto isso vale.</p>
+    <span class="stack-nota">*comparáveis de mercado, valores médios</span>
+  </div>
+
+  <div class="planos-zona">
+    <div class="banda-tinta" id="banda-tinta" aria-hidden="true">
+      <div class="faixa" id="banda-faixa"></div>
+    </div>
+    <div class="planos-grid">
+      <div class="plano" data-plano>
+        <h3 class="nome-p">Começo</h3>
+        <p class="pra">Pra loja enxuta que quer parar de perder venda sem saber.</p>
+        <div class="preco"><span class="rs">R$</span><span class="v" data-preco>247</span><span class="mes">/mês</span></div>
+        <table>
+          <tr><td>Usuários</td><td>6</td></tr>
+          <tr><td>Produtos</td><td>3 mil</td></tr>
+          <tr><td>Histórico</td><td>3 meses</td></tr>
+        </table>
+        <a class="cta-p" href="https://app.upvendas.app.br/cadastro?plano=comeco">COMEÇAR 14 DIAS GRÁTIS →</a>
+      </div>
+      <div class="plano destaque" data-plano>
+        <span class="tarja" id="tarja">O MAIS ESCOLHIDO</span>
+        <h3 class="nome-p">Crescimento</h3>
+        <p class="pra">Pra loja em expansão que precisa de histórico e equipe maior.</p>
+        <div class="preco"><span class="rs">R$</span><span class="v" data-preco>347</span><span class="mes">/mês</span></div>
+        <table>
+          <tr><td>Usuários</td><td>12</td></tr>
+          <tr><td>Produtos</td><td>10 mil</td></tr>
+          <tr><td>Histórico</td><td>12 meses</td></tr>
+        </table>
+        <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=crescimento">COMEÇAR 14 DIAS GRÁTIS →</a>
+      </div>
+      <div class="plano" data-plano>
+        <h3 class="nome-p">Rede</h3>
+        <p class="pra">Pra operação grande, com time grande e visão de longo prazo.</p>
+        <div class="preco"><span class="rs">R$</span><span class="v" data-preco>497</span><span class="mes">/mês</span></div>
+        <table>
+          <tr><td>Usuários</td><td>18</td></tr>
+          <tr><td>Produtos</td><td>Sem limite</td></tr>
+          <tr><td>Histórico</td><td>Sem limite</td></tr>
+        </table>
+        <a class="cta-p" href="https://app.upvendas.app.br/cadastro?plano=rede">COMEÇAR 14 DIAS GRÁTIS →</a>
+      </div>
+    </div>
+  </div>
+  <p class="planos-pe">Tudo que você viu nesta página está <b>nos três planos</b>. A diferença é só o tamanho da sua operação. Sem fidelidade — seus dados saem com você em planilha.</p>
+</section>
+
+<!-- ================= 08 · FAQ ================= -->
+<section class="faq" id="faq">
+  <span class="faq-vert">AS OBJEÇÕES</span>
+  <div class="faq-cab">
+    <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">CARTAS DO LEITOR</p>
+    <h2>O QUE TODO DONO DE LOJA PERGUNTA.</h2>
+  </div>
+  <div class="faq-lista" id="faq-lista"></div>
+</section>
+
+<!-- ================= 09 · FOGO ================= -->
+<section class="fogo" id="fim">
+  <div class="fogo-perg" id="fogo-perg">
+    <span class="fogo-linha"><span class="fl-out">QUANTAS VENDAS</span><span class="fl-fill">QUANTAS VENDAS</span></span>
+    <span class="fogo-linha"><span class="fl-out">A SUA LOJA</span><span class="fl-fill">A SUA LOJA</span></span>
+    <span class="fogo-linha"><span class="fl-out">PERDEU HOJE?</span><span class="fl-fill">PERDEU HOJE?</span></span>
+  </div>
+  <div class="fogo-contador">
+    <span class="rotulo-fc">Enquanto você lia, uma loja média deixou escapar</span>
+    <span class="valor-fc num" id="fogo-contador">R$ 0,00</span>
+    <span class="estancou" id="estancou">ESTANCOU.</span>
+  </div>
+  <p class="fogo-micro">A DEMO ABRE COM 1 CLIQUE. SEM CADASTRO. SEM CARTÃO.</p>
+  <a class="botao-bloco" id="botao-bloco" href="https://app.upvendas.app.br/demo">
+    <span class="bb-txt">DESCOBRIR AGORA <span class="bb-seta">→</span></span>
+  </a>
+</section>
+
+<footer class="expediente">
+  <div class="exp-grid">
+    <div><div class="exp-marca">ALTA<br>VENDAS</div></div>
+    <div>
+      <h4>O Jornal</h4>
+      <a href="#dor">A conta</a>
+      <a href="#metodo">O método</a>
+      <a href="#simulador">O simulador</a>
+      <a href="#planos">Os classificados</a>
+    </div>
+    <div>
+      <h4>Acesso</h4>
+      <a href="https://app.upvendas.app.br/login">Entrar no sistema</a>
+      <a href="https://app.upvendas.app.br/demo">Demonstração ao vivo</a>
+      <a href="https://app.upvendas.app.br/cadastro">Criar minha loja — 14 dias grátis</a>
+    </div>
+  </div>
+  <div class="exp-base">
+    <span>© 2026 ALTAVENDAS — EDIÇÃO CONTÍNUA</span>
+    <span>FEITO DENTRO DE LOJA DE VERDADE, NO BRASIL</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+<script>
+/* ==========================================================================
+   O JORNAL DA VENDA PERDIDA — runtime
+   ========================================================================== */
+gsap.registerPlugin(ScrollTrigger, SplitText);
+
+const $  = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+const fmt = (v, dec = 0) => v.toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const desktop = matchMedia('(min-width: 981px)').matches && matchMedia('(pointer: fine)').matches;
+
+/* ---------- data do masthead ---------- */
+{
+  const d = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  $('#data-hoje').textContent = d.toUpperCase();
+}
+
+/* ---------- LENIS ---------- */
+let lenis = null;
+if (!reduz) {
+  lenis = new Lenis({ lerp: 0.1 });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((t) => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+$$('a[href^="#"]').forEach(a => a.addEventListener('click', (e) => {
+  const alvo = $(a.getAttribute('href'));
+  if (!alvo) return;
+  e.preventDefault();
+  if (lenis) lenis.scrollTo(alvo, { offset: -56 }); else alvo.scrollIntoView();
+}));
+
+/* ---------- O CONTADOR QUE ESCAPA (nav + fogo, mesmo relógio) ---------- */
+/* Régua honesta: a loja-exemplo do site perde ±11 vendas/dia × R$180 =
+   R$ 1.980/dia. Distribuído no dia CORRIDO (sempre vivo, mesmo de
+   madrugada — centavos subindo é o que dá vida ao contador). */
+const PERDA_DIA = 11 * 180;
+const contador = { pausado: false };
+function valorEscapando() {
+  const agora = new Date();
+  const seg = agora.getHours() * 3600 + agora.getMinutes() * 60 + agora.getSeconds() + agora.getMilliseconds() / 1000;
+  return PERDA_DIA * (seg / 86400);
+}
+const navCont = $('#nav-contador'), fogoCont = $('#fogo-contador');
+let ultimoVal = valorEscapando();
+gsap.ticker.add(() => {
+  if (contador.pausado) return;
+  ultimoVal = valorEscapando();
+  const txt = 'R$ ' + fmt(ultimoVal, 2);
+  navCont.textContent = txt;
+  fogoCont.textContent = txt;
+});
+
+/* ---------- PRELOADER ---------- */
+const preTl = gsap.timeline({
+  onComplete: () => { document.body.classList.remove('travado'); $('#preloader').remove(); ScrollTrigger.refresh(); }
+});
+if (reduz) {
+  gsap.set('.preloader', { autoAlpha: 0 });
+  document.body.classList.remove('travado');
+  $('#preloader').remove();
+} else {
+  const preObj = { v: 0 };
+  const status = ['ABRINDO O CAIXA', 'CONTANDO O QUE ESCAPOU', 'EDIÇÃO Nº 001'];
+  preTl
+    .to(preObj, {
+      v: 1980, duration: 1.5, ease: 'power2.inOut',
+      onUpdate: () => {
+        $('#pre-num').textContent = fmt(Math.round(preObj.v));
+        const p = preObj.v / 1980;
+        $('#pre-status').textContent = status[Math.min(2, Math.floor(p * 3))];
+      }
+    })
+    .to('#pre-regua', { scaleX: 1, duration: 1.5, ease: 'power2.inOut' }, 0)
+    .to('.pre-conteudo', { scale: 1.05, autoAlpha: 0, duration: .45, ease: 'power3.in' }, '+=0.15')
+    .to('#pre-regua', { autoAlpha: 0, duration: .3 }, '<')
+    .to('.preloader .coluna', { yPercent: -100, duration: .85, stagger: .09, ease: 'expo.inOut' }, '-=0.25');
+}
+
+/* ---------- ENTRADA DA CAPA ---------- */
+{
+  const linhas = $$('.manchete .linha > span, .manchete .l4 .fantasma');
+  gsap.set(linhas, { yPercent: 115 });
+  gsap.set('.capa-mock', { autoAlpha: 0, rotate: -10, scale: .92, y: 40 });
+  gsap.set('.capa-kicker, .capa-cta, .masthead', { autoAlpha: 0, y: 18 });
+  gsap.set('.capa .grade i', { scaleY: 0 });
+  const capaTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+  if (reduz) {
+    gsap.set([linhas, '.capa-mock', '.capa-kicker', '.capa-cta', '.masthead'], { clearProps: 'all', autoAlpha: 1, yPercent: 0 });
+    gsap.set('.capa .grade i', { scaleY: 1 });
+    gsap.set('#capa-fill', { clipPath: 'inset(0 0% 0 0)' });
+  } else {
+    capaTl
+      .add(() => {}, reduz ? 0 : 2.05)             /* espera o preloader sair */
+      .to('.capa .grade i', { scaleY: 1, duration: .8, stagger: .04, ease: 'power2.out', transformOrigin: 'top' })
+      .to('.masthead', { autoAlpha: 1, y: 0, duration: .7 }, '<+0.1')
+      .to('.capa-kicker', { autoAlpha: 1, y: 0, duration: .7 }, '<+0.05')
+      .to(linhas, { yPercent: 0, duration: 1.15, stagger: .09 }, '<')
+      .to('.capa-mock', { autoAlpha: 1, rotate: -4, scale: 1, y: 0, duration: 1, ease: 'back.out(1.4)' }, '-=0.55')
+      .to('.capa-cta', { autoAlpha: 1, y: 0, duration: .7 }, '-=0.5');
+  }
+
+  /* A PALAVRA QUE SANGRA — fill scrubado no primeiro scroll */
+  if (!reduz) {
+    gsap.to('#capa-fill', {
+      clipPath: 'inset(0 0% 0 0)', ease: 'none',
+      scrollTrigger: { trigger: '.capa', start: 'top top', end: '45% top', scrub: 1 }
+    });
+  }
+
+  /* mockup da capa: número vivo */
+  let capaVal = 4380;
+  setInterval(() => {
+    capaVal += Math.round(Math.random() * 80 + 25);
+    const el = $('#capa-mock-num'); if (el) el.textContent = 'R$ ' + fmt(capaVal);
+  }, 3600);
+}
+
+/* ---------- TICKER que sente o scroll ---------- */
+{
+  const frase = 'QUANTAS VENDAS A SUA LOJA PERDEU HOJE? <i class="sep">✦</i> ';
+  $('#ticker-faixa').innerHTML = `<span>${frase.repeat(6)}</span><span>${frase.repeat(6)}</span>`;
+  if (!reduz) {
+    const tw = gsap.to('#ticker-faixa', { xPercent: -50, ease: 'none', duration: 26, repeat: -1 });
+    if (lenis) lenis.on('scroll', (e) => {
+      tw.timeScale(gsap.utils.clamp(-3, 3, 1 + e.velocity * 0.02));
+    });
+  }
+}
+
+/* ---------- NAV esconde no down / volta no up ---------- */
+if (!reduz) {
+  let navVis = true;
+  ScrollTrigger.create({
+    start: 120, end: 'max',
+    onUpdate: (self) => {
+      const deveSumir = self.direction === 1;
+      if (deveSumir === !navVis) return;
+      navVis = !deveSumir;
+      gsap.to('#nav', { yPercent: deveSumir ? -100 : 0, duration: .4, ease: 'power3.out' });
+    }
+  });
+}
+
+/* ---------- 02 · A DOR (pin + nota fiscal) ---------- */
+{
+  const fios = $$('.nota-item .fio');
+  const nums = { n1: 0, n2: 0, n3: 0 };
+  const tremor = (alvo) => gsap.fromTo(alvo, { x: 0 }, { x: 1.6, duration: .04, repeat: 5, yoyo: true, clearProps: 'x' });
+
+  if (desktop && !reduz) {
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: '.dor', start: 'top top', end: '+=300%', pin: true, scrub: 1 }
+    });
+    tl
+      /* ato 1 */
+      .fromTo(nums, { n1: 0 }, { n1: 25, ease: 'none', onUpdate: () => $('#n1').textContent = Math.round(nums.n1) }, 0)
+      .fromTo(fios[0], { scaleX: 0 }, { scaleX: 1, ease: 'none' }, 0)
+      .add(() => tremor('#nota'), .22)
+      /* ato 2 */
+      .fromTo(nums, { n2: 0 }, { n2: 55, ease: 'none', onUpdate: () => $('#n2').textContent = '× ' + Math.round(nums.n2) + '%' }, .25)
+      .fromTo(fios[1], { scaleX: 0 }, { scaleX: 1, ease: 'none' }, .25)
+      .fromTo('#dor-sub', { scaleX: 0 }, { scaleX: 1, ease: 'none', duration: .1 }, .3)
+      .add(() => tremor('#nota'), .47)
+      /* ato 3 — carimbo */
+      .fromTo('#n3', { scale: 1.6, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, ease: 'power4.in', duration: .08, onStart: () => $('#n3').textContent = '= 11' }, .5)
+      .fromTo(fios[2], { scaleX: 0 }, { scaleX: 1, ease: 'none' }, .52)
+      .add(() => tremor('#nota'), .6)
+      /* ato 4 — o total enche de laranja */
+      .fromTo('#n4-fill', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', ease: 'none', duration: .3 }, .66)
+      .fromTo('#dor-flash', { opacity: 0 }, { opacity: .12, duration: .02 }, .96)
+      .to('#dor-flash', { opacity: 0, duration: .04 }, .98)
+      .add(() => tremor('#nota'), .97);
+  } else {
+    /* mobile / reduzido: counters once */
+    ScrollTrigger.create({
+      trigger: '.dor', start: 'top 60%', once: true,
+      onEnter: () => {
+        gsap.to(nums, { n1: 25, duration: 1.2, ease: 'power2.out', onUpdate: () => $('#n1').textContent = Math.round(nums.n1) });
+        gsap.to(nums, { n2: 55, duration: 1.2, delay: .25, ease: 'power2.out', onUpdate: () => $('#n2').textContent = '× ' + Math.round(nums.n2) + '%' });
+        $('#n3').textContent = '= 11';
+        gsap.fromTo('#n3', { scale: 1.5, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, delay: .6, duration: .4, ease: 'power4.out' });
+        gsap.set(fios, { scaleX: 1 });
+        gsap.set('#dor-sub', { scaleX: 1 });
+        gsap.to('#n4-fill', { clipPath: 'inset(0 0% 0 0)', delay: .9, duration: 1, ease: 'power2.inOut' });
+      }
+    });
+  }
+  if (!reduz) gsap.to('.selo', { rotation: 360, duration: 14, ease: 'none', repeat: -1, transformOrigin: 'center' });
+}
+
+/* ---------- 03 · SPREADS HORIZONTAIS ---------- */
+{
+  const track = $('#spreads-track');
+  const marcas = [$('#m1'), $('#m2'), $('#m3')];
+  /* power-on do painel: timeline pausada, dirigida pelo progress */
+  const powerTl = gsap.timeline({ paused: true });
+  powerTl
+    .fromTo('#painel-grande', { rotationY: -14, filter: 'grayscale(1) brightness(0.32)' },
+      { rotationY: 0, filter: 'grayscale(0) brightness(1)', duration: 1, ease: 'none' }, 0)
+    .fromTo('#pg-barras i', { scaleY: 0 }, { scaleY: 1, duration: .5, stagger: .05, ease: 'power2.out', transformOrigin: 'bottom' }, .25)
+    .fromTo('.mock-rank .trilho i', { scaleX: 0 }, { scaleX: 1, duration: .5, stagger: .1, transformOrigin: 'left' }, .45);
+  const kpis = { v: 0 };
+  powerTl.fromTo(kpis, { v: 0 }, {
+    v: 1, duration: .7, ease: 'none', onUpdate: () => {
+      $('#pg-k1').textContent = 'R$ ' + fmt(Math.round(4380 * kpis.v));
+      $('#pg-k2').textContent = Math.round(58 * kpis.v) + '%';
+      $('#pg-k3').textContent = Math.round(7 * kpis.v);
+    }
+  }, .3);
+
+  if (desktop && !reduz) {
+    gsap.to(track, {
+      xPercent: -66.666, ease: 'none',
+      scrollTrigger: {
+        trigger: '.spreads', start: 'top top', end: '+=250%', pin: true, scrub: 1,
+        snap: { snapTo: [0, .5, 1], duration: { min: .25, max: .55 }, ease: 'power2.inOut' },
+        onUpdate: (self) => {
+          const p = self.progress;
+          $('#regua-fill').style.transform = `scaleX(${p})`;
+          marcas.forEach((m, i) => m.classList.toggle('ativa', p >= i * .42 && p < (i + 1) * .45 || (i === 2 && p >= .84)));
+          $('.spreads').classList.toggle('fase-2', p > .25 && p < .75);
+          /* painel liga entre 30% e 62% do trajeto */
+          powerTl.progress(gsap.utils.clamp(0, 1, (p - .3) / .32));
+          /* lâmpada acende no fim */
+          $('#card-lampada').classList.toggle('acesa', p > .86);
+          /* parallax do fantasma */
+          gsap.set('#fantasma-txt', { xPercent: -50 + (p - .5) * 30 });
+        }
+      }
+    });
+    /* parallax interno por data-par */
+    $$('[data-par]').forEach(el => {
+      gsap.to(el, {
+        x: () => parseFloat(el.dataset.par) * innerWidth / 100, ease: 'none',
+        scrollTrigger: { trigger: '.spreads', start: 'top top', end: '+=250%', scrub: 1 }
+      });
+    });
+  } else {
+    /* mobile: liga tudo quando entra na tela */
+    ScrollTrigger.create({ trigger: '.spread-2', start: 'top 65%', once: true, onEnter: () => powerTl.play() });
+    ScrollTrigger.create({ trigger: '.spread-3', start: 'top 60%', once: true, onEnter: () => $('#card-lampada').classList.add('acesa') });
+  }
+
+  /* títulos dos spreads com SplitText */
+  if (!reduz) {
+    $$('[data-split]').forEach(el => {
+      const sp = new SplitText(el, { type: 'chars' });
+      gsap.from(sp.chars, {
+        yPercent: 60, autoAlpha: 0, stagger: .03, duration: .7, ease: 'power3.out',
+        scrollTrigger: { trigger: el.closest('.spread') || el, start: desktop ? 'left 70%' : 'top 75%', containerAnimation: desktop ? ScrollTrigger.getAll().find(s => s.pin && s.trigger?.classList?.contains('spreads'))?.animation : undefined }
+      });
+    });
+  }
+
+  /* ripples de toque no mockup de lançamento */
+  if (!reduz) {
+    const rip = $('#ripple'), etapa3 = $('#etapa-3');
+    const ripTl = gsap.timeline({ repeat: -1, repeatDelay: 1.6 });
+    ripTl
+      .set(rip, { top: 96, left: 30, scale: 0, opacity: .6 })
+      .to(rip, { scale: 1.7, opacity: 0, duration: .55, ease: 'power1.out' })
+      .add(() => etapa3.classList.add('feita'))
+      .to({}, { duration: 1 })
+      .add(() => etapa3.classList.remove('feita'));
+  } else { $('#etapa-3').classList.add('feita'); }
+}
+
+/* ---------- 04 · RECURSOS (índice) ---------- */
+{
+  const RECURSOS = [
+    { n: 'A hora real da venda', tag: 'TEMPO', d: 'Cada atendimento entra com a hora de verdade — não um bolo lançado no fim do dia. Você descobre <b>o horário de ouro da loja</b> e escala a equipe em cima dele.', svg: '<circle cx="40" cy="40" r="26"/><line x1="40" y1="40" x2="40" y2="24"/><line x1="40" y1="40" x2="52" y2="46"/><path d="M78 64 l14 0" /><path d="M85 57 l7 7 -7 7"/>' },
+    { n: 'Painel ao vivo', tag: 'AO VIVO', d: 'O vendedor lançou no balcão, apareceu no seu celular. Sem F5, sem espera. <b>A loja inteira na palma da mão, em tempo real.</b>', svg: '<polyline points="8,56 28,38 44,48 70,20"/><circle cx="70" cy="20" r="4"/><line x1="8" y1="68" x2="112" y2="68"/>' },
+    { n: 'Ranking de vendedores', tag: 'PESSOAS', d: 'Conversão, ticket médio e ritmo de meta por pessoa. Você enxerga quem precisa de treino — <b>e em qual habilidade.</b>', svg: '<rect x="14" y="40" width="18" height="28"/><rect x="48" y="22" width="18" height="46"/><rect x="82" y="50" width="18" height="18"/>' },
+    { n: 'Caixa + catálogo', tag: 'OPERAÇÃO', d: 'Abertura, sangria, fechamento e cupom. Estoque com baixa automática, código de barras e <b>alerta de produto parado.</b>', svg: '<rect x="20" y="26" width="80" height="40" rx="2"/><line x1="20" y1="40" x2="100" y2="40"/><line x1="34" y1="52" x2="58" y2="52"/>' },
+    { n: 'CRM de follow-up', tag: 'RETORNO', d: 'O cliente que disse "volto depois" vira <b>lista de quem chamar amanhã</b>. Aniversariante vira mensagem pronta. Venda perdida vira segunda chance.', svg: '<path d="M16 30 a10 10 0 0 1 10-10 h58 a10 10 0 0 1 10 10 v18 a10 10 0 0 1 -10 10 h-44 l-16 12 v-12 h-8 a10 10 0 0 1 -10-10 z"/><line x1="34" y1="34" x2="78" y2="34"/><line x1="34" y1="44" x2="64" y2="44"/>' },
+    { n: 'Lâmpadas "como usar"', tag: 'MÉTODO', d: 'Cada gráfico explica a si mesmo: o que esse número significa, o que derruba ele e <b>qual ação tomar hoje.</b> Um consultor de varejo embutido.', svg: '<path d="M48 64 h18 M50 70 h14 M57 16 a16 16 0 0 0 -9 28 c2 1.6 3 4 3 6 h12 c0-2 1-4.4 3-6 a16 16 0 0 0 -9-28 z"/>' },
+    { n: 'Objeções de venda perdida', tag: 'DIAGNÓSTICO', d: 'Preço? Tamanho? "Vou pensar"? Cada não fica registrado e cruzado com produto e vendedor. <b>Você ataca a causa, não o sintoma.</b>', svg: '<circle cx="56" cy="40" r="26"/><circle cx="56" cy="40" r="14"/><circle cx="56" cy="40" r="3"/><line x1="76" y1="20" x2="96" y2="6"/>' },
+  ];
+  const lista = $('#indice-lista');
+  lista.innerHTML = RECURSOS.map((r, i) => `
+    <div class="linha-rec" data-i="${i}">
+      <div class="capa-linha">
+        <span class="idx num">0${i + 1}.</span>
+        <span class="nome">${r.n}</span>
+        <span class="tag">${r.tag}</span>
+        <span class="mais-rec">+</span>
+      </div>
+      <div class="rec-corpo">
+        <div class="rec-corpo-in">
+          <span></span>
+          <p>${r.d}</p>
+          <svg class="rec-diagrama" viewBox="0 0 120 80">${r.svg}</svg>
+        </div>
+      </div>
+    </div>`).join('');
+
+  $$('.linha-rec').forEach(linha => {
+    const corpo = $('.rec-corpo', linha);
+    linha.addEventListener('click', () => {
+      const aberta = linha.classList.contains('aberta');
+      $$('.linha-rec.aberta').forEach(o => {
+        o.classList.remove('aberta');
+        gsap.to($('.rec-corpo', o), { height: 0, duration: .45, ease: 'power3.inOut' });
+      });
+      if (!aberta) {
+        linha.classList.add('aberta');
+        gsap.to(corpo, { height: 'auto', duration: .5, ease: 'power3.inOut' });
+        const traco = $$('.rec-diagrama [stroke], .rec-diagrama path, .rec-diagrama circle, .rec-diagrama line, .rec-diagrama polyline, .rec-diagrama rect', linha);
+        traco.forEach(p => {
+          const len = p.getTotalLength ? p.getTotalLength() : 200;
+          gsap.fromTo(p, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: .8, ease: 'power2.out', delay: .15 });
+        });
+        ScrollTrigger.refresh();
+      }
+    });
+  });
+
+  /* reveal das linhas */
+  if (!reduz) {
+    gsap.set('.linha-rec', { clipPath: 'inset(0 0 100% 0)', y: 30 });
+    ScrollTrigger.batch('.linha-rec', {
+      start: 'top 82%',
+      onEnter: (els) => gsap.to(els, { clipPath: 'inset(0 0 0% 0)', y: 0, duration: .8, stagger: .08, ease: 'power3.out' })
+    });
+  }
+}
+
+/* ---------- 05 · SIMULADOR ---------- */
+{
+  const ins = { atend: $('#in-atend'), conv: $('#in-conv'), ticket: $('#in-ticket'), dias: $('#in-dias') };
+  const odo = $('#odometro');
+  let odoChars = [];
+
+  function montaOdometro(str) {
+    odo.innerHTML = '';
+    odoChars = [];
+    [...str].forEach(ch => {
+      if (/\d/.test(ch)) {
+        const col = document.createElement('span'); col.className = 'od-col';
+        const strip = document.createElement('span'); strip.className = 'od-strip';
+        strip.innerHTML = '<i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i>';
+        col.appendChild(strip); odo.appendChild(col);
+        odoChars.push({ tipo: 'd', strip, atual: 0 });
+        gsap.set(strip, { y: 0 });
+      } else {
+        const s = document.createElement('span'); s.className = 'od-static';
+        s.textContent = ch === ' ' ? ' ' : ch;
+        odo.appendChild(s);
+        odoChars.push({ tipo: 's', ch });
+      }
+    });
+  }
+  function setOdometro(valor) {
+    const str = 'R$ ' + fmt(valor);
+    const forma = [...str].map(c => /\d/.test(c) ? 'd' : c).join('|');
+    const formaAtual = odoChars.map(c => c.tipo === 'd' ? 'd' : c.ch).join('|');
+    if (forma !== formaAtual) {
+      montaOdometro(str);
+      if (!reduz) gsap.from(odo, { autoAlpha: .35, duration: .25 });
+    }
+    let di = 0;
+    const digitos = [...str].filter(c => /\d/.test(c));
+    odoChars.forEach(c => {
+      if (c.tipo !== 'd') return;
+      const alvo = +digitos[di++];
+      if (c.atual === alvo) return;
+      c.atual = alvo;
+      if (reduz) gsap.set(c.strip, { y: -alvo + 'em' });
+      else gsap.to(c.strip, { y: -alvo + 'em', duration: .65, ease: 'power3.out', delay: di * .04 });
+    });
+  }
+
+  let primeiraConta = true;
+  function calcula() {
+    const a = +ins.atend.value, cv = +ins.conv.value, t = +ins.ticket.value, d = +ins.dias.value;
+    $('#lt-atend').textContent = a;
+    $('#lt-conv').textContent = cv + '%';
+    $('#lt-ticket').textContent = 'R$ ' + fmt(t);
+    $('#lt-dias').textContent = d;
+    Object.entries(ins).forEach(([k, el]) => {
+      el.closest('.regua-campo').style.setProperty('--p', (el.value - el.min) / (el.max - el.min));
+    });
+
+    const perdidasMes = Math.round(a * (1 - cv / 100) * d);
+    const valorMes = perdidasMes * t;
+    const recupera = Math.round(valorMes * .10);
+    const ganhoDia = recupera / d;
+    const payback = ganhoDia > 0 ? Math.max(1, Math.ceil(347 / ganhoDia)) : 0;
+
+    setOdometro(valorMes);
+    $('#sf-qtd').textContent = fmt(perdidasMes) + ' atendimentos';
+    $('#sf-extra').textContent =
+      valorMes > 30000 ? 'Isso é um carro popular por mês, na mesa.' :
+      valorMes > 10000 ? 'Isso é o aluguel de muita loja boa.' :
+      'Ainda assim, é estoque novo todo mês.';
+    $('#sim-payback').innerHTML = payback && payback <= 31
+      ? `O CRESCIMENTO CUSTA R$ 347 — RECUPERANDO 1 VENDA EM CADA 10, <b>SE PAGA EM ${payback} ${payback === 1 ? 'DIA' : 'DIAS'}.</b>`
+      : `RECUPERANDO 1 VENDA EM CADA 10 PERDIDAS: <b>+R$ ${fmt(recupera)}/MÊS.</b>`;
+
+    /* ESTADO ALARME */
+    $('.sim').classList.toggle('alarme', valorMes > 30000);
+
+    if (!primeiraConta && !reduz) {
+      const campo = document.activeElement?.closest?.('.regua-campo');
+      if (campo) gsap.fromTo($('.leitura', campo), { scale: 1.14 }, { scale: 1, duration: .3, ease: 'power2.out', transformOrigin: 'left bottom' });
+    }
+    primeiraConta = false;
+  }
+  let deb;
+  Object.values(ins).forEach(el => el.addEventListener('input', () => { clearTimeout(deb); deb = setTimeout(calcula, 60); }));
+  calcula();
+
+  /* título com rotationX por char */
+  if (!reduz) {
+    const sp = new SplitText('#titulo-sim', { type: 'chars' });
+    gsap.from(sp.chars, {
+      rotationX: 90, autoAlpha: 0, transformOrigin: '50% 100% -18px', stagger: .018, duration: .8, ease: 'back.out(1.6)',
+      scrollTrigger: { trigger: '#titulo-sim', start: 'top 78%' }
+    });
+    gsap.from('.regua-campo .trilho', {
+      scaleX: 0, transformOrigin: 'left', stagger: .1, duration: .8, ease: 'power3.out',
+      scrollTrigger: { trigger: '.sim-controles', start: 'top 75%' }
+    });
+    gsap.from('.regua-campo .thumb', {
+      scale: 0, stagger: .1, duration: .5, ease: 'back.out(2)',
+      scrollTrigger: { trigger: '.sim-controles', start: 'top 75%' }
+    });
+  }
+}
+
+/* ---------- 06 · PROVA — carrossel de cases ---------- */
+{
+  const GH_BARRAS = `
+    <div class="grafico-horas">
+      <p class="titulo-g">VENDAS PERDIDAS POR HORÁRIO — UMA SEMANA</p>
+      <div class="gh-barras">
+        <i style="height:22%"></i><i style="height:30%"></i><i style="height:26%"></i><i style="height:42%"></i><i style="height:35%"></i><i style="height:30%"></i><i style="height:48%"></i><i style="height:55%"></i><i class="lar" style="height:88%"><span class="pino">AQUI.</span></i><i style="height:50%"></i><i style="height:38%"></i><i style="height:28%"></i>
+      </div>
+      <div class="gh-rotulos"><span>10h</span><span>11h</span><span>12h</span><span>13h</span><span>14h</span><span>15h</span><span>16h</span><span>17h</span><span>18h</span><span>19h</span><span>20h</span><span>21h</span></div>
+      <p class="gh-anota"><span class="gh-anota-txt">↑ aqui moravam as vendas perdidas — agora é o horário com reforço de equipe.</span></p>
+    </div>`;
+  const CASES = [
+    {
+      titulo: '<span class="r1"><span class="lar">855 PRODUTOS</span> PARADOS</span><span class="r2">VIRARAM OFERTA.</span>',
+      byline: '<b>CASO REAL — PROSPEED</b><span>LOJA DE COLECIONÁVEIS, BONÉS E SIMULADOR DE CORRIDA</span>',
+      corpo: `<div class="prova-corpo">
+        <div class="prova-texto">
+          <p>A ProSpeed roda o AltaVendas na operação inteira: do lançamento de cada atendimento ao caixa, do estoque ao follow-up. Foi o painel hora a hora que mostrou o buraco — <b>um horário do dia concentrava as vendas perdidas</b>, e ninguém tinha visto, porque nenhum sistema registrava o que não era vendido.</p>
+          <p>Com o catálogo cruzado com as vendas, o sistema apontou <b>855 produtos parados</b> — dinheiro dormindo em prateleira. Em vez de desconto, viraram campanha de oferta com bônus, montada em cima dos motivos de venda perdida que os próprios vendedores registraram. <b>Cada "não" registrado virou uma oferta na semana seguinte.</b></p>
+        </div>${GH_BARRAS}</div>`,
+      fala: { inicial: 'P', cor: '#0D0D0F', texto: 'A gente fechava o caixa achando que o dia tinha sido bom. Quando o painel mostrou <span class="marca-txt">a hora exata em que a loja mais perdia venda</span>, mudou tudo: escala da equipe, oferta da semana, até o pedido do fornecedor.', nome: 'Dono da ProSpeed', papel: 'colecionáveis e simulador de corrida' },
+    },
+    {
+      titulo: '<span class="r1">A OBJEÇÃO Nº 1 ERA</span><span class="r2"><span class="lar">NUMERAÇÃO</span> — NÃO PREÇO.</span>',
+      byline: '<b>CENÁRIO DE USO — CALÇADOS</b><span>LOJA DE RUA · 3 VENDEDORES</span>',
+      corpo: `<div class="prova-corpo">
+        <div class="prova-texto">
+          <p>Todo mundo na loja jurava que cliente ia embora por preço. Com cada "não" registrado em <b>menos de 10 segundos</b>, o sistema cruzou objeção com produto — e o vilão de verdade apareceu: <b>grade incompleta nos números que mais giram</b>.</p>
+          <p>O pedido pro fornecedor mudou no mês seguinte. O follow-up chamou de volta quem não tinha achado o número — <b>com o produto já na prateleira.</b></p>
+        </div>
+        <div class="case-stats">
+          <div class="case-stat"><b>62%</b><span>das vendas perdidas tinham a MESMA causa — invisível até registrar</span></div>
+          <div class="case-stat"><b>1 pedido</b><span>de fornecedor corrigido com dado, não com achismo</span></div>
+          <div class="case-stat"><b>2ª chance</b><span>cliente sem o número vira follow-up com nome e telefone</span></div>
+        </div></div>`,
+      fala: { inicial: 'C', cor: '#3b82f6', texto: 'Eu culpava o preço, baixava margem e continuava perdendo. O sistema me mostrou que era a grade. <span class="marca-txt">Mudei o pedido e o mesmo cliente que saiu sem nada voltou pra buscar.</span>', nome: 'Gestora de loja de calçados', papel: 'cenário-exemplo de uso' },
+    },
+    {
+      titulo: '<span class="r1">O RANKING AO VIVO</span><span class="r2"><span class="lar">ACENDEU</span> A EQUIPE.</span>',
+      byline: '<b>CENÁRIO DE USO — ACESSÓRIOS</b><span>QUIOSQUE DE SHOPPING · 5 VENDEDORES</span>',
+      corpo: `<div class="prova-corpo">
+        <div class="prova-texto">
+          <p>O medo clássico: "meu vendedor não vai preencher". Nas primeiras horas, o gestor lançou junto. No segundo dia, <b>o ranking ao vivo na TV da loja fez o resto</b> — vendedor gosta de ver o próprio nome subindo.</p>
+          <p>Com conversão e ticket por pessoa, o treino parou de ser genérico: <b>cada vendedor passou a treinar a habilidade que o número apontava</b> — um fechava mal, outro atendia pouco, outro não oferecia o segundo item.</p>
+        </div>
+        <div class="case-stats">
+          <div class="case-stat"><b>2 dias</b><span>pra equipe inteira lançar sozinha — mais rápido que áudio de WhatsApp</span></div>
+          <div class="case-stat"><b>1 hábito</b><span>lançar na hora, com a hora real — sem cobrança do gestor</span></div>
+          <div class="case-stat"><b>Treino certo</b><span>cada vendedor treina a habilidade que o próprio número aponta</span></div>
+        </div></div>`,
+      fala: { inicial: 'A', cor: '#8b5cf6', texto: 'Achei que ia ter que brigar pra preencherem. Em duas semanas eles tavam <span class="marca-txt">disputando o topo do ranking</span> — e eu acompanhando a loja do shopping, pelo celular.', nome: 'Gerente de quiosque de acessórios', papel: 'cenário-exemplo de uso' },
+    },
+  ];
+
+  let caseAtual = 0, trocando = false;
+  const elTit = $('#case-titulo'), elBy = $('#case-byline'), elCorpo = $('#case-corpo'), elFala = $('#case-fala');
+  $('#case-total').textContent = String(CASES.length).padStart(2, '0');
+
+  function montaCase(i) {
+    const c = CASES[i];
+    elTit.innerHTML = c.titulo;
+    elBy.innerHTML = c.byline;
+    elCorpo.innerHTML = c.corpo;
+    elFala.innerHTML = `
+      <div class="fala">
+        <div class="foto" style="background:${c.fala.cor}">${c.fala.inicial}</div>
+        <div>
+          <blockquote>${c.fala.texto}”</blockquote>
+          <div class="quem"><span class="traco"></span><b>${c.fala.nome}</b><span>${c.fala.papel}</span></div>
+        </div>
+      </div>`;
+    $('#case-idx').textContent = String(i + 1).padStart(2, '0');
+  }
+
+  function animaVisual() {
+    const barras = $$('.gh-barras i', elCorpo);
+    if (barras.length && !reduz) {
+      gsap.set(barras, { scaleY: 0, transformOrigin: 'bottom' });
+      gsap.set('.gh-anota-txt', { clipPath: 'inset(0 100% 0 0)' });
+      gsap.timeline({ delay: .15 })
+        .to(barras.filter(b => !b.classList.contains('lar')), { scaleY: 1, stagger: .05, duration: .55, ease: 'power3.out' })
+        .to('.gh-barras i.lar', { scaleY: 1, duration: .6, ease: 'back.out(1.6)' }, '-=0.1')
+        .to('.gh-anota-txt', { clipPath: 'inset(0 0% 0 0)', duration: .6, ease: 'power2.out' });
+    }
+    const stats = $$('.case-stat', elCorpo);
+    if (stats.length && !reduz) {
+      gsap.from(stats, { x: 28, autoAlpha: 0, stagger: .1, duration: .55, ease: 'power3.out', delay: .15 });
+    }
+  }
+
+  function trocaCase(dir) {
+    if (trocando) return;
+    trocando = true;
+    const prox = (caseAtual + dir + CASES.length) % CASES.length;
+    const alvos = [elTit, elBy, elCorpo, elFala];
+    if (reduz) {
+      caseAtual = prox; montaCase(prox); trocando = false; ScrollTrigger.refresh(); return;
+    }
+    gsap.to(alvos, {
+      x: -36 * dir, autoAlpha: 0, duration: .3, ease: 'power2.in', stagger: .03,
+      onComplete: () => {
+        caseAtual = prox;
+        montaCase(prox);
+        gsap.fromTo(alvos, { x: 36 * dir, autoAlpha: 0 }, {
+          x: 0, autoAlpha: 1, duration: .5, ease: 'power3.out', stagger: .05,
+          onComplete: () => { trocando = false; ScrollTrigger.refresh(); }
+        });
+        animaVisual();
+      }
+    });
+  }
+  $('#case-next').addEventListener('click', () => trocaCase(1));
+  $('#case-prev').addEventListener('click', () => trocaCase(-1));
+  addEventListener('keydown', (e) => {
+    const r = $('.prova').getBoundingClientRect();
+    if (r.top > innerHeight || r.bottom < 0) return;
+    if (e.key === 'ArrowRight') trocaCase(1);
+    if (e.key === 'ArrowLeft') trocaCase(-1);
+  });
+
+  montaCase(0);
+  /* primeira entrada: anima o visual quando a seção chega */
+  ScrollTrigger.create({ trigger: '.prova', start: 'top 70%', once: true, onEnter: animaVisual });
+
+  /* placar (fixo, fora do carrossel) */
+  if (!reduz) {
+    ScrollTrigger.create({
+      trigger: '.placar', start: 'top 85%', once: true,
+      onEnter: () => {
+        const o = { a: 0, c: 0 };
+        gsap.to(o, { a: 32000, duration: 1.8, ease: 'power2.out', onUpdate: () => $('#pl-1').textContent = fmt(Math.round(o.a / 100) * 100) });
+        gsap.to(o, { c: 13, duration: 1.2, delay: .3, ease: 'power2.out', onUpdate: () => $('#pl-3').textContent = Math.round(o.c) });
+        gsap.fromTo('#pl-2', { scale: 1.4, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: .45, delay: .5, ease: 'power4.in' });
+      }
+    });
+  } else {
+    $('#pl-1').textContent = fmt(32000); $('#pl-3').textContent = '13';
+  }
+}
+
+/* ---------- 07 · PLANOS ---------- */
+{
+  /* o empilhamento: itens revelam, a soma conta, é riscada, o preço carimba */
+  if (!reduz) {
+    gsap.set('.stack-item', { autoAlpha: 0, y: 24 });
+    gsap.set('#stack-preco', { autoAlpha: 0 });
+    ScrollTrigger.create({
+      trigger: '#stack', start: 'top 72%', once: true,
+      onEnter: () => {
+        const soma = { v: 0 };
+        const tl = gsap.timeline();
+        tl.to('.stack-item', { autoAlpha: 1, y: 0, duration: .55, stagger: .14, ease: 'power3.out' })
+          .to(soma, {
+            v: 2050, duration: 1.4, ease: 'power2.out',
+            onUpdate: () => $('#soma-val').textContent = 'R$ ' + fmt(Math.round(soma.v)) + '/mês'
+          }, '-=0.4')
+          .to('#soma-risco', { scaleX: 1, duration: .45, ease: 'power3.inOut' }, '+=0.25')
+          .fromTo('#stack-preco', { autoAlpha: 0, scale: 1.5, rotate: -6 },
+            { autoAlpha: 1, scale: 1, rotate: -1.5, duration: .4, ease: 'power4.in' }, '-=0.1');
+      }
+    });
+  } else {
+    $('#soma-val').textContent = 'R$ 2.050/mês';
+    gsap.set('#soma-risco', { scaleX: 1 });
+  }
+
+  const frase = 'FUNCIONALIDADES: <b>TODAS. EM TODOS.</b> · ';
+  $('#banda-faixa').innerHTML = `<span>${frase.repeat(4)}</span><span>${frase.repeat(4)}</span>`;
+  if (!reduz) {
+    gsap.to('#banda-faixa', { xPercent: -50, ease: 'none', duration: 30, repeat: -1 });
+    gsap.from('#banda-tinta', {
+      scaleX: 0, transformOrigin: 'left', duration: 1, ease: 'power3.inOut',
+      scrollTrigger: { trigger: '.planos-zona', start: 'top 70%' }
+    });
+    gsap.set('[data-plano]', { yPercent: 16, autoAlpha: 0 });
+    ScrollTrigger.create({
+      trigger: '.planos-grid', start: 'top 78%', once: true,
+      onEnter: () => {
+        gsap.to('[data-plano]:not(.destaque)', { yPercent: 0, autoAlpha: 1, duration: .8, stagger: .12, ease: 'power3.out' });
+        gsap.to('.plano.destaque', { yPercent: 0, autoAlpha: 1, duration: .9, delay: .35, ease: 'back.out(1.3)' });
+        gsap.fromTo('#tarja', { rotation: -12, scale: 1.3, autoAlpha: 0 }, { rotation: -3, scale: 1, autoAlpha: 1, duration: .35, delay: .95, ease: 'power4.in' });
+      }
+    });
+    /* preços chegam prontos, com máscara */
+    $$('[data-preco]').forEach(el => {
+      const sp = new SplitText(el, { type: 'chars' });
+      gsap.from(sp.chars, {
+        yPercent: 100, stagger: .05, duration: .7, ease: 'power4.out',
+        scrollTrigger: { trigger: el, start: 'top 85%' }
+      });
+    });
+  }
+}
+
+/* ---------- 08 · FAQ ---------- */
+{
+  const FAQS = [
+    { q: 'MEU VENDEDOR NÃO VAI PREENCHER ISSO.', r: '<b>Não vai precisar querer. São menos de 10 segundos — medimos.</b> Comprou ou não, produto, objeção, pronto. E o ranking ao vivo faz o resto: vendedor gosta de ver o próprio nome subindo.' },
+    { q: 'EU JÁ TENHO PDV.', r: '<b>Ótimo. O seu registra o que deu certo. Este registra o que escapou.</b> São camadas diferentes: uma fecha o caixa de hoje, a outra faz você vender mais amanhã. E se quiser um sistema só, este também tem caixa, estoque e cupom.' },
+    { q: 'NÃO TENHO TEMPO DE OLHAR RELATÓRIO.', r: '<b>Cinco minutos por dia. O sistema faz a leitura por você.</b> Cada número vem com a lâmpada "como usar": o que significa, o que derruba e qual ação tomar — em português de dono de loja.' },
+    { q: 'E SE EU NÃO SOUBER MEXER?', r: '<b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b> E o curso de implantação mora dentro do sistema: Dia 1, Semana 1, Mês 1 — sem consultor, sem TI.' },
+    { q: 'QUANTO TEMPO PRA VER RESULTADO?', r: '<b>No primeiro dia a equipe já lança. Na primeira semana você acha seu horário de ouro.</b> No primeiro mês, você compara, age e vê a conversão mexer.' },
+    { q: 'PRECISO TROCAR MEU SISTEMA DE CAIXA?', r: '<b>Não.</b> Dá pra começar só registrando atendimentos e deixar seu caixa onde está. Quando quiser unificar, o caixa daqui te espera.' },
+    { q: 'E SE EU QUISER CANCELAR?', r: '<b>Cancela quando quiser. Sem multa, sem fidelidade.</b> Seus dados saem com você em planilha. Mas comece pela demo: 1 clique, sem cadastro — a página inteira tá te empurrando pra lá por um motivo.' },
+  ];
+  $('#faq-lista').innerHTML = FAQS.map((f, i) => `
+    <div class="faq-item">
+      <span class="q-num num">Q.0${i + 1}</span>
+      <button class="faq-perg" aria-expanded="false">${f.q}<span class="mais-f">+</span></button>
+      <div class="faq-resp"><div class="faq-resp-in">${f.r}</div></div>
+    </div>`).join('');
+  $$('.faq-item').forEach(item => {
+    const btn = $('.faq-perg', item), resp = $('.faq-resp', item);
+    btn.addEventListener('click', () => {
+      const aberta = item.classList.contains('aberta');
+      $$('.faq-item.aberta').forEach(o => {
+        o.classList.remove('aberta');
+        $('.faq-perg', o).setAttribute('aria-expanded', 'false');
+        gsap.to($('.faq-resp', o), { height: 0, duration: .4, ease: 'power3.inOut' });
+      });
+      if (!aberta) {
+        item.classList.add('aberta');
+        btn.setAttribute('aria-expanded', 'true');
+        gsap.to(resp, { height: 'auto', duration: .45, ease: 'power3.inOut', onComplete: () => ScrollTrigger.refresh() });
+        if (!reduz) gsap.from($('.faq-resp-in', item), { y: 18, autoAlpha: 0, duration: .4, delay: .12 });
+      }
+    });
+  });
+  if (!reduz) {
+    gsap.set('.faq-item', { x: -32, autoAlpha: 0 });
+    ScrollTrigger.batch('.faq-item', {
+      start: 'top 84%',
+      onEnter: els => gsap.to(els, { x: 0, autoAlpha: 1, duration: .7, stagger: .07, ease: 'power3.out' })
+    });
+  }
+}
+
+/* ---------- 09 · FOGO ---------- */
+{
+  if (!reduz) {
+    /* a pergunta pinta de preto linha a linha */
+    const fills = $$('.fogo-linha .fl-fill');
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: '.fogo-perg', start: 'top 85%', end: 'top 15%', scrub: 1 }
+    });
+    fills.forEach((f, i) => tl.fromTo(f, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', ease: 'none', duration: 1 }, i));
+  } else {
+    gsap.set('.fogo-linha .fl-fill', { clipPath: 'inset(0 0% 0 0)' });
+  }
+
+  /* O CONTADOR ESTANCA */
+  const botao = $('#botao-bloco'), estancou = $('#estancou');
+  const estanca = () => {
+    if (contador.pausado) return;
+    contador.pausado = true;
+    gsap.fromTo('#fogo-contador', { scale: 1.06 }, { scale: 1, duration: .3, ease: 'power2.out', transformOrigin: 'left bottom' });
+    gsap.to(estancou, { autoAlpha: 1, y: 0, rotate: -2, duration: .35, ease: 'back.out(2)' });
+  };
+  const solta = () => {
+    contador.pausado = false;
+    gsap.to(estancou, { autoAlpha: 0, y: 6, duration: .3 });
+  };
+  if (desktop) {
+    botao.addEventListener('mouseenter', estanca);
+    botao.addEventListener('mouseleave', solta);
+  } else {
+    ScrollTrigger.create({ trigger: botao, start: 'top 75%', onEnter: estanca, onLeaveBack: solta });
+  }
+  /* seta do botão em loop */
+  if (!reduz) gsap.to('.bb-seta', { x: 12, duration: .8, repeat: -1, yoyo: true, ease: 'power2.inOut' });
+}
+
+/* ---------- BOTÕES MAGNÉTICOS ---------- */
+if (desktop && !reduz) {
+  $$('[data-magnetic]').forEach(el => {
+    const forca = 0.32, max = 18;
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const dx = gsap.utils.clamp(-max, max, (e.clientX - r.left - r.width / 2) * forca);
+      const dy = gsap.utils.clamp(-max, max, (e.clientY - r.top - r.height / 2) * forca);
+      gsap.to(el, { x: dx, y: dy, duration: .35, ease: 'power3.out' });
+    });
+    el.addEventListener('mouseleave', () => gsap.to(el, { x: 0, y: 0, duration: .6, ease: 'elastic.out(1, 0.4)' }));
+  });
+}
+
+/* refresh final (fontes/layout) */
+addEventListener('load', () => ScrollTrigger.refresh());
+</script>
+</body>
+</html>
