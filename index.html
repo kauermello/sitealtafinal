@@ -1062,17 +1062,27 @@ section, header.capa { position: relative; }
     <div class="stack-item">
       <div><div class="nome-s">Sistema de caixa + catálogo + cupom</div>
       <p class="desc-s">Abertura, sangria, fechamento, código de barras e baixa de estoque automática. O básico que toda loja já paga pra ter.</p></div>
-      <span class="vale num">R$ 150<small>o que um PDV comum cobra /mês</small></span>
+      <span class="vale num">R$ 189<small>o que um PDV completo cobra /mês</small></span>
     </div>
     <div class="stack-item">
       <div><div class="nome-s">Cadastro de clientes + aniversariantes</div>
       <p class="desc-s">O "volto depois" vira lista de quem chamar amanhã, com nome e telefone. Aniversariante vira mensagem pronta.</p></div>
-      <span class="vale num">R$ 120<small>o que um CRM simples cobra /mês</small></span>
+      <span class="vale num">R$ 199<small>o que um CRM pra equipe cobra /mês</small></span>
     </div>
     <div class="stack-item">
       <div><div class="nome-s">Metas e ranking da equipe</div>
       <p class="desc-s">Conversão e ticket por vendedor, ritmo de meta diário e modo TV pra parede da loja. <b>A disputa boa, sem planilha.</b></p></div>
-      <span class="vale num">R$ 90<small>o que um app de metas cobra /mês</small></span>
+      <span class="vale num">R$ 129<small>o que um app de metas cobra /mês</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Relatórios prontos, com leitura</div>
+      <p class="desc-s">Conversão, horário de ouro, produto parado, ritmo de meta — montados sozinhos, todo dia. É o que uma ferramenta de BI cobra pra entregar a metade.</p></div>
+      <span class="vale num">R$ 119<small>o que um BI básico cobra /mês</small></span>
+    </div>
+    <div class="stack-item">
+      <div><div class="nome-s">Estação de balcão + comanda impressa</div>
+      <p class="desc-s">Modo quiosque pro vendedor lançar sem mexer no seu painel, comanda térmica e código por vendedor. O terminal extra que todo sistema cobra à parte.</p></div>
+      <span class="vale num">R$ 89<small>o que custa um terminal a mais /mês</small></span>
     </div>
     <div class="stack-item">
       <div><div class="nome-s">Curso de implantação completo</div>
@@ -1095,11 +1105,11 @@ section, header.capa { position: relative; }
         <span class="stack-soma num"><span id="soma-val">R$ 0</span><i class="risco" id="soma-risco"></i></span>
       </div>
       <div class="lado-preco">
-        <span class="rot">Aqui, tudo junto — e com o que não se compra</span>
-        <span class="stack-preco num" id="stack-preco">R$ 247/MÊS</span>
+        <span class="rot">Aqui, tudo junto — no plano mais escolhido</span>
+        <span class="stack-preco num" id="stack-preco">R$ 347/MÊS</span>
       </div>
     </div>
-    <p class="stack-frase"><b>Na prática: uns R$ 8 por dia</b> — um lanche — pra enxergar onde sua loja perde 100 vezes isso. E o que nenhuma das peças avulsas faz, que é registrar a venda perdida, <b>vem de fábrica.</b></p>
+    <p class="stack-frase"><b>Na prática: uns R$ 11 por dia</b> — um lanche — pra enxergar onde sua loja perde 100 vezes isso. Separadas, as peças passam de <b>R$ 700/mês</b>; aqui é menos da metade — e o que não se compra em lugar nenhum, o registro da venda perdida, <b>vem de fábrica.</b></p>
     <span class="stack-nota">*referências de preço de ferramentas avulsas no Brasil, valores médios</span>
   </div>
 
@@ -1573,7 +1583,7 @@ if (!reduz) {
       if (c.atual === alvo) return;
       c.atual = alvo;
       if (reduz) gsap.set(c.strip, { y: -alvo + 'em' });
-      else gsap.to(c.strip, { y: -alvo + 'em', duration: .65, ease: 'power3.out', delay: di * .04 });
+      else gsap.to(c.strip, { y: -alvo + 'em', duration: .3, ease: 'power2.out', overwrite: true });
     });
   }
 
@@ -1609,12 +1619,11 @@ if (!reduz) {
 
     if (!primeiraConta && !reduz) {
       const campo = document.activeElement?.closest?.('.regua-campo');
-      if (campo) gsap.fromTo($('.leitura', campo), { scale: 1.14 }, { scale: 1, duration: .3, ease: 'power2.out', transformOrigin: 'left bottom' });
+      if (campo) gsap.fromTo($('.leitura', campo), { scale: 1.1 }, { scale: 1, duration: .25, ease: 'power2.out', transformOrigin: 'left bottom', overwrite: true });
     }
     primeiraConta = false;
   }
-  let deb;
-  Object.values(ins).forEach(el => el.addEventListener('input', () => { clearTimeout(deb); deb = setTimeout(calcula, 60); }));
+  Object.values(ins).forEach(el => el.addEventListener('input', calcula));
   calcula();
 
   /* título com rotationX por char */
@@ -1788,7 +1797,7 @@ if (!reduz) {
         const tl = gsap.timeline();
         tl.to('.stack-item', { autoAlpha: 1, y: 0, duration: .55, stagger: .14, ease: 'power3.out' })
           .to(soma, {
-            v: 360, duration: 1.2, ease: 'power2.out',
+            v: 725, duration: 1.2, ease: 'power2.out',
             onUpdate: () => $('#soma-val').textContent = 'R$ ' + fmt(Math.round(soma.v)) + '/mês'
           }, '-=0.4')
           .to('#soma-risco', { scaleX: 1, duration: .45, ease: 'power3.inOut' }, '+=0.25')
@@ -1797,7 +1806,7 @@ if (!reduz) {
       }
     });
   } else {
-    $('#soma-val').textContent = 'R$ 360/mês';
+    $('#soma-val').textContent = 'R$ 725/mês';
     gsap.set('#soma-risco', { scaleX: 1 });
   }
 
