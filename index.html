@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AltaVendas — O PDV que enxerga a venda que você está perdendo</title>
-<meta name="description" content="Todo PDV registra o que você vendeu. Nenhum registra o que você DEIXOU de vender. O AltaVendas registra cada atendimento e transforma venda perdida em venda recuperada.">
+<meta name="description" content="Todo PDV registra o que você vendeu. Nenhum registra o que você DEIXOU de vender. Registre cada atendimento — quem comprou, quem não comprou e por quê — e nunca mais perca a mesma venda duas vezes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -775,7 +775,7 @@ section, header.capa { position: relative; }
 <div class="preloader" id="preloader" aria-hidden="true">
   <div class="coluna"></div><div class="coluna"></div><div class="coluna"></div>
   <div class="pre-conteudo">
-    <div class="pre-status" id="pre-status">ABRINDO O CAIXA</div>
+    <div class="pre-status" id="pre-status">ABRINDO O SEU CAIXA</div>
     <div class="pre-num">R$ <span id="pre-num" class="lar">0</span></div>
   </div>
   <div class="pre-regua" id="pre-regua"></div>
@@ -786,7 +786,7 @@ section, header.capa { position: relative; }
   <a class="marca" href="#topo">ALTA<b>VENDAS</b></a>
   <div class="escapando num" aria-live="off">
     <span class="pisca"></span>
-    <span>Uma loja média já deixou escapar hoje:</span>
+    <span>Uma loja como a sua já deixou escapar hoje:</span>
     <span class="valor" id="nav-contador">R$ 0,00</span>
   </div>
   <div class="nav-acoes">
@@ -801,7 +801,7 @@ section, header.capa { position: relative; }
   <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="masthead">
     <span id="data-hoje">—</span>
-    <span class="meio">PREVISÃO DO DIA: ±11 VENDAS PERDIDAS</span>
+    <span class="meio">PREVISÃO DO DIA: ±11 CLIENTES SAEM SEM SACOLA</span>
     <span>EDIÇÃO Nº 001 · GRÁTIS</span>
   </div>
   <div class="capa-miolo">
@@ -816,7 +816,7 @@ section, header.capa { position: relative; }
         <div class="mock-barras"><i class="off" style="height:30%"></i><i style="height:46%"></i><i class="off" style="height:38%"></i><i style="height:64%"></i><i style="height:52%"></i><i style="height:84%"></i><i class="off" style="height:44%"></i><i style="height:95%"></i></div>
       </div>
     </div>
-    <p class="capa-kicker kicker">O PDV QUE ENXERGA A VENDA QUE VOCÊ ESTÁ PERDENDO</p>
+    <p class="capa-kicker kicker">PRO DONO QUE QUER ENXERGAR ATÉ A VENDA QUE NÃO ACONTECEU</p>
     <h1 class="manchete">
       <span class="linha"><span class="l1">TODO PDV REGISTRA</span></span>
       <span class="linha"><span class="l2">O QUE VOCÊ VENDEU.</span></span>
@@ -829,7 +829,7 @@ section, header.capa { position: relative; }
     <div class="capa-cta">
       <a class="btn-pill laranja" data-magnetic href="https://app.upvendas.app.br/cadastro">COMEÇAR GRÁTIS — 14 DIAS <span class="seta">→</span></a>
       <a class="btn-pill fantasma" data-magnetic href="https://app.upvendas.app.br/demo">VER A DEMO AO VIVO — 1 CLIQUE</a>
-      <span class="capa-nota">Sem cartão. Sem fidelidade. A demo abre sem cadastro.</span>
+      <span class="capa-nota">Sem cartão. Sem conversa com vendedor. A demo abre sem cadastro.</span>
     </div>
   </div>
   <div class="ticker" aria-hidden="true">
@@ -844,27 +844,27 @@ section, header.capa { position: relative; }
     <div class="dor-flash" id="dor-flash"></div>
     <svg class="selo" viewBox="0 0 110 110" aria-hidden="true">
       <defs><path id="circ" d="M55,55 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
-      <text><textPath href="#circ">DINHEIRO NA MESA · TODO MÊS · DINHEIRO NA MESA ·</textPath></text>
+      <text><textPath href="#circ">DINHEIRO SEU · NA MESA · TODO MÊS · DINHEIRO SEU ·</textPath></text>
     </svg>
     <div class="dor-wrap">
       <div class="dor-lede">
         <span class="kicker">A CONTA QUE NINGUÉM IMPRIME</span>
-        <p>Sua loja perde vendas todo dia. A diferença é saber <span class="destaque">quais<i id="dor-sub"></i></span> — e por quê. Esta é a nota fiscal que nenhum sistema emite: a do que saiu da sua loja sem sacola.</p>
+        <p>Sua loja perdeu venda hoje. Alguém entrou, provou, gostou — e saiu de mãos vazias. Você não sabe <span class="destaque">quem<i id="dor-sub"></i></span>, nem por quê. Esta é a nota fiscal que ninguém te imprime — e quem abre a loja todo santo dia merece vê-la.</p>
       </div>
       <div class="nota" id="nota">
         <div class="nota-linhas">
           <div class="nota-item">
-            <span class="rotulo">Atendimentos por dia</span>
+            <span class="rotulo">Clientes que entraram / dia</span>
             <span class="valor num" id="n1">0</span>
             <i class="fio"></i>
           </div>
           <div class="nota-item">
-            <span class="rotulo">Conversão média</span>
+            <span class="rotulo">Saíram com sacola</span>
             <span class="valor num" id="n2">× 0%</span>
             <i class="fio"></i>
           </div>
           <div class="nota-item">
-            <span class="rotulo">Vendas perdidas / dia</span>
+            <span class="rotulo">Saíram de mãos vazias / dia</span>
             <span class="valor outline num" id="n3">= 0</span>
             <i class="fio"></i>
           </div>
@@ -885,7 +885,7 @@ section, header.capa { position: relative; }
 <!-- ================= 03 · COMO FUNCIONA ================= -->
 <div class="metodo-banda">
   <span class="cond">TRÊS PASSOS. <b>NENHUMA PLANILHA.</b></span>
-  <span class="cond" style="opacity:.5">O MÉTODO</span>
+  <span class="cond" style="opacity:.5">O PLANO</span>
 </div>
 <section class="spreads" id="metodo">
   <div class="spreads-vp">
@@ -906,7 +906,7 @@ section, header.capa { position: relative; }
           </div>
           <div class="lado-b">
             <h3 class="spread-titulo" data-split>REGISTRE</h3>
-            <p class="spread-desc">O vendedor lança o atendimento em <b>menos de 10 segundos</b> — com a hora real. Comprou ou não, qual produto, qual objeção. <b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b></p>
+            <p class="spread-desc">Seu vendedor lança cada atendimento em <b>menos de 10 segundos</b> — com a hora real. Quem comprou, quem não comprou, qual desculpa levou a venda embora. <b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b></p>
           </div>
         </div>
       </article>
@@ -932,7 +932,7 @@ section, header.capa { position: relative; }
               </div>
             </div>
           </div>
-          <p class="legenda"><b>RAIO-X:</b> o painel mostra onde a venda morreu — horário, vendedor, objeção. <b>O PDV que enxerga a venda que você está perdendo.</b></p>
+          <p class="legenda"><b>RAIO-X:</b> você vê onde a venda morreu — a hora, o vendedor, a desculpa. <b>Pela primeira vez, a sua loja inteira na sua frente — até o que não vendeu.</b></p>
         </div>
       </article>
 
@@ -947,7 +947,7 @@ section, header.capa { position: relative; }
               <svg class="bulbo" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a7 7 0 0 0-4 12.6c.7.5 1 1.5 1 2.4h6c0-.9.3-1.9 1-2.4A7 7 0 0 0 12 3z"/></svg>
               <span class="titulo-c">Como usar · Venda perdida por preço</span>
             </div>
-            <p>Terça, 19h: 4 clientes saíram por "preço alto" no mesmo produto. <b>Ação de amanhã:</b> monte uma oferta com bônus (não desconto) e posicione na entrada. <b>O sistema não te dá um número. Te diz o que fazer com ele.</b></p>
+            <p>Terça, 19h: 4 clientes pegaram o mesmo produto, olharam a etiqueta e devolveram na prateleira. <b>Ação de amanhã:</b> oferta com bônus (não desconto), bem na entrada. <b>Você não recebe um número. Recebe a ordem do dia.</b></p>
           </div>
           <p class="spread-fecho">Três passos. <i>Nenhuma planilha.</i></p>
         </div>
@@ -964,7 +964,7 @@ section, header.capa { position: relative; }
   <span class="indice-vert">O QUE VEM DENTRO</span>
   <div class="indice-cab">
     <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">OS CLASSIFICADOS</p>
-    <h2>OUTROS SISTEMAS TE DÃO NÚMEROS.<br>O ALTAVENDAS TE DIZ <span class="lar">O QUE FAZER COM ELES.</span></h2>
+    <h2>NÚMERO VOCÊ JÁ TEM DE SOBRA.<br>O QUE FALTA É SABER <span class="lar">O QUE FAZER COM ELE.</span></h2>
   </div>
   <div class="indice-lista" id="indice-lista"></div>
 </section>
@@ -976,7 +976,7 @@ section, header.capa { position: relative; }
   <div class="sim-grid">
     <div class="sim-controles">
       <div class="regua-campo" data-campo="atend">
-        <span class="rotulo">Atendimentos por dia</span>
+        <span class="rotulo">Clientes que entram por dia</span>
         <span class="leitura num" id="lt-atend">25</span>
         <div class="trilho-wrap">
           <i class="trilho"></i><i class="trilho-fill"></i><i class="thumb"></i>
@@ -1012,9 +1012,9 @@ section, header.capa { position: relative; }
       <span class="rotulo-res">Escapando da sua loja</span>
       <div class="odometro" id="odometro" aria-live="polite"></div>
       <div class="sim-sub">/MÊS EM VENDAS PERDIDAS</div>
-      <p class="sim-frase" id="sim-frase">São <b id="sf-qtd">292 atendimentos</b> por mês saindo sem comprar — sem nome, sem motivo, sem segunda chance. <span id="sf-extra"></span></p>
+      <p class="sim-frase" id="sim-frase">São <b id="sf-qtd">292 atendimentos</b> por mês cruzando a sua porta pra fora sem comprar — gente que você pagou pra atender. Sem nome, sem motivo, sem segunda chance. <span id="sf-extra"></span></p>
       <div class="sim-payback num" id="sim-payback">O CRESCIMENTO CUSTA R$ 347 — <b>SE PAGA EM 2 DIAS.</b></div>
-      <div><span class="sim-alerta"><i></i>ALERTA: PREJUÍZO ACIMA DE R$ 30 MIL/MÊS</span></div>
+      <div><span class="sim-alerta"><i></i>ALERTA: MAIS DE R$ 30 MIL/MÊS SAINDO DO SEU BOLSO</span></div>
       <div class="sim-cta-row">
         <a class="btn-pill laranja" data-magnetic href="https://app.upvendas.app.br/cadastro">PARAR DE PERDER — COMEÇAR GRÁTIS →</a>
         <a class="sim-link-demo" href="https://app.upvendas.app.br/demo">ou veja a demonstração primeiro →</a>
@@ -1050,7 +1050,7 @@ section, header.capa { position: relative; }
   <div class="planos-cab">
     <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">TABELA DE PREÇOS — SEM LETRA MIÚDA</p>
     <h2>FAÇA A CONTA <span class="lar">ANTES DE PAGAR.</span></h2>
-    <p style="margin-top:2.4vh; font-size:17px; max-width:54ch; color:rgba(13,13,15,.6); line-height:1.6">Montar essa operação com ferramentas separadas custa caro — e nenhuma delas enxerga a venda perdida. Aqui vai a sacola completa, peça por peça:</p>
+    <p style="margin-top:2.4vh; font-size:17px; max-width:54ch; color:rgba(13,13,15,.6); line-height:1.6">Você podia montar isso com ferramentas separadas — pagando mais caro pra continuar no escuro sobre a venda perdida. Aqui vai a sacola completa, peça por peça:</p>
   </div>
 
   <!-- O EMPILHAMENTO: cada peça com o que custaria separada -->
@@ -1086,7 +1086,7 @@ section, header.capa { position: relative; }
     </div>
     <div class="stack-item">
       <div><div class="nome-s">Lâmpadas "como usar" em cada número</div>
-      <p class="desc-s">Cada relatório explica o que o número significa e qual ação tomar amanhã — em português de dono de loja, não de planilha.</p></div>
+      <p class="desc-s">Você abre o relatório e sai sabendo o que o número significa e o que fazer amanhã — em português de dono de loja, não de planilha.</p></div>
       <span class="vale num" style="color:var(--fogo)">só aqui<small>vem junto, não é módulo pago</small></span>
     </div>
     <div class="stack-total">
@@ -1110,7 +1110,7 @@ section, header.capa { position: relative; }
     <div class="planos-grid">
       <div class="plano" data-plano>
         <h3 class="nome-p">Começo</h3>
-        <p class="pra">Pra loja enxuta que quer parar de perder venda sem saber.</p>
+        <p class="pra">Pra quem fecha a loja todo dia com a pulga atrás da orelha.</p>
         <div class="preco"><span class="rs">R$</span><span class="v" data-preco>247</span><span class="mes">/mês</span></div>
         <table>
           <tr><td>Usuários</td><td>6</td></tr>
@@ -1122,7 +1122,7 @@ section, header.capa { position: relative; }
       <div class="plano destaque" data-plano>
         <span class="tarja" id="tarja">O MAIS ESCOLHIDO</span>
         <h3 class="nome-p">Crescimento</h3>
-        <p class="pra">Pra loja em expansão que precisa de histórico e equipe maior.</p>
+        <p class="pra">Pra quem já viu o tamanho do buraco e quer a loja na palma da mão.</p>
         <div class="preco"><span class="rs">R$</span><span class="v" data-preco>347</span><span class="mes">/mês</span></div>
         <table>
           <tr><td>Usuários</td><td>12</td></tr>
@@ -1133,7 +1133,7 @@ section, header.capa { position: relative; }
       </div>
       <div class="plano" data-plano>
         <h3 class="nome-p">Rede</h3>
-        <p class="pra">Pra operação grande, com time grande e visão de longo prazo.</p>
+        <p class="pra">Pra quem não consegue mais estar em toda loja ao mesmo tempo.</p>
         <div class="preco"><span class="rs">R$</span><span class="v" data-preco>497</span><span class="mes">/mês</span></div>
         <table>
           <tr><td>Usuários</td><td>18</td></tr>
@@ -1166,7 +1166,7 @@ section, header.capa { position: relative; }
     <span class="fogo-linha"><span class="fl-out">PERDEU HOJE?</span><span class="fl-fill">PERDEU HOJE?</span></span>
   </div>
   <div class="fogo-contador">
-    <span class="rotulo-fc">Enquanto você lia, uma loja média deixou escapar</span>
+    <span class="rotulo-fc">Enquanto você lia, uma loja como a sua deixou escapar</span>
     <span class="valor-fc num" id="fogo-contador">R$ 0,00</span>
     <span class="estancou" id="estancou">ESTANCOU.</span>
   </div>
@@ -1182,13 +1182,13 @@ section, header.capa { position: relative; }
     <div>
       <h4>O Jornal</h4>
       <a href="#dor">A conta</a>
-      <a href="#metodo">O método</a>
+      <a href="#metodo">O plano</a>
       <a href="#simulador">O simulador</a>
       <a href="#planos">Os classificados</a>
     </div>
     <div>
       <h4>Acesso</h4>
-      <a href="https://app.upvendas.app.br/login">Entrar no sistema</a>
+      <a href="https://app.upvendas.app.br/login">Entrar na minha loja</a>
       <a href="https://app.upvendas.app.br/demo">Demonstração ao vivo</a>
       <a href="https://app.upvendas.app.br/cadastro">Criar minha loja — 14 dias grátis</a>
     </div>
@@ -1267,7 +1267,7 @@ if (reduz) {
   $('#preloader').remove();
 } else {
   const preObj = { v: 0 };
-  const status = ['ABRINDO O CAIXA', 'CONTANDO O QUE ESCAPOU', 'EDIÇÃO Nº 001'];
+  const status = ['ABRINDO O SEU CAIXA', 'CONTANDO O QUE VOCÊ NÃO VIU', 'EDIÇÃO Nº 001'];
   preTl
     .to(preObj, {
       v: 1980, duration: 1.5, ease: 'power2.inOut',
@@ -1324,7 +1324,7 @@ if (reduz) {
 
 /* ---------- TICKER que sente o scroll ---------- */
 {
-  const frase = 'QUANTAS VENDAS A SUA LOJA PERDEU HOJE? <i class="sep">✦</i> ';
+  const frase = '“VOU DAR UMA VOLTA E JÁ VOLTO.” — ELE NÃO VOLTOU. <i class="sep">✦</i> ';
   $('#ticker-faixa').innerHTML = `<span>${frase.repeat(6)}</span><span>${frase.repeat(6)}</span>`;
   if (!reduz) {
     const tw = gsap.to('#ticker-faixa', { xPercent: -50, ease: 'none', duration: 26, repeat: -1 });
@@ -1475,12 +1475,12 @@ if (!reduz) {
 /* ---------- 04 · RECURSOS (índice) ---------- */
 {
   const RECURSOS = [
-    { n: 'A hora real da venda', tag: 'TEMPO', d: 'Cada atendimento entra com a hora de verdade — não um bolo lançado no fim do dia. Você descobre <b>o horário de ouro da loja</b> e escala a equipe em cima dele.', svg: '<circle cx="40" cy="40" r="26"/><line x1="40" y1="40" x2="40" y2="24"/><line x1="40" y1="40" x2="52" y2="46"/><path d="M78 64 l14 0" /><path d="M85 57 l7 7 -7 7"/>' },
+    { n: 'A hora real da venda', tag: 'TEMPO', d: 'Cada atendimento entra com a hora de verdade — não aquele bolo lançado de memória no fechamento. Você descobre <b>o horário de ouro da sua loja</b> e escala a equipe em cima dele.', svg: '<circle cx="40" cy="40" r="26"/><line x1="40" y1="40" x2="40" y2="24"/><line x1="40" y1="40" x2="52" y2="46"/><path d="M78 64 l14 0" /><path d="M85 57 l7 7 -7 7"/>' },
     { n: 'Painel ao vivo', tag: 'AO VIVO', d: 'O vendedor lançou no balcão, apareceu no seu celular. Sem F5, sem espera. <b>A loja inteira na palma da mão, em tempo real.</b>', svg: '<polyline points="8,56 28,38 44,48 70,20"/><circle cx="70" cy="20" r="4"/><line x1="8" y1="68" x2="112" y2="68"/>' },
-    { n: 'Ranking de vendedores', tag: 'PESSOAS', d: 'Conversão, ticket médio e ritmo de meta por pessoa. Você enxerga quem precisa de treino — <b>e em qual habilidade.</b>', svg: '<rect x="14" y="40" width="18" height="28"/><rect x="48" y="22" width="18" height="46"/><rect x="82" y="50" width="18" height="18"/>' },
-    { n: 'Caixa + catálogo', tag: 'OPERAÇÃO', d: 'Abertura, sangria, fechamento e cupom. Estoque com baixa automática, código de barras e <b>alerta de produto parado.</b>', svg: '<rect x="20" y="26" width="80" height="40" rx="2"/><line x1="20" y1="40" x2="100" y2="40"/><line x1="34" y1="52" x2="58" y2="52"/>' },
+    { n: 'Ranking de vendedores', tag: 'PESSOAS', d: 'Conversão, ticket e ritmo por pessoa. O “será que atendeu bem?” vira resposta: você enxerga quem precisa de treino — <b>e em qual habilidade.</b>', svg: '<rect x="14" y="40" width="18" height="28"/><rect x="48" y="22" width="18" height="46"/><rect x="82" y="50" width="18" height="18"/>' },
+    { n: 'Caixa + catálogo', tag: 'OPERAÇÃO', d: 'Abertura, sangria, fechamento e cupom — o arroz com feijão rodando sem você pensar nele. Estoque com baixa automática, código de barras e <b>aviso de produto dormindo na prateleira.</b>', svg: '<rect x="20" y="26" width="80" height="40" rx="2"/><line x1="20" y1="40" x2="100" y2="40"/><line x1="34" y1="52" x2="58" y2="52"/>' },
     { n: 'CRM de follow-up', tag: 'RETORNO', d: 'O cliente que disse "volto depois" vira <b>lista de quem chamar amanhã</b>. Aniversariante vira mensagem pronta. Venda perdida vira segunda chance.', svg: '<path d="M16 30 a10 10 0 0 1 10-10 h58 a10 10 0 0 1 10 10 v18 a10 10 0 0 1 -10 10 h-44 l-16 12 v-12 h-8 a10 10 0 0 1 -10-10 z"/><line x1="34" y1="34" x2="78" y2="34"/><line x1="34" y1="44" x2="64" y2="44"/>' },
-    { n: 'Lâmpadas "como usar"', tag: 'MÉTODO', d: 'Cada gráfico explica a si mesmo: o que esse número significa, o que derruba ele e <b>qual ação tomar hoje.</b> Um consultor de varejo embutido.', svg: '<path d="M48 64 h18 M50 70 h14 M57 16 a16 16 0 0 0 -9 28 c2 1.6 3 4 3 6 h12 c0-2 1-4.4 3-6 a16 16 0 0 0 -9-28 z"/>' },
+    { n: 'Lâmpadas "como usar"', tag: 'MÉTODO', d: 'Você não precisa virar analista: bate o olho e já sabe o que o número significa, o que derruba ele e <b>o que fazer ainda hoje.</b> Um consultor de varejo do seu lado.', svg: '<path d="M48 64 h18 M50 70 h14 M57 16 a16 16 0 0 0 -9 28 c2 1.6 3 4 3 6 h12 c0-2 1-4.4 3-6 a16 16 0 0 0 -9-28 z"/>' },
     { n: 'Objeções de venda perdida', tag: 'DIAGNÓSTICO', d: 'Preço? Tamanho? "Vou pensar"? Cada não fica registrado e cruzado com produto e vendedor. <b>Você ataca a causa, não o sintoma.</b>', svg: '<circle cx="56" cy="40" r="26"/><circle cx="56" cy="40" r="14"/><circle cx="56" cy="40" r="3"/><line x1="76" y1="20" x2="96" y2="6"/>' },
   ];
   const lista = $('#indice-lista');
@@ -1652,17 +1652,17 @@ if (!reduz) {
       byline: '<b>CASO REAL — PROSPEED</b><span>LOJA DE COLECIONÁVEIS, BONÉS E SIMULADOR DE CORRIDA</span>',
       corpo: `<div class="prova-corpo">
         <div class="prova-texto">
-          <p>A ProSpeed roda o AltaVendas na operação inteira: do lançamento de cada atendimento ao caixa, do estoque ao follow-up. Foi o painel hora a hora que mostrou o buraco — <b>um horário do dia concentrava as vendas perdidas</b>, e ninguém tinha visto, porque nenhum sistema registrava o que não era vendido.</p>
-          <p>Com o catálogo cruzado com as vendas, o sistema apontou <b>855 produtos parados</b> — dinheiro dormindo em prateleira. Em vez de desconto, viraram campanha de oferta com bônus, montada em cima dos motivos de venda perdida que os próprios vendedores registraram. <b>Cada "não" registrado virou uma oferta na semana seguinte.</b></p>
+          <p>Na ProSpeed, ninguém desconfiava de nada: loja cheia, equipe ocupada, caixa girando. Foi olhando o dia hora a hora que o dono viu o buraco — <b>um horário do dia concentrava as vendas perdidas</b>, e ninguém tinha visto, porque ninguém registrava o que não era vendido.</p>
+          <p>Cruzando catálogo com venda, ele achou <b>855 produtos parados</b> — dinheiro dormindo em prateleira. Em vez de desconto, montou oferta com bônus em cima dos motivos de venda perdida que os próprios vendedores registraram. <b>Cada "não" registrado virou uma oferta na semana seguinte.</b></p>
         </div>${GH_BARRAS}</div>`,
-      fala: { inicial: 'P', cor: '#0D0D0F', texto: 'A gente fechava o caixa achando que o dia tinha sido bom. Quando o painel mostrou <span class="marca-txt">a hora exata em que a loja mais perdia venda</span>, mudou tudo: escala da equipe, oferta da semana, até o pedido do fornecedor.', nome: 'Dono da ProSpeed', papel: 'colecionáveis e simulador de corrida' },
+      fala: { inicial: 'P', cor: '#0D0D0F', texto: 'A gente fechava o caixa achando que o dia tinha sido bom. Quando eu vi <span class="marca-txt">a hora exata em que a minha loja mais perdia venda</span>, mudou tudo: escala da equipe, oferta da semana, até o pedido do fornecedor.', nome: 'Dono da ProSpeed', papel: 'colecionáveis e simulador de corrida' },
     },
     {
       titulo: '<span class="r1">A OBJEÇÃO Nº 1 ERA</span><span class="r2"><span class="lar">NUMERAÇÃO</span> — NÃO PREÇO.</span>',
       byline: '<b>CENÁRIO DE USO — CALÇADOS</b><span>LOJA DE RUA · 3 VENDEDORES</span>',
       corpo: `<div class="prova-corpo">
         <div class="prova-texto">
-          <p>Todo mundo na loja jurava que cliente ia embora por preço. Com cada "não" registrado em <b>menos de 10 segundos</b>, o sistema cruzou objeção com produto — e o vilão de verdade apareceu: <b>grade incompleta nos números que mais giram</b>.</p>
+          <p>Todo mundo na loja jurava — como você juraria — que o cliente ia embora por preço. Com cada "não" registrado em <b>menos de 10 segundos</b>, a gestora cruzou objeção com produto — e o vilão de verdade apareceu: <b>grade incompleta nos números que mais giram</b>.</p>
           <p>O pedido pro fornecedor mudou no mês seguinte. O follow-up chamou de volta quem não tinha achado o número — <b>com o produto já na prateleira.</b></p>
         </div>
         <div class="case-stats">
@@ -1670,14 +1670,14 @@ if (!reduz) {
           <div class="case-stat"><b>1 pedido</b><span>de fornecedor corrigido com dado, não com achismo</span></div>
           <div class="case-stat"><b>2ª chance</b><span>cliente sem o número vira follow-up com nome e telefone</span></div>
         </div></div>`,
-      fala: { inicial: 'C', cor: '#3b82f6', texto: 'Eu culpava o preço, baixava margem e continuava perdendo. O sistema me mostrou que era a grade. <span class="marca-txt">Mudei o pedido e o mesmo cliente que saiu sem nada voltou pra buscar.</span>', nome: 'Gestora de loja de calçados', papel: 'cenário-exemplo de uso' },
+      fala: { inicial: 'C', cor: '#3b82f6', texto: 'Eu culpava o preço, baixava margem e continuava perdendo. Era a grade — tava escrito nos registros da minha própria loja. <span class="marca-txt">Mudei o pedido e o mesmo cliente que saiu sem nada voltou pra buscar.</span>', nome: 'Gestora de loja de calçados', papel: 'cenário-exemplo de uso' },
     },
     {
       titulo: '<span class="r1">O RANKING AO VIVO</span><span class="r2"><span class="lar">ACENDEU</span> A EQUIPE.</span>',
       byline: '<b>CENÁRIO DE USO — ACESSÓRIOS</b><span>QUIOSQUE DE SHOPPING · 5 VENDEDORES</span>',
       corpo: `<div class="prova-corpo">
         <div class="prova-texto">
-          <p>O medo clássico: "meu vendedor não vai preencher". Nas primeiras horas, o gestor lançou junto. No segundo dia, <b>o ranking ao vivo na TV da loja fez o resto</b> — vendedor gosta de ver o próprio nome subindo.</p>
+          <p>O medo clássico: "meu vendedor não vai preencher". Nas primeiras horas, o gestor lançou junto. No segundo dia, <b>a equipe já disputava o topo na TV da loja</b> — vendedor gosta de ver o próprio nome subindo.</p>
           <p>Com conversão e ticket por pessoa, o treino parou de ser genérico: <b>cada vendedor passou a treinar a habilidade que o número apontava</b> — um fechava mal, outro atendia pouco, outro não oferecia o segundo item.</p>
         </div>
         <div class="case-stats">
@@ -1685,7 +1685,7 @@ if (!reduz) {
           <div class="case-stat"><b>1 hábito</b><span>lançar na hora, com a hora real — sem cobrança do gestor</span></div>
           <div class="case-stat"><b>Treino certo</b><span>cada vendedor treina a habilidade que o próprio número aponta</span></div>
         </div></div>`,
-      fala: { inicial: 'A', cor: '#8b5cf6', texto: 'Achei que ia ter que brigar pra preencherem. Em duas semanas eles tavam <span class="marca-txt">disputando o topo do ranking</span> — e eu acompanhando a loja do shopping, pelo celular.', nome: 'Gerente de quiosque de acessórios', papel: 'cenário-exemplo de uso' },
+      fala: { inicial: 'A', cor: '#8b5cf6', texto: 'Achei que ia ter que brigar pra preencherem. Em duas semanas eles tavam <span class="marca-txt">disputando o topo do ranking</span> — e eu vendo o quiosque do sofá de casa, pelo celular.', nome: 'Gerente de quiosque de acessórios', papel: 'cenário-exemplo de uso' },
     },
   ];
 
@@ -1832,9 +1832,9 @@ if (!reduz) {
 /* ---------- 08 · FAQ ---------- */
 {
   const FAQS = [
-    { q: 'MEU VENDEDOR NÃO VAI PREENCHER ISSO.', r: '<b>Não vai precisar querer. São menos de 10 segundos — medimos.</b> Comprou ou não, produto, objeção, pronto. E o ranking ao vivo faz o resto: vendedor gosta de ver o próprio nome subindo.' },
+    { q: 'MEU VENDEDOR NÃO VAI PREENCHER ISSO.', r: '<b>Todo dono tem esse medo. E são menos de 10 segundos — medimos.</b> Comprou ou não, produto, objeção, pronto. E o ranking ao vivo faz o resto: vendedor gosta de ver o próprio nome subindo.' },
     { q: 'EU JÁ TENHO PDV.', r: '<b>Ótimo. O seu registra o que deu certo. Este registra o que escapou.</b> São camadas diferentes: uma fecha o caixa de hoje, a outra faz você vender mais amanhã. E se quiser um sistema só, este também tem caixa, estoque e cupom.' },
-    { q: 'NÃO TENHO TEMPO DE OLHAR RELATÓRIO.', r: '<b>Cinco minutos por dia. O sistema faz a leitura por você.</b> Cada número vem com a lâmpada "como usar": o que significa, o que derruba e qual ação tomar — em português de dono de loja.' },
+    { q: 'NÃO TENHO TEMPO DE OLHAR RELATÓRIO.', r: '<b>Cinco minutos, com o café, antes de abrir a porta. A leitura já vem feita.</b> Cada número vem com a lâmpada "como usar": o que significa, o que derruba e qual ação tomar — em português de dono de loja.' },
     { q: 'E SE EU NÃO SOUBER MEXER?', r: '<b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b> E o curso de implantação mora dentro do sistema: Dia 1, Semana 1, Mês 1 — sem consultor, sem TI.' },
     { q: 'QUANTO TEMPO PRA VER RESULTADO?', r: '<b>No primeiro dia a equipe já lança. Na primeira semana você acha seu horário de ouro.</b> No primeiro mês, você compara, age e vê a conversão mexer.' },
     { q: 'PRECISO TROCAR MEU SISTEMA DE CAIXA?', r: '<b>Não.</b> Dá pra começar só registrando atendimentos e deixar seu caixa onde está. Quando quiser unificar, o caixa daqui te espera.' },
