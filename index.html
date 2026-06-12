@@ -816,7 +816,7 @@ section, header.capa { position: relative; }
         <div class="mock-barras"><i class="off" style="height:30%"></i><i style="height:46%"></i><i class="off" style="height:38%"></i><i style="height:64%"></i><i style="height:52%"></i><i style="height:84%"></i><i class="off" style="height:44%"></i><i style="height:95%"></i></div>
       </div>
     </div>
-    <p class="capa-kicker kicker">PRO DONO QUE QUER ENXERGAR ATÉ A VENDA QUE NÃO ACONTECEU</p>
+    <p class="capa-kicker kicker">PRO DONO QUE SENTE QUE O CAIXA NÃO CONTA A HISTÓRIA INTEIRA</p>
     <h1 class="manchete">
       <span class="linha"><span class="l1">TODO PDV REGISTRA</span></span>
       <span class="linha"><span class="l2">O QUE VOCÊ VENDEU.</span></span>
@@ -849,7 +849,7 @@ section, header.capa { position: relative; }
     <div class="dor-wrap">
       <div class="dor-lede">
         <span class="kicker">A CONTA QUE NINGUÉM IMPRIME</span>
-        <p>Sua loja perdeu venda hoje. Alguém entrou, provou, gostou — e saiu de mãos vazias. Você não sabe <span class="destaque">quem<i id="dor-sub"></i></span>, nem por quê. Esta é a nota fiscal que ninguém te imprime — e quem abre a loja todo santo dia merece vê-la.</p>
+        <p>Sua loja perdeu venda hoje. Alguém entrou, provou, gostou — e saiu de mãos vazias. Você não sabe <span class="destaque">quem<i id="dor-sub"></i></span>, nem por quê. O pior não é perder a venda — é nunca ficar sabendo. Esta é a nota fiscal que ninguém te imprime. E quem abre a loja todo santo dia merece vê-la.</p>
       </div>
       <div class="nota" id="nota">
         <div class="nota-linhas">
@@ -949,7 +949,7 @@ section, header.capa { position: relative; }
             </div>
             <p>Terça, 19h: 4 clientes pegaram o mesmo produto, olharam a etiqueta e devolveram na prateleira. <b>Ação de amanhã:</b> oferta com bônus (não desconto), bem na entrada. <b>Você não recebe um número. Recebe a ordem do dia.</b></p>
           </div>
-          <p class="spread-fecho">Três passos. <i>Nenhuma planilha.</i></p>
+          <p class="spread-fecho">Três passos. <i>E você nunca mais fecha a loja no escuro.</i></p>
         </div>
       </article>
 
@@ -972,7 +972,7 @@ section, header.capa { position: relative; }
 <!-- ================= 05 · SIMULADOR ================= -->
 <section class="sim" id="simulador">
   <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <h2 class="titulo-sim" id="titulo-sim">QUANTO ESTÁ<br><span class="lar">ESCAPANDO</span> AGORA?</h2>
+  <h2 class="titulo-sim" id="titulo-sim">QUANTO ESTÁ<br><span class="lar">ESCAPANDO</span> DA SUA LOJA?</h2>
   <div class="sim-grid">
     <div class="sim-controles">
       <div class="regua-campo" data-campo="atend">
@@ -1050,7 +1050,7 @@ section, header.capa { position: relative; }
   <div class="planos-cab">
     <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">TABELA DE PREÇOS — SEM LETRA MIÚDA</p>
     <h2>FAÇA A CONTA <span class="lar">ANTES DE PAGAR.</span></h2>
-    <p style="margin-top:2.4vh; font-size:17px; max-width:54ch; color:rgba(13,13,15,.6); line-height:1.6">Você podia montar isso com ferramentas separadas — pagando mais caro pra continuar no escuro sobre a venda perdida. Aqui vai a sacola completa, peça por peça:</p>
+    <p style="margin-top:2.4vh; font-size:17px; max-width:54ch; color:rgba(13,13,15,.6); line-height:1.6">Isso aqui não nasceu em escritório. Nasceu atrás do balcão, fechando caixa com a mesma dúvida que você. Por isso não tem letra miúda: a sacola completa, peça por peça — faça a conta antes de pagar:</p>
   </div>
 
   <!-- O EMPILHAMENTO: cada peça com o que custaria separada -->
@@ -1144,7 +1144,7 @@ section, header.capa { position: relative; }
       </div>
     </div>
   </div>
-  <p class="planos-pe">Tudo que você viu nesta página está <b>nos três planos</b>. A diferença é só o tamanho da sua operação. Sem fidelidade — seus dados saem com você em planilha.<br>
+  <p class="planos-pe">Tudo que você viu nesta página está <b>nos três planos</b>. A diferença é só o tamanho da sua operação. Sem fidelidade — seus dados saem com você em planilha. <b>Em 14 dias, ou você vira o dono que vê, ou não paga nada.</b><br>
   Prefere ver funcionando antes? <a href="https://app.upvendas.app.br/demo" style="color:var(--fogo); font-weight:700; text-decoration:underline; text-underline-offset:3px">Abra a demonstração — 1 clique</a> · Já tem conta? <a href="https://app.upvendas.app.br/login" style="color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px">Entre aqui</a></p>
 </section>
 
@@ -1597,8 +1597,8 @@ if (!reduz) {
     setOdometro(valorMes);
     $('#sf-qtd').textContent = fmt(perdidasMes) + ' atendimentos';
     $('#sf-extra').textContent =
-      valorMes > 30000 ? 'Isso é um carro popular por mês, na mesa.' :
-      valorMes > 10000 ? 'Isso é o aluguel de muita loja boa.' :
+      valorMes > 30000 ? 'Um carro popular por mês — saindo pela sua porta sem você ver.' :
+      valorMes > 10000 ? 'É um aluguel inteiro indo embora pela porta, todo mês.' :
       'Ainda assim, é estoque novo todo mês.';
     $('#sim-payback').innerHTML = payback && payback <= 31
       ? `O CRESCIMENTO CUSTA R$ 347 — RECUPERANDO 1 VENDA EM CADA 10, <b>SE PAGA EM ${payback} ${payback === 1 ? 'DIA' : 'DIAS'}.</b>`
@@ -1835,8 +1835,8 @@ if (!reduz) {
     { q: 'MEU VENDEDOR NÃO VAI PREENCHER ISSO.', r: '<b>Todo dono tem esse medo. E são menos de 10 segundos — medimos.</b> Comprou ou não, produto, objeção, pronto. E o ranking ao vivo faz o resto: vendedor gosta de ver o próprio nome subindo.' },
     { q: 'EU JÁ TENHO PDV.', r: '<b>Ótimo. O seu registra o que deu certo. Este registra o que escapou.</b> São camadas diferentes: uma fecha o caixa de hoje, a outra faz você vender mais amanhã. E se quiser um sistema só, este também tem caixa, estoque e cupom.' },
     { q: 'NÃO TENHO TEMPO DE OLHAR RELATÓRIO.', r: '<b>Cinco minutos, com o café, antes de abrir a porta. A leitura já vem feita.</b> Cada número vem com a lâmpada "como usar": o que significa, o que derruba e qual ação tomar — em português de dono de loja.' },
-    { q: 'E SE EU NÃO SOUBER MEXER?', r: '<b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b> E o curso de implantação mora dentro do sistema: Dia 1, Semana 1, Mês 1 — sem consultor, sem TI.' },
-    { q: 'QUANTO TEMPO PRA VER RESULTADO?', r: '<b>No primeiro dia a equipe já lança. Na primeira semana você acha seu horário de ouro.</b> No primeiro mês, você compara, age e vê a conversão mexer.' },
+    { q: 'E SE EU NÃO SOUBER MEXER?', r: '<b>Você não é o problema — sistema complicado é. Se sabe usar WhatsApp, sabe usar o AltaVendas.</b> E o curso de implantação mora dentro do sistema: Dia 1, Semana 1, Mês 1 — sem consultor, sem TI.' },
+    { q: 'QUANTO TEMPO PRA VER RESULTADO?', r: '<b>No primeiro dia a equipe já lança. Na primeira semana você descobre o horário de ouro da sua loja.</b> No primeiro mês, você abre a porta de manhã já sabendo o que fazer — e vê a conversão mexer.' },
     { q: 'PRECISO TROCAR MEU SISTEMA DE CAIXA?', r: '<b>Não.</b> Dá pra começar só registrando atendimentos e deixar seu caixa onde está. Quando quiser unificar, o caixa daqui te espera.' },
     { q: 'E SE EU QUISER CANCELAR?', r: '<b>Cancela quando quiser. Sem multa, sem fidelidade.</b> Seus dados saem com você em planilha. Mas comece pela demo: 1 clique, sem cadastro — a página inteira tá te empurrando pra lá por um motivo.' },
   ];
