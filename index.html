@@ -293,7 +293,8 @@ section, header.capa { position: relative; }
 .spread-1 .numeral { right: 4vw; top: -4vh; }
 .spread-1 .conteudo { display: grid; grid-template-columns: 1fr 1fr; width: 100%; padding: 0 5vw; gap: 4vw; align-items: center; }
 .spread-1 .lado-b { justify-self: end; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 3vh; }
-.mock-lanc { width: min(330px, 38vw); position: relative; }
+.mock-lanc { width: min(560px, 46vw); position: relative; }
+.foto-sys { display: block; width: 100%; height: auto; border-radius: 6px; border: 1px solid rgba(255,255,255,.08); margin: 10px 0 4px; }
 .mock-lanc .etapa { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,255,255,.05); margin-bottom: 8px; font-size: 12px; position: relative; }
 .mock-lanc .etapa .icone { width: 28px; height: 28px; border-radius: 6px; background: rgba(255,90,31,.16); color: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 13px; flex-shrink: 0; }
 .mock-lanc .etapa small { display: block; color: rgba(255,255,255,.45); font-size: 10px; }
@@ -311,7 +312,7 @@ section, header.capa { position: relative; }
   pointer-events: none;
 }
 .spread-2 .conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 3vh; }
-.painel-grande { width: min(680px, 58vw); transform-style: preserve-3d; }
+.painel-grande { width: min(840px, 64vw); transform-style: preserve-3d; }
 .painel-grande .mock { padding: 22px; box-shadow: 0 50px 110px -30px rgba(0,0,0,.7); }
 .painel-grande .mock-kpi b { font-size: 24px; }
 .painel-grande .mock-barras { height: 110px; }
@@ -897,16 +898,13 @@ section, header.capa { position: relative; }
         <span class="numeral num" data-par="8">01</span>
         <div class="conteudo">
           <div class="mock mock-lanc" data-par="-6" aria-hidden="true">
-            <div class="mock-top"><span class="mock-logo">NOVO ATENDIMENTO</span><span class="mock-live"><i></i>14:32</span></div>
-            <div class="etapa feita"><span class="icone">✓</span><div>Venda fechada?<small>Sim — R$ 159,90</small></div><span class="check">✓</span></div>
-            <div class="etapa feita"><span class="icone">▦</span><div>Produto<small>Boné Aba Reta — Preto</small></div><span class="check">✓</span></div>
-            <div class="etapa" id="etapa-3"><span class="icone">◷</span><div>Hora real<small>capturada automaticamente</small></div><span class="check">✓</span></div>
-            <div class="ripple" id="ripple"></div>
-            <div class="cron num">0:08<small>tempo pra lançar</small></div>
+            <div class="mock-top"><span class="mock-logo">TELA REAL DO SISTEMA</span><span class="mock-live"><i></i>AO VIVO</span></div>
+            <img class="foto-sys" src="img/site-registro.png" alt="Tela real do AltaVendas: registrar atendimento — vendeu, sim ou não" loading="lazy">
+            <div class="cron num">0:08<small>tempo pra lançar — com a hora real</small></div>
           </div>
           <div class="lado-b">
             <h3 class="spread-titulo" data-split>REGISTRE</h3>
-            <p class="spread-desc">Seu vendedor lança cada atendimento em <b>menos de 10 segundos</b> — com a hora real. Quem comprou, quem não comprou, qual desculpa levou a venda embora. <b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b></p>
+            <p class="spread-desc">Você — ou seu vendedor — lança cada atendimento em <b>menos de 10 segundos</b> — com a hora real. Quem comprou, quem não comprou, qual desculpa levou a venda embora. <b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b></p>
           </div>
         </div>
       </article>
@@ -917,19 +915,8 @@ section, header.capa { position: relative; }
         <div class="conteudo">
           <div class="painel-grande" id="painel-grande">
             <div class="mock">
-              <div class="mock-top"><span class="mock-logo" style="font-size:16px">ALTA<b>VENDAS</b> · PAINEL</span><span class="mock-live"><i></i>AO VIVO</span></div>
-              <div class="mock-kpis">
-                <div class="mock-kpi"><small>Vendido hoje</small><b class="num" id="pg-k1">R$ 0</b></div>
-                <div class="mock-kpi"><small>Conversão</small><b class="lar num" id="pg-k2">0%</b></div>
-                <div class="mock-kpi"><small>Perdidas hoje</small><b class="verm num" id="pg-k3">0</b></div>
-              </div>
-              <div class="mock-barras" id="pg-barras">
-                <i class="off" style="height:32%"></i><i style="height:48%"></i><i class="off" style="height:40%"></i><i style="height:62%"></i><i style="height:54%"></i><i class="off" style="height:44%"></i><i style="height:78%"></i><i style="height:60%"></i><i style="height:92%"></i><i class="off" style="height:50%"></i>
-              </div>
-              <div class="mock-rank">
-                <div class="vend"><span class="ava">AN</span><span class="trilho"><i style="width:90%"></i></span><span class="val num">R$ 1.840</span></div>
-                <div class="vend"><span class="ava">BR</span><span class="trilho"><i style="width:68%"></i></span><span class="val num">R$ 1.420</span></div>
-              </div>
+              <div class="mock-top"><span class="mock-logo" style="font-size:16px">ALTA<b>VENDAS</b> · PAINEL — TELA REAL</span><span class="mock-live"><i></i>AO VIVO</span></div>
+              <img class="foto-sys" src="img/site-painel.png" alt="Painel real do AltaVendas: curva de metas do mês e ranking de vendedores ao vivo" loading="lazy">
             </div>
           </div>
           <p class="legenda"><b>RAIO-X:</b> você vê onde a venda morreu — a hora, o vendedor, a desculpa. <b>Pela primeira vez, a sua loja inteira na sua frente — até o que não vendeu.</b></p>
@@ -996,7 +983,7 @@ section, header.capa { position: relative; }
         <span class="leitura num" id="lt-ticket">R$ 180</span>
         <div class="trilho-wrap">
           <i class="trilho"></i><i class="trilho-fill"></i><i class="thumb"></i>
-          <input type="range" id="in-ticket" min="50" max="1000" step="10" value="140" aria-label="Ticket médio em reais">
+          <input type="range" id="in-ticket" min="30" max="1000" step="10" value="140" aria-label="Ticket médio em reais">
         </div>
       </div>
       <div class="regua-campo" data-campo="dias">
@@ -1109,7 +1096,7 @@ section, header.capa { position: relative; }
         <span class="stack-preco num" id="stack-preco">R$ 347/MÊS</span>
       </div>
     </div>
-    <p class="stack-frase"><b>Na prática: uns R$ 11 por dia</b> — um lanche — pra enxergar onde sua loja perde 100 vezes isso. Separadas, as peças passam de <b>R$ 700/mês</b>; aqui é menos da metade — e o que não se compra em lugar nenhum, o registro da venda perdida, <b>vem de fábrica.</b></p>
+    <p class="stack-frase"><b>Na prática: uns R$ 13 por dia de loja aberta</b> — um lanche — pra enxergar onde sua loja perde 100 vezes isso. Separadas, as peças passam de <b>R$ 700/mês</b>; aqui é menos da metade — e o que não se compra em lugar nenhum, o registro da venda perdida, <b>vem de fábrica.</b></p>
     <span class="stack-nota">*referências de preço de ferramentas avulsas no Brasil, valores médios</span>
   </div>
 
@@ -1413,17 +1400,7 @@ if (!reduz) {
   const powerTl = gsap.timeline({ paused: true });
   powerTl
     .fromTo('#painel-grande', { rotationY: -14, filter: 'grayscale(1) brightness(0.32)' },
-      { rotationY: 0, filter: 'grayscale(0) brightness(1)', duration: 1, ease: 'none' }, 0)
-    .fromTo('#pg-barras i', { scaleY: 0 }, { scaleY: 1, duration: .5, stagger: .05, ease: 'power2.out', transformOrigin: 'bottom' }, .25)
-    .fromTo('.mock-rank .trilho i', { scaleX: 0 }, { scaleX: 1, duration: .5, stagger: .1, transformOrigin: 'left' }, .45);
-  const kpis = { v: 0 };
-  powerTl.fromTo(kpis, { v: 0 }, {
-    v: 1, duration: .7, ease: 'none', onUpdate: () => {
-      $('#pg-k1').textContent = 'R$ ' + fmt(Math.round(4380 * kpis.v));
-      $('#pg-k2').textContent = Math.round(58 * kpis.v) + '%';
-      $('#pg-k3').textContent = Math.round(7 * kpis.v);
-    }
-  }, .3);
+      { rotationY: 0, filter: 'grayscale(0) brightness(1)', duration: 1, ease: 'none' }, 0);
 
   if (desktop && !reduz) {
     gsap.to(track, {
@@ -1469,17 +1446,7 @@ if (!reduz) {
     });
   }
 
-  /* ripples de toque no mockup de lançamento */
-  if (!reduz) {
-    const rip = $('#ripple'), etapa3 = $('#etapa-3');
-    const ripTl = gsap.timeline({ repeat: -1, repeatDelay: 1.6 });
-    ripTl
-      .set(rip, { top: 96, left: 30, scale: 0, opacity: .6 })
-      .to(rip, { scale: 1.7, opacity: 0, duration: .55, ease: 'power1.out' })
-      .add(() => etapa3.classList.add('feita'))
-      .to({}, { duration: 1 })
-      .add(() => etapa3.classList.remove('feita'));
-  } else { $('#etapa-3').classList.add('feita'); }
+  /* mock de lançamento agora é foto real — sem ripple */
 }
 
 /* ---------- 04 · RECURSOS (índice) ---------- */
@@ -1602,7 +1569,8 @@ if (!reduz) {
     const valorMes = perdidasMes * t;
     const recupera = Math.round(valorMes * .10);
     const ganhoDia = recupera / d;
-    const payback = ganhoDia > 0 ? Math.max(1, Math.ceil(347 / ganhoDia)) : 0;
+    const plano = valorMes >= 25000 ? { n: 'O CRESCIMENTO', v: 347 } : { n: 'O COMEÇO', v: 247 };
+    const payback = ganhoDia > 0 ? Math.max(1, Math.ceil(plano.v / ganhoDia)) : 0;
 
     setOdometro(valorMes);
     $('#sf-qtd').textContent = fmt(perdidasMes) + ' atendimentos';
@@ -1611,7 +1579,7 @@ if (!reduz) {
       valorMes > 10000 ? 'É um aluguel inteiro indo embora pela porta, todo mês.' :
       'Ainda assim, é estoque novo todo mês.';
     $('#sim-payback').innerHTML = payback && payback <= 31
-      ? `O CRESCIMENTO CUSTA R$ 347 — RECUPERANDO 1 VENDA EM CADA 10, <b>SE PAGA EM ${payback} ${payback === 1 ? 'DIA' : 'DIAS'}.</b>`
+      ? `${plano.n} CUSTA R$ ${plano.v} — RECUPERANDO 1 VENDA EM CADA 10, <b>SE PAGA EM ${payback} ${payback === 1 ? 'DIA' : 'DIAS'}.</b>`
       : `RECUPERANDO 1 VENDA EM CADA 10 PERDIDAS: <b>+R$ ${fmt(recupera)}/MÊS.</b>`;
 
     /* ESTADO ALARME */
@@ -1847,6 +1815,9 @@ if (!reduz) {
     { q: 'E SE EU NÃO SOUBER MEXER?', r: '<b>Você não é o problema — sistema complicado é. Se sabe usar WhatsApp, sabe usar o AltaVendas.</b> E o curso de implantação mora dentro do sistema: Dia 1, Semana 1, Mês 1 — sem consultor, sem TI.' },
     { q: 'QUANTO TEMPO PRA VER RESULTADO?', r: '<b>No primeiro dia a equipe já lança. Na primeira semana você descobre o horário de ouro da sua loja.</b> No primeiro mês, você abre a porta de manhã já sabendo o que fazer — e vê a conversão mexer.' },
     { q: 'PRECISO TROCAR MEU SISTEMA DE CAIXA?', r: '<b>Não.</b> Dá pra começar só registrando atendimentos e deixar seu caixa onde está. Quando quiser unificar, o caixa daqui te espera.' },
+    { q: 'E SE A INTERNET CAIR?', r: '<b>O sistema roda no navegador e é leve — funciona até no 4G do celular.</b> Caiu o wi-fi da loja, o vendedor abre no celular e segue lançando. Tudo fica salvo na nuvem, nada se perde.' },
+    { q: 'PRECISO COMPRAR EQUIPAMENTO?', r: '<b>Não. Roda em qualquer navegador — no celular, tablet ou no computador que você já tem.</b> Impressora térmica de comanda e leitor de código de barras são opcionais: se tiver, o sistema usa.' },
+    { q: 'O CUPOM É FISCAL?', r: '<b>O cupom daqui é de controle e comanda — ele não substitui seu emissor fiscal.</b> Mantenha sua nota exatamente como está e comece registrando atendimentos. O AltaVendas cuida do que seu emissor nunca viu: a venda que NÃO aconteceu.' },
     { q: 'E SE EU QUISER CANCELAR?', r: '<b>Cancela quando quiser. Sem multa, sem fidelidade.</b> Seus dados saem com você em planilha. Mas comece pela demo: 1 clique, sem cadastro — a página inteira tá te empurrando pra lá por um motivo.' },
   ];
   $('#faq-lista').innerHTML = FAQS.map((f, i) => `
