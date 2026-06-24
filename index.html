@@ -305,6 +305,20 @@ section, header.capa { position: relative; }
 .sys-flash { position: absolute; inset: 0; background: #4ade80; opacity: 0; z-index: 6; pointer-events: none; }
 /* Vídeo de produto (Remotion) — UI recriada e renderizada como MP4: roda liso */
 .sys-video { display: block; width: 100%; aspect-ratio: 1280 / 760; margin: 10px 0 4px; border-radius: 6px; border: 1px solid rgba(255,255,255,.1); background: #0c0c0e; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); object-fit: cover; }
+/* ---------- Carrossel de telas reais (passos do método) ---------- */
+.cx { position: relative; width: 100%; }
+.cx-vp { overflow: hidden; border-radius: 6px; background: #0c0c0e; border: 1px solid rgba(255,255,255,.08); }
+.cx-track { display: flex; transition: transform .55s cubic-bezier(.62,.01,.06,1); will-change: transform; }
+.cx-slide { flex: 0 0 100%; margin: 0; position: relative; }
+.cx-slide img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #0c0c0e; }
+.cx-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 14px 11px; font-family: var(--cond); font-weight: 700; font-size: 14px; line-height: 1.18; color: #fff; text-transform: uppercase; letter-spacing: .03em; background: linear-gradient(transparent, rgba(7,7,9,.92)); }
+.cx-cap b { color: var(--fogo); }
+.cx-nav { position: absolute; top: 44%; transform: translateY(-50%); width: 33px; height: 33px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3); background: rgba(11,11,13,.52); color: #fff; font-size: 19px; line-height: 1; cursor: pointer; display: grid; place-items: center; transition: background .2s, border-color .2s; z-index: 3; padding: 0; }
+.cx-nav:hover { background: var(--fogo); border-color: var(--fogo); }
+.cx-prev { left: 9px; } .cx-next { right: 9px; }
+.cx-dots { display: flex; gap: 6px; justify-content: center; margin-top: 11px; }
+.cx-dot { width: 7px; height: 7px; border-radius: 99px; background: rgba(140,140,140,.42); border: none; cursor: pointer; padding: 0; transition: background .25s, width .25s; }
+.cx-dot.on { background: var(--fogo); width: 19px; }
 .mock-lanc .etapa { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,255,255,.05); margin-bottom: 8px; font-size: 12px; position: relative; }
 .mock-lanc .etapa .icone { width: 28px; height: 28px; border-radius: 6px; background: rgba(255,90,31,.16); color: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 13px; flex-shrink: 0; }
 .mock-lanc .etapa small { display: block; color: rgba(255,255,255,.45); font-size: 10px; }
@@ -343,6 +357,7 @@ section, header.capa { position: relative; }
 .card-lampada .titulo-c { font-family: var(--cond); font-weight: 800; font-size: 19px; text-transform: uppercase; }
 .card-lampada p { font-size: 14.5px; line-height: 1.55; color: rgba(13,13,15,.66); }
 .card-lampada p b { color: var(--tinta); }
+.card-playbook { width: min(720px, 58vw); box-shadow: 0 50px 110px -34px rgba(0,0,0,.55); }
 .spread-fecho { font-size: 15px; font-weight: 600; }
 .spread-fecho i { color: var(--fogo); font-style: normal; }
 
@@ -907,11 +922,18 @@ section, header.capa { position: relative; }
         <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <span class="numeral num" data-par="8">01</span>
         <div class="conteudo">
-          <div class="mock mock-lanc" data-par="-6" aria-hidden="true">
-            <div class="mock-top"><span class="mock-logo">GRAVADO NO SISTEMA REAL</span><span class="mock-live"><i></i>AO VIVO</span></div>
-            <video class="sys-video" autoplay loop muted playsinline preload="metadata" aria-label="Demonstração do AltaVendas: registrar um atendimento em segundos">
-              <source src="img/lancamento.mp4" type="video/mp4">
-            </video>
+          <div class="mock mock-lanc" data-par="-6">
+            <div class="mock-top"><span class="mock-logo">TELA REAL DO SISTEMA</span><span class="mock-live"><i></i>AO VIVO</span></div>
+            <div class="cx" data-cx aria-label="Como registrar um atendimento, passo a passo">
+              <div class="cx-vp"><div class="cx-track">
+                <figure class="cx-slide"><img src="img/c1a.webp" alt="Tela do AltaVendas marcando se vendeu ou não" loading="lazy"><figcaption class="cx-cap"><b>1.</b> Vendeu ou não? Um toque.</figcaption></figure>
+                <figure class="cx-slide"><img src="img/c1b.webp" alt="Catálogo de produtos do AltaVendas" loading="lazy"><figcaption class="cx-cap"><b>2.</b> Escolha o produto — ou bipe o código.</figcaption></figure>
+                <figure class="cx-slide"><img src="img/c1c.webp" alt="Forma de pagamento e salvar a venda" loading="lazy"><figcaption class="cx-cap"><b>3.</b> Pix, dinheiro ou cartão — e salva.</figcaption></figure>
+              </div></div>
+              <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8249;</button>
+              <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8250;</button>
+              <div class="cx-dots"></div>
+            </div>
             <div class="cron num">0:08<small>do atendimento ao registro salvo</small></div>
           </div>
           <div class="lado-b">
@@ -928,7 +950,16 @@ section, header.capa { position: relative; }
           <div class="painel-grande" id="painel-grande">
             <div class="mock">
               <div class="mock-top"><span class="mock-logo" style="font-size:16px">ALTA<b>VENDAS</b> · PAINEL — TELA REAL</span><span class="mock-live"><i></i>AO VIVO</span></div>
-              <img class="foto-sys" src="img/site-painel.png" alt="Painel real do AltaVendas: curva de metas do mês e ranking de vendedores ao vivo" loading="lazy">
+              <div class="cx" data-cx aria-label="O painel do AltaVendas por dentro">
+                <div class="cx-vp"><div class="cx-track">
+                  <figure class="cx-slide"><img src="img/c2a.webp" alt="Dashboard do AltaVendas com metas e ranking" loading="lazy"><figcaption class="cx-cap">O dia inteiro na sua frente — meta, ritmo e <b>quem está vendendo</b>.</figcaption></figure>
+                  <figure class="cx-slide"><img src="img/c2b.webp" alt="Curva de metas hora a hora" loading="lazy"><figcaption class="cx-cap">A <b>curva de metas</b>: onde a venda subiu e onde ela morreu.</figcaption></figure>
+                  <figure class="cx-slide"><img src="img/c2c.webp" alt="Ranking de vendedores ao vivo" loading="lazy"><figcaption class="cx-cap">O <b>ranking ao vivo</b> — quem precisa de um empurrão.</figcaption></figure>
+                </div></div>
+                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8249;</button>
+                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8250;</button>
+                <div class="cx-dots"></div>
+              </div>
             </div>
           </div>
           <p class="legenda"><b>RAIO-X:</b> você vê onde a venda morreu — a hora, o vendedor, a desculpa. <b>Pela primeira vez, a sua loja inteira na sua frente — até o que não vendeu.</b></p>
@@ -941,14 +972,20 @@ section, header.capa { position: relative; }
         <span class="numeral num">03</span>
         <div class="conteudo">
           <h3 class="spread-titulo" data-split>AJA COM O <span class="lar">PLAYBOOK</span></h3>
-          <div class="card-lampada" id="card-lampada">
-            <div class="topo">
-              <svg class="bulbo" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a7 7 0 0 0-4 12.6c.7.5 1 1.5 1 2.4h6c0-.9.3-1.9 1-2.4A7 7 0 0 0 12 3z"/></svg>
-              <span class="titulo-c">Como usar · Venda perdida por preço</span>
+          <div class="mock card-playbook">
+            <div class="mock-top"><span class="mock-logo">COMO USAR · <b>A ORDEM DO DIA</b></span><span class="mock-live"><i></i>AO VIVO</span></div>
+            <div class="cx" data-cx aria-label="O sistema explica cada número e manda a ação do dia">
+              <div class="cx-vp"><div class="cx-track">
+                <figure class="cx-slide"><img src="img/c3a.webp" alt="Painel Como usar: Meta do Dia" loading="lazy"><figcaption class="cx-cap">Toda lâmpada explica o número <b>e manda a ação</b>.</figcaption></figure>
+                <figure class="cx-slide"><img src="img/c3b.webp" alt="Painel Como usar: Falta Hoje" loading="lazy"><figcaption class="cx-cap">Falta bater a meta? Ele diz <b>onde correr atrás</b>.</figcaption></figure>
+                <figure class="cx-slide"><img src="img/c3c.webp" alt="Painel Como usar: Meta da Semana" loading="lazy"><figcaption class="cx-cap">A semana planejada — <b>o dia forte cobre o fraco</b>.</figcaption></figure>
+              </div></div>
+              <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8249;</button>
+              <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8250;</button>
+              <div class="cx-dots"></div>
             </div>
-            <p>Terça, 19h: 4 clientes pegaram o mesmo produto, olharam a etiqueta e devolveram na prateleira. <b>Ação de amanhã:</b> oferta com bônus (não desconto), bem na entrada. <b>Você não recebe um número. Recebe a ordem do dia.</b></p>
           </div>
-          <p class="spread-fecho">Três passos. <i>E você nunca mais fecha a loja no escuro.</i></p>
+          <p class="spread-fecho">Você não recebe um número. <i>Recebe a ordem do dia.</i></p>
         </div>
       </article>
 
@@ -1427,8 +1464,6 @@ if (!reduz) {
           $('.spreads').classList.toggle('fase-2', p > .25 && p < .75);
           /* painel liga entre 30% e 62% do trajeto */
           powerTl.progress(gsap.utils.clamp(0, 1, (p - .3) / .32));
-          /* lâmpada acende no fim */
-          $('#card-lampada').classList.toggle('acesa', p > .86);
           /* parallax do fantasma */
           gsap.set('#fantasma-txt', { xPercent: -50 + (p - .5) * 30 });
         }
@@ -1444,7 +1479,6 @@ if (!reduz) {
   } else {
     /* mobile: liga tudo quando entra na tela */
     ScrollTrigger.create({ trigger: '.spread-2', start: 'top 65%', once: true, onEnter: () => powerTl.play() });
-    ScrollTrigger.create({ trigger: '.spread-3', start: 'top 60%', once: true, onEnter: () => $('#card-lampada').classList.add('acesa') });
   }
 
   /* títulos dos spreads com SplitText */
@@ -1536,16 +1570,54 @@ if (!reduz) {
   }
 }
 
-/* vídeo de produto (passo 01): toca ao entrar na tela, pausa ao sair (autoplay garantido + CPU livre) */
-{
-  const vid = $('.sys-video');
-  if (vid) {
-    vid.muted = true;
-    new IntersectionObserver((es) => es.forEach((e) => {
-      if (e.isIntersecting) vid.play().catch(() => {}); else vid.pause();
-    }), { threshold: .2 }).observe(vid);
+/* ---------- Carrossel de telas reais (passos 01/02/03) ---------- */
+document.querySelectorAll('[data-cx]').forEach((cx) => {
+  const track = cx.querySelector('.cx-track');
+  const slides = [...cx.querySelectorAll('.cx-slide')];
+  const dotsBox = cx.querySelector('.cx-dots');
+  const n = slides.length;
+  if (!track || n === 0) return;
+  let i = 0, timer = null, visible = false;
+
+  slides.forEach((_, k) => {
+    const d = document.createElement('button');
+    d.type = 'button'; d.className = 'cx-dot' + (k === 0 ? ' on' : '');
+    d.setAttribute('aria-label', 'Ir para a tela ' + (k + 1));
+    d.addEventListener('click', () => { go(k); restart(); });
+    dotsBox.appendChild(d);
+  });
+  const dots = [...dotsBox.children];
+
+  function go(k) {
+    i = (k + n) % n;
+    track.style.transform = 'translateX(' + (-i * 100) + '%)';
+    dots.forEach((d, j) => d.classList.toggle('on', j === i));
   }
-}
+  const next = () => go(i + 1);
+  const prev = () => go(i - 1);
+  function restart() { stop(); if (visible) timer = setInterval(next, 3800); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+  cx.querySelector('.cx-next').addEventListener('click', () => { next(); restart(); });
+  cx.querySelector('.cx-prev').addEventListener('click', () => { prev(); restart(); });
+  cx.addEventListener('mouseenter', stop);
+  cx.addEventListener('mouseleave', restart);
+
+  /* swipe no touch */
+  let x0 = null;
+  cx.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; stop(); }, { passive: true });
+  cx.addEventListener('touchend', (e) => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) (dx < 0 ? next() : prev());
+    x0 = null; restart();
+  }, { passive: true });
+
+  /* só roda sozinho quando o passo está na tela */
+  new IntersectionObserver((es) => es.forEach((e) => {
+    visible = e.isIntersecting; visible ? restart() : stop();
+  }), { threshold: .25 }).observe(cx);
+});
 
 /* ---------- 04 · RECURSOS (índice) ---------- */
 {
