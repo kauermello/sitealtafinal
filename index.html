@@ -303,6 +303,8 @@ section, header.capa { position: relative; }
 .sys-cursor { position: absolute; width: 23px; height: 23px; left: 0; top: 0; fill: #fff; stroke: #0a0a0a; stroke-width: 1.1; filter: drop-shadow(0 2px 5px rgba(0,0,0,.55)); opacity: 0; z-index: 5; pointer-events: none; }
 .sys-ripple { position: absolute; width: 48px; height: 48px; margin: -24px 0 0 -24px; border: 2.5px solid var(--fogo); border-radius: 50%; left: 0; top: 0; opacity: 0; z-index: 4; pointer-events: none; }
 .sys-flash { position: absolute; inset: 0; background: #4ade80; opacity: 0; z-index: 6; pointer-events: none; }
+/* Vídeo de produto (Remotion) — UI recriada e renderizada como MP4: roda liso */
+.sys-video { display: block; width: 100%; aspect-ratio: 1280 / 760; margin: 10px 0 4px; border-radius: 6px; border: 1px solid rgba(255,255,255,.1); background: #0c0c0e; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); object-fit: cover; }
 .mock-lanc .etapa { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,255,255,.05); margin-bottom: 8px; font-size: 12px; position: relative; }
 .mock-lanc .etapa .icone { width: 28px; height: 28px; border-radius: 6px; background: rgba(255,90,31,.16); color: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 13px; flex-shrink: 0; }
 .mock-lanc .etapa small { display: block; color: rgba(255,255,255,.45); font-size: 10px; }
@@ -907,19 +909,9 @@ section, header.capa { position: relative; }
         <div class="conteudo">
           <div class="mock mock-lanc" data-par="-6" aria-hidden="true">
             <div class="mock-top"><span class="mock-logo">GRAVADO NO SISTEMA REAL</span><span class="mock-live"><i></i>AO VIVO</span></div>
-            <div class="sys-player" id="player-lanc">
-              <div class="sys-cam" id="cam-lanc">
-                <img class="sys-frame" src="img/sys-f1.webp" alt="Registrar atendimento no AltaVendas" fetchpriority="low">
-                <img class="sys-frame" src="img/sys-f2.webp" alt="">
-                <img class="sys-frame" src="img/sys-f3.webp" alt="">
-                <img class="sys-frame" src="img/sys-f4.webp" alt="">
-                <img class="sys-frame" src="img/sys-f5.webp" alt="">
-                <img class="sys-frame" src="img/sys-f6.webp" alt="">
-              </div>
-              <div class="sys-ripple" id="rip-lanc"></div>
-              <svg class="sys-cursor" id="cur-lanc" viewBox="0 0 24 24"><path d="M4 2 L4 18 L8.5 14 L11 19.5 L13.5 18.5 L11 13 L17 13 Z"/></svg>
-              <div class="sys-flash" id="flash-lanc"></div>
-            </div>
+            <video class="sys-video" autoplay loop muted playsinline preload="metadata" aria-label="Demonstração do AltaVendas: registrar um atendimento em segundos">
+              <source src="img/lancamento.mp4" type="video/mp4">
+            </video>
             <div class="cron num">0:08<small>do atendimento ao registro salvo</small></div>
           </div>
           <div class="lado-b">
@@ -1541,6 +1533,17 @@ if (!reduz) {
         if (e.isIntersecting && !started) { started = true; build(); }
       }), { threshold: .25 }).observe(player);
     }
+  }
+}
+
+/* vídeo de produto (passo 01): toca ao entrar na tela, pausa ao sair (autoplay garantido + CPU livre) */
+{
+  const vid = $('.sys-video');
+  if (vid) {
+    vid.muted = true;
+    new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) vid.play().catch(() => {}); else vid.pause();
+    }), { threshold: .2 }).observe(vid);
   }
 }
 
