@@ -295,6 +295,14 @@ section, header.capa { position: relative; }
 .spread-1 .lado-b { justify-self: end; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 3vh; }
 .mock-lanc { width: min(560px, 46vw); position: relative; }
 .foto-sys { display: block; width: 100%; height: auto; border-radius: 6px; border: 1px solid rgba(255,255,255,.08); margin: 10px 0 4px; }
+/* Player de produto: tela REAL do sistema + câmera (zoom/pan) + cursor que clica */
+.sys-player { position: relative; width: 100%; aspect-ratio: 1180 / 546; margin: 10px 0 4px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); background: #0d0d0f; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
+.sys-cam { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
+.sys-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+.sys-frame:first-child { opacity: 1; }
+.sys-cursor { position: absolute; width: 23px; height: 23px; left: 0; top: 0; fill: #fff; stroke: #0a0a0a; stroke-width: 1.1; filter: drop-shadow(0 2px 5px rgba(0,0,0,.55)); opacity: 0; z-index: 5; pointer-events: none; }
+.sys-ripple { position: absolute; width: 48px; height: 48px; margin: -24px 0 0 -24px; border: 2.5px solid var(--fogo); border-radius: 50%; left: 0; top: 0; opacity: 0; z-index: 4; pointer-events: none; }
+.sys-flash { position: absolute; inset: 0; background: #4ade80; opacity: 0; z-index: 6; pointer-events: none; }
 .mock-lanc .etapa { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,255,255,.05); margin-bottom: 8px; font-size: 12px; position: relative; }
 .mock-lanc .etapa .icone { width: 28px; height: 28px; border-radius: 6px; background: rgba(255,90,31,.16); color: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 13px; flex-shrink: 0; }
 .mock-lanc .etapa small { display: block; color: rgba(255,255,255,.45); font-size: 10px; }
@@ -898,9 +906,21 @@ section, header.capa { position: relative; }
         <span class="numeral num" data-par="8">01</span>
         <div class="conteudo">
           <div class="mock mock-lanc" data-par="-6" aria-hidden="true">
-            <div class="mock-top"><span class="mock-logo">TELA REAL DO SISTEMA</span><span class="mock-live"><i></i>AO VIVO</span></div>
-            <img class="foto-sys" src="img/site-registro.png" alt="Tela real do AltaVendas: registrar atendimento — vendeu, sim ou não" loading="lazy">
-            <div class="cron num">0:08<small>tempo pra lançar — com a hora real</small></div>
+            <div class="mock-top"><span class="mock-logo">GRAVADO NO SISTEMA REAL</span><span class="mock-live"><i></i>AO VIVO</span></div>
+            <div class="sys-player" id="player-lanc">
+              <div class="sys-cam" id="cam-lanc">
+                <img class="sys-frame" src="img/sys-f1.webp" alt="Registrar atendimento no AltaVendas" fetchpriority="low">
+                <img class="sys-frame" src="img/sys-f2.webp" alt="">
+                <img class="sys-frame" src="img/sys-f3.webp" alt="">
+                <img class="sys-frame" src="img/sys-f4.webp" alt="">
+                <img class="sys-frame" src="img/sys-f5.webp" alt="">
+                <img class="sys-frame" src="img/sys-f6.webp" alt="">
+              </div>
+              <div class="sys-ripple" id="rip-lanc"></div>
+              <svg class="sys-cursor" id="cur-lanc" viewBox="0 0 24 24"><path d="M4 2 L4 18 L8.5 14 L11 19.5 L13.5 18.5 L11 13 L17 13 Z"/></svg>
+              <div class="sys-flash" id="flash-lanc"></div>
+            </div>
+            <div class="cron num">0:08<small>do atendimento ao registro salvo</small></div>
           </div>
           <div class="lado-b">
             <h3 class="spread-titulo" data-split>REGISTRE</h3>
@@ -1447,6 +1467,81 @@ if (!reduz) {
   }
 
   /* mock de lançamento agora é foto real — sem ripple */
+}
+
+/* ---------- PLAYER DE PRODUTO (passo 01) — telas REAIS + câmera + cursor ----------
+   Estilo "product tour" de fintech: cada quadro é um screenshot REAL do sistema;
+   a câmera dá zoom/pan no ponto de ação e um cursor vai até o botão e CLICA. */
+{
+  const player = $('#player-lanc');
+  if (player) {
+    const cam = $('#cam-lanc'), cur = $('#cur-lanc'), rip = $('#rip-lanc'), flash = $('#flash-lanc');
+    const frames = $$('.sys-frame', player);
+    const W = () => player.clientWidth, H = () => player.clientHeight;
+    const camSt = { s: 1.05, fx: .5, fy: .42 };
+    const curSt = { ax: 1.12, ay: -.12 };   // começa fora da tela
+
+    // câmera com clamp: o foco nunca passa da borda, então a tela sempre PREENCHE
+    // o quadro (zero faixa preta), mesmo focando um botão no canto inferior.
+    function camXY() {
+      const w = W(), h = H(), s = camSt.s, lim = .5 / s;
+      const fx = Math.min(Math.max(camSt.fx, lim), 1 - lim);
+      const fy = Math.min(Math.max(camSt.fy, lim), 1 - lim);
+      return { w, h, s, tx: w * (.5 - fx * s), ty: h * (.5 - fy * s) };
+    }
+    function apply() {
+      const { w, h, s, tx, ty } = camXY();
+      cam.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+      cur.style.transform = `translate(${tx + curSt.ax * w * s}px,${ty + curSt.ay * h * s}px)`;
+    }
+    apply();
+    addEventListener('resize', apply);
+
+    const P = {
+      sim:    { x: .258, y: .330 }, busca: { x: .258, y: .464 },
+      prod:   { x: .499, y: .354 }, conf:  { x: .655, y: .906 },
+      pix:    { x: .622, y: .634 }, salvar:{ x: .499, y: .951 },
+    };
+    function clique(p) {
+      const { w, h, s, tx, ty } = camXY();
+      gsap.set(rip, { x: tx + p.x * w * s, y: ty + p.y * h * s });
+      gsap.fromTo(rip, { scale: .25, opacity: .85 }, { scale: 1.5, opacity: 0, duration: .55, ease: 'power1.out' });
+      gsap.fromTo(cur, { scale: .78 }, { scale: 1, duration: .32, ease: 'back.out(3)' });
+    }
+
+    function build() {
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.0, defaults: { ease: 'power3.inOut' } });
+      const ir = (p, dur = .85, zoom = 1.16) => {
+        tl.to(camSt, { fx: p.x, fy: p.y, s: zoom, duration: dur, onUpdate: apply }, '>')
+          .to(curSt, { ax: p.x, ay: p.y, duration: dur, ease: 'power2.inOut', onUpdate: apply }, '<')
+          .add(() => clique(p), '>-0.04');
+      };
+      const troca = (i) => tl.to(frames[i], { opacity: 1, duration: .45 }, '>')
+        .to(camSt, { s: 1.05, duration: .55, onUpdate: apply }, '<');
+
+      tl.set(frames, { opacity: 0 }).set(frames[0], { opacity: 1 })
+        .set(camSt, { s: 1.05, fx: .5, fy: .42 }).set(curSt, { ax: 1.12, ay: -.12 }).add(apply);
+      tl.to(cur, { opacity: 1, duration: .3 }, .25);
+      ir(P.sim);   troca(1);
+      ir(P.busca); troca(2);
+      ir(P.prod);  troca(3);
+      ir(P.conf);  troca(4);
+      ir(P.pix);   troca(5);
+      ir(P.salvar);
+      tl.to(flash, { opacity: .45, duration: .12 }, '>').to(flash, { opacity: 0, duration: .5 });
+      tl.to(cur, { opacity: 0, duration: .4 }, '>')
+        .to(camSt, { s: 1.04, fx: .5, fy: .5, duration: .9, onUpdate: apply }, '<');
+    }
+
+    if (reduz) {
+      gsap.set(frames, { opacity: 0 }); gsap.set(frames[5], { opacity: 1 });
+    } else {
+      let started = false;
+      new IntersectionObserver((es) => es.forEach((e) => {
+        if (e.isIntersecting && !started) { started = true; build(); }
+      }), { threshold: .25 }).observe(player);
+    }
+  }
 }
 
 /* ---------- 04 · RECURSOS (índice) ---------- */
