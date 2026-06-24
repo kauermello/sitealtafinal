@@ -305,20 +305,25 @@ section, header.capa { position: relative; }
 .sys-flash { position: absolute; inset: 0; background: #4ade80; opacity: 0; z-index: 6; pointer-events: none; }
 /* Vídeo de produto (Remotion) — UI recriada e renderizada como MP4: roda liso */
 .sys-video { display: block; width: 100%; aspect-ratio: 1280 / 760; margin: 10px 0 4px; border-radius: 6px; border: 1px solid rgba(255,255,255,.1); background: #0c0c0e; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); object-fit: cover; }
-/* ---------- Carrossel de telas reais (passos do método) ---------- */
+/* ---------- Carrossel de telas reais (passos do método) — estética do site ---------- */
 .cx { position: relative; width: 100%; }
-.cx-vp { overflow: hidden; border-radius: 6px; background: #0c0c0e; border: 1px solid rgba(255,255,255,.08); }
-.cx-track { display: flex; transition: transform .55s cubic-bezier(.62,.01,.06,1); will-change: transform; }
-.cx-slide { flex: 0 0 100%; margin: 0; position: relative; }
-.cx-slide img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #0c0c0e; }
-.cx-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 14px 11px; font-family: var(--cond); font-weight: 700; font-size: 14px; line-height: 1.18; color: #fff; text-transform: uppercase; letter-spacing: .03em; background: linear-gradient(transparent, rgba(7,7,9,.92)); }
+.cx-vp { overflow: hidden; box-shadow: 0 30px 70px -34px rgba(0,0,0,.42); }
+.spread-2 .cx-vp { box-shadow: 0 30px 70px -32px rgba(0,0,0,.65); outline: 1px solid rgba(255,255,255,.09); outline-offset: -1px; }
+.cx-track { display: flex; transition: transform .5s cubic-bezier(.62,.01,.06,1); will-change: transform; }
+.cx-slide { flex: 0 0 100%; margin: 0; }
+.cx-slide img { display: block; width: 100%; aspect-ratio: var(--ar, 16/9); object-fit: cover; background: #0c0c0e; }
+/* navegação FORA da foto — mesmo padrão quadrado do .cases-nav */
+.cx-bar { display: flex; align-items: center; gap: 16px; margin-top: 14px; }
+.cx-cap { flex: 1; min-width: 0; font-family: var(--cond); font-weight: 700; font-size: 15px; line-height: 1.16; text-transform: uppercase; letter-spacing: .02em; color: var(--tinta); }
 .cx-cap b { color: var(--fogo); }
-.cx-nav { position: absolute; top: 44%; transform: translateY(-50%); width: 33px; height: 33px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3); background: rgba(11,11,13,.52); color: #fff; font-size: 19px; line-height: 1; cursor: pointer; display: grid; place-items: center; transition: background .2s, border-color .2s; z-index: 3; padding: 0; }
-.cx-nav:hover { background: var(--fogo); border-color: var(--fogo); }
-.cx-prev { left: 9px; } .cx-next { right: 9px; }
-.cx-dots { display: flex; gap: 6px; justify-content: center; margin-top: 11px; }
-.cx-dot { width: 7px; height: 7px; border-radius: 99px; background: rgba(140,140,140,.42); border: none; cursor: pointer; padding: 0; transition: background .25s, width .25s; }
-.cx-dot.on { background: var(--fogo); width: 19px; }
+.cx-count { font-family: var(--cond); font-weight: 800; font-size: 16px; letter-spacing: .1em; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--tinta); }
+.cx-count b { color: var(--fogo); }
+.cx-nav { width: 44px; height: 44px; border: 1px solid var(--tinta); background: var(--papel); color: var(--tinta); display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; transition: all .25s; cursor: pointer; flex-shrink: 0; padding: 0; }
+.cx-nav:hover { background: var(--tinta); color: var(--papel); }
+/* no passo escuro (RAIO-X) inverte as cores */
+.spread-2 .cx-cap, .spread-2 .cx-count { color: rgba(255,255,255,.86); }
+.spread-2 .cx-nav { border-color: rgba(255,255,255,.5); background: transparent; color: var(--papel); }
+.spread-2 .cx-nav:hover { background: var(--papel); color: var(--tinta); }
 .mock-lanc .etapa { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,255,255,.05); margin-bottom: 8px; font-size: 12px; position: relative; }
 .mock-lanc .etapa .icone { width: 28px; height: 28px; border-radius: 6px; background: rgba(255,90,31,.16); color: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 13px; flex-shrink: 0; }
 .mock-lanc .etapa small { display: block; color: rgba(255,255,255,.45); font-size: 10px; }
@@ -357,7 +362,7 @@ section, header.capa { position: relative; }
 .card-lampada .titulo-c { font-family: var(--cond); font-weight: 800; font-size: 19px; text-transform: uppercase; }
 .card-lampada p { font-size: 14.5px; line-height: 1.55; color: rgba(13,13,15,.66); }
 .card-lampada p b { color: var(--tinta); }
-.card-playbook { width: min(720px, 58vw); box-shadow: 0 50px 110px -34px rgba(0,0,0,.55); }
+.card-playbook { width: min(760px, 60vw); }
 .spread-fecho { font-size: 15px; font-weight: 600; }
 .spread-fecho i { color: var(--fogo); font-style: normal; }
 
@@ -922,19 +927,20 @@ section, header.capa { position: relative; }
         <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <span class="numeral num" data-par="8">01</span>
         <div class="conteudo">
-          <div class="mock mock-lanc" data-par="-6">
-            <div class="mock-top"><span class="mock-logo">TELA REAL DO SISTEMA</span><span class="mock-live"><i></i>AO VIVO</span></div>
-            <div class="cx" data-cx aria-label="Como registrar um atendimento, passo a passo">
+          <div class="mock-lanc" data-par="-6">
+            <div class="cx" data-cx style="--ar: 1568/726;" aria-label="Como registrar um atendimento, passo a passo">
               <div class="cx-vp"><div class="cx-track">
-                <figure class="cx-slide"><img src="img/c1a.webp" alt="Tela do AltaVendas marcando se vendeu ou não" loading="lazy"><figcaption class="cx-cap"><b>1.</b> Vendeu ou não? Um toque.</figcaption></figure>
-                <figure class="cx-slide"><img src="img/c1b.webp" alt="Catálogo de produtos do AltaVendas" loading="lazy"><figcaption class="cx-cap"><b>2.</b> Escolha o produto — ou bipe o código.</figcaption></figure>
-                <figure class="cx-slide"><img src="img/c1c.webp" alt="Forma de pagamento e salvar a venda" loading="lazy"><figcaption class="cx-cap"><b>3.</b> Pix, dinheiro ou cartão — e salva.</figcaption></figure>
+                <figure class="cx-slide" data-cap="<b>1.</b> Vendeu ou não? Um toque."><img src="img/c1a.webp" alt="Tela do AltaVendas marcando se vendeu ou não" loading="lazy"></figure>
+                <figure class="cx-slide" data-cap="<b>2.</b> Escolha o produto — ou bipe o código."><img src="img/c1b.webp" alt="Catálogo de produtos do AltaVendas" loading="lazy"></figure>
+                <figure class="cx-slide" data-cap="<b>3.</b> Pix, dinheiro ou cartão — e salva."><img src="img/c1c.webp" alt="Forma de pagamento e salvar a venda" loading="lazy"></figure>
               </div></div>
-              <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8249;</button>
-              <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8250;</button>
-              <div class="cx-dots"></div>
+              <div class="cx-bar">
+                <span class="cx-cap"></span>
+                <span class="cx-count"><b class="cx-idx">01</b> — <span class="cx-tot">03</span></span>
+                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8592;</button>
+                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8594;</button>
+              </div>
             </div>
-            <div class="cron num">0:08<small>do atendimento ao registro salvo</small></div>
           </div>
           <div class="lado-b">
             <h3 class="spread-titulo" data-split>REGISTRE</h3>
@@ -948,17 +954,17 @@ section, header.capa { position: relative; }
         <span class="fantasma-txt" id="fantasma-txt">E SE VOCÊ VISSE?</span>
         <div class="conteudo">
           <div class="painel-grande" id="painel-grande">
-            <div class="mock">
-              <div class="mock-top"><span class="mock-logo" style="font-size:16px">ALTA<b>VENDAS</b> · PAINEL — TELA REAL</span><span class="mock-live"><i></i>AO VIVO</span></div>
-              <div class="cx" data-cx aria-label="O painel do AltaVendas por dentro">
-                <div class="cx-vp"><div class="cx-track">
-                  <figure class="cx-slide"><img src="img/c2a.webp" alt="Dashboard do AltaVendas com metas e ranking" loading="lazy"><figcaption class="cx-cap">O dia inteiro na sua frente — meta, ritmo e <b>quem está vendendo</b>.</figcaption></figure>
-                  <figure class="cx-slide"><img src="img/c2b.webp" alt="Curva de metas hora a hora" loading="lazy"><figcaption class="cx-cap">A <b>curva de metas</b>: onde a venda subiu e onde ela morreu.</figcaption></figure>
-                  <figure class="cx-slide"><img src="img/c2c.webp" alt="Ranking de vendedores ao vivo" loading="lazy"><figcaption class="cx-cap">O <b>ranking ao vivo</b> — quem precisa de um empurrão.</figcaption></figure>
-                </div></div>
-                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8249;</button>
-                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8250;</button>
-                <div class="cx-dots"></div>
+            <div class="cx" data-cx aria-label="O painel do AltaVendas por dentro">
+              <div class="cx-vp"><div class="cx-track">
+                <figure class="cx-slide" data-cap="Tudo na sua frente — <b>meta do dia, ritmo e o que falta</b>."><img src="img/c2a.webp" alt="Dashboard do AltaVendas com metas e ranking" loading="lazy"></figure>
+                <figure class="cx-slide" data-cap="A curva de metas e o ranking — <b>quem puxou e onde a venda morreu</b>."><img src="img/c2b.webp" alt="Curva de metas e ranking de vendedores" loading="lazy"></figure>
+                <figure class="cx-slide" data-cap="O pulso ao vivo — o ritmo da loja <b>em tempo real</b>."><img src="img/c2c.webp" alt="Pulso ao vivo do AltaVendas" loading="lazy"></figure>
+              </div></div>
+              <div class="cx-bar">
+                <span class="cx-cap"></span>
+                <span class="cx-count"><b class="cx-idx">01</b> — <span class="cx-tot">03</span></span>
+                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8592;</button>
+                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8594;</button>
               </div>
             </div>
           </div>
@@ -972,17 +978,19 @@ section, header.capa { position: relative; }
         <span class="numeral num">03</span>
         <div class="conteudo">
           <h3 class="spread-titulo" data-split>AJA COM O <span class="lar">PLAYBOOK</span></h3>
-          <div class="mock card-playbook">
-            <div class="mock-top"><span class="mock-logo">COMO USAR · <b>A ORDEM DO DIA</b></span><span class="mock-live"><i></i>AO VIVO</span></div>
+          <div class="card-playbook">
             <div class="cx" data-cx aria-label="O sistema explica cada número e manda a ação do dia">
               <div class="cx-vp"><div class="cx-track">
-                <figure class="cx-slide"><img src="img/c3a.webp" alt="Painel Como usar: Meta do Dia" loading="lazy"><figcaption class="cx-cap">Toda lâmpada explica o número <b>e manda a ação</b>.</figcaption></figure>
-                <figure class="cx-slide"><img src="img/c3b.webp" alt="Painel Como usar: Falta Hoje" loading="lazy"><figcaption class="cx-cap">Falta bater a meta? Ele diz <b>onde correr atrás</b>.</figcaption></figure>
-                <figure class="cx-slide"><img src="img/c3c.webp" alt="Painel Como usar: Meta da Semana" loading="lazy"><figcaption class="cx-cap">A semana planejada — <b>o dia forte cobre o fraco</b>.</figcaption></figure>
+                <figure class="cx-slide" data-cap="Toda lâmpada explica o número <b>e manda a ação</b>."><img src="img/c3a.webp" alt="Painel Como usar: Meta do Dia" loading="lazy"></figure>
+                <figure class="cx-slide" data-cap="Falta bater a meta? Ele diz <b>onde correr atrás</b>."><img src="img/c3b.webp" alt="Painel Como usar: Falta Hoje" loading="lazy"></figure>
+                <figure class="cx-slide" data-cap="A semana planejada — <b>o dia forte cobre o fraco</b>."><img src="img/c3c.webp" alt="Painel Como usar: Meta da Semana" loading="lazy"></figure>
               </div></div>
-              <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8249;</button>
-              <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8250;</button>
-              <div class="cx-dots"></div>
+              <div class="cx-bar">
+                <span class="cx-cap"></span>
+                <span class="cx-count"><b class="cx-idx">01</b> — <span class="cx-tot">03</span></span>
+                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8592;</button>
+                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8594;</button>
+              </div>
             </div>
           </div>
           <p class="spread-fecho">Você não recebe um número. <i>Recebe a ordem do dia.</i></p>
@@ -1574,24 +1582,19 @@ if (!reduz) {
 document.querySelectorAll('[data-cx]').forEach((cx) => {
   const track = cx.querySelector('.cx-track');
   const slides = [...cx.querySelectorAll('.cx-slide')];
-  const dotsBox = cx.querySelector('.cx-dots');
+  const capEl = cx.querySelector('.cx-cap');
+  const idxEl = cx.querySelector('.cx-idx');
+  const totEl = cx.querySelector('.cx-tot');
   const n = slides.length;
   if (!track || n === 0) return;
   let i = 0, timer = null, visible = false;
-
-  slides.forEach((_, k) => {
-    const d = document.createElement('button');
-    d.type = 'button'; d.className = 'cx-dot' + (k === 0 ? ' on' : '');
-    d.setAttribute('aria-label', 'Ir para a tela ' + (k + 1));
-    d.addEventListener('click', () => { go(k); restart(); });
-    dotsBox.appendChild(d);
-  });
-  const dots = [...dotsBox.children];
+  if (totEl) totEl.textContent = String(n).padStart(2, '0');
 
   function go(k) {
     i = (k + n) % n;
     track.style.transform = 'translateX(' + (-i * 100) + '%)';
-    dots.forEach((d, j) => d.classList.toggle('on', j === i));
+    if (capEl) capEl.innerHTML = slides[i].dataset.cap || '';
+    if (idxEl) idxEl.textContent = String(i + 1).padStart(2, '0');
   }
   const next = () => go(i + 1);
   const prev = () => go(i - 1);
@@ -1617,6 +1620,8 @@ document.querySelectorAll('[data-cx]').forEach((cx) => {
   new IntersectionObserver((es) => es.forEach((e) => {
     visible = e.isIntersecting; visible ? restart() : stop();
   }), { threshold: .25 }).observe(cx);
+
+  go(0); /* inicializa legenda + contagem */
 });
 
 /* ---------- 04 · RECURSOS (índice) ---------- */
