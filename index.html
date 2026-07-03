@@ -168,7 +168,10 @@ section, header.capa { position: relative; }
 .l4 .fantasma { color: transparent; -webkit-text-stroke: 2px var(--tinta); }
 .l4 .cheio {
   position: absolute; inset: 0; color: var(--fogo);
-  clip-path: inset(0 100% 0 0); will-change: clip-path;
+  /* inset com folga vertical (-0.2em): line-height .85 deixa a caixa mais
+     baixa que o glifo — sem a folga o preenchimento corta descendentes
+     (rabinho do $ e do Q). Mesmo formato nos valores animados via GSAP. */
+  clip-path: inset(-0.2em 100% -0.2em 0); will-change: clip-path;
 }
 /* mockup entalado na manchete */
 .capa-mock {
@@ -253,7 +256,7 @@ section, header.capa { position: relative; }
   white-space: nowrap; display: block;
 }
 .nota-total .fant { color: transparent; -webkit-text-stroke: 2px var(--papel); }
-.nota-total .chei { position: absolute; inset: 0; color: var(--fogo); clip-path: inset(0 100% 0 0); }
+.nota-total .chei { position: absolute; inset: 0; color: var(--fogo); clip-path: inset(-0.2em 100% -0.2em 0); }
 .nota-serrilha {
   position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: var(--papel); opacity: .12;
   clip-path: polygon(0 0,2.5% 100%,5% 0,7.5% 100%,10% 0,12.5% 100%,15% 0,17.5% 100%,20% 0,22.5% 100%,25% 0,27.5% 100%,30% 0,32.5% 100%,35% 0,37.5% 100%,40% 0,42.5% 100%,45% 0,47.5% 100%,50% 0,52.5% 100%,55% 0,57.5% 100%,60% 0,62.5% 100%,65% 0,67.5% 100%,70% 0,72.5% 100%,75% 0,77.5% 100%,80% 0,82.5% 100%,85% 0,87.5% 100%,90% 0,92.5% 100%,95% 0,97.5% 100%,100% 0);
@@ -286,14 +289,61 @@ section, header.capa { position: relative; }
   position: absolute; font-family: var(--cond); font-weight: 900; font-size: 32vw; line-height: 1;
   color: transparent; -webkit-text-stroke: 1.5px var(--hairline); user-select: none; pointer-events: none;
 }
-.spread-titulo { font-size: 9vw; font-weight: 900; position: relative; z-index: 2; }
-.spread-desc { max-width: 34ch; font-size: 16.5px; line-height: 1.6; color: rgba(13,13,15,.62); position: relative; z-index: 2; }
-.spread-desc b { color: var(--tinta); }
+
+/* ---------- composição tipográfica dos passos (sem foto) ---------- */
+.spreads, .metodo-cta { --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, 'Courier New', monospace; }
+.spread .conteudo { position: relative; z-index: 2; }
+.sp-kicker {
+  font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .2em;
+  text-transform: uppercase; color: rgba(13,13,15,.55);
+  display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
+}
+.sp-kicker::before { content: ''; width: 30px; height: 1px; background: var(--fogo); flex-shrink: 0; }
+.sp-manchete { font-weight: 900; font-size: clamp(40px, 4.8vw, 76px); line-height: .94; letter-spacing: -.005em; }
+.sp-manchete mark {
+  color: inherit; white-space: nowrap;
+  background: linear-gradient(rgba(255,90,31,.32), rgba(255,90,31,.32)) no-repeat left 62%;
+  background-size: 0% .5em;
+}
+.sp-manchete.marcada mark { background-size: 100% .5em; transition: background-size .9s cubic-bezier(.16,1,.3,1) .35s; }
+.sp-lede { max-width: 44ch; font-size: 16px; line-height: 1.62; color: rgba(13,13,15,.66); }
+.fichas { display: flex; flex-wrap: wrap; gap: 10px; }
+.ficha { display: flex; align-items: center; gap: 10px; padding: 12px 16px 12px 13px; border: 1px solid var(--hairline); }
+.ficha svg { width: 21px; height: 21px; flex-shrink: 0; stroke: var(--fogo); stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.ficha span { font-family: var(--cond); font-weight: 700; font-size: 15.5px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+.sp-link {
+  font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--tinta); text-decoration: none; border-bottom: 1px solid var(--hairline);
+  padding-bottom: 4px; transition: color .25s, border-color .25s;
+}
+.sp-link:hover { color: var(--fogo); border-bottom-color: var(--fogo); }
 
 .spread-1 .numeral { right: 4vw; top: -4vh; }
 .spread-1 .conteudo { display: grid; grid-template-columns: 1fr 1fr; width: 100%; padding: 0 5vw; gap: 4vw; align-items: center; }
-.spread-1 .lado-b { justify-self: end; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 3vh; }
-.mock-lanc { width: min(560px, 46vw); position: relative; }
+.spread-1 .lado-b { justify-self: end; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2.8vh; }
+.spread-1 .fichas { justify-content: flex-end; }
+/* elemento vivo 01 — extrato de atendimentos impresso linha a linha */
+.extrato-wrap { width: min(520px, 42vw); position: relative; z-index: 2; }
+.extrato { background: var(--papel); border: 1px solid var(--tinta); box-shadow: 0 30px 70px -34px rgba(0,0,0,.4); font-family: var(--mono); }
+.extrato-cab {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px;
+  border-bottom: 1px solid var(--tinta); font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+}
+.extrato-cab .vivo { color: var(--fogo); display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.extrato-cab .vivo::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--fogo); animation: pisca 1.2s infinite; }
+.ext-l { border-bottom: 1px solid var(--hairline); padding: 13px 16px; }
+.ext-in { display: flex; align-items: baseline; gap: 10px; font-size: 13.5px; white-space: nowrap; clip-path: inset(0 101% 0 0); }
+.ext-l.on .ext-in { clip-path: inset(0 -1% 0 0); transition: clip-path .95s steps(24, end); }
+.ext-in .sep { color: rgba(13,13,15,.35); }
+.ext-in .h { color: rgba(13,13,15,.5); }
+.ext-in .t { font-weight: 700; letter-spacing: .04em; }
+.ext-in .t.perda { color: var(--fogo); }
+.ext-in .d { margin-left: auto; overflow: hidden; text-overflow: ellipsis; }
+.ext-in .d.motivo { color: rgba(13,13,15,.55); font-style: italic; }
+.extrato-pe {
+  display: flex; justify-content: space-between; gap: 10px; padding: 10px 16px; border-top: 1px solid var(--tinta);
+  font-size: 9.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: rgba(13,13,15,.45);
+}
 .foto-sys { display: block; width: 100%; height: auto; border-radius: 6px; border: 1px solid rgba(255,255,255,.08); margin: 10px 0 4px; }
 /* Player de produto: tela REAL do sistema + câmera (zoom/pan) + cursor que clica */
 .sys-player { position: relative; width: 100%; aspect-ratio: 1180 / 546; margin: 10px 0 4px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); background: #0d0d0f; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
@@ -305,34 +355,6 @@ section, header.capa { position: relative; }
 .sys-flash { position: absolute; inset: 0; background: #4ade80; opacity: 0; z-index: 6; pointer-events: none; }
 /* Vídeo de produto (Remotion) — UI recriada e renderizada como MP4: roda liso */
 .sys-video { display: block; width: 100%; aspect-ratio: 1280 / 760; margin: 10px 0 4px; border-radius: 6px; border: 1px solid rgba(255,255,255,.1); background: #0c0c0e; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); object-fit: cover; }
-/* ---------- Carrossel de telas reais (passos do método) — estética do site ---------- */
-.cx { position: relative; width: 100%; }
-.cx-vp { overflow: hidden; box-shadow: 0 30px 70px -34px rgba(0,0,0,.42); }
-.spread-2 .cx-vp { box-shadow: 0 30px 70px -32px rgba(0,0,0,.65); outline: 1px solid rgba(255,255,255,.09); outline-offset: -1px; }
-.cx-track { display: flex; transition: transform .5s cubic-bezier(.62,.01,.06,1); will-change: transform; }
-.cx-slide { flex: 0 0 100%; margin: 0; }
-.cx-slide img { display: block; width: 100%; aspect-ratio: var(--ar, 16/9); object-fit: cover; background: #0c0c0e; }
-/* navegação FORA da foto — mesmo padrão quadrado do .cases-nav */
-.cx-bar { display: flex; align-items: center; gap: 16px; margin-top: 14px; }
-.cx-cap { flex: 1; min-width: 0; font-family: var(--cond); font-weight: 700; font-size: 15px; line-height: 1.16; text-transform: uppercase; letter-spacing: .02em; color: var(--tinta); }
-.cx-cap b { color: var(--fogo); }
-.cx-count { font-family: var(--cond); font-weight: 800; font-size: 16px; letter-spacing: .1em; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--tinta); }
-.cx-count b { color: var(--fogo); }
-.cx-nav { width: 44px; height: 44px; border: 1px solid var(--tinta); background: var(--papel); color: var(--tinta); display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; transition: all .25s; cursor: pointer; flex-shrink: 0; padding: 0; }
-.cx-nav:hover { background: var(--tinta); color: var(--papel); }
-/* no passo escuro (RAIO-X) inverte as cores */
-.spread-2 .cx-cap, .spread-2 .cx-count { color: rgba(255,255,255,.86); }
-.spread-2 .cx-nav { border-color: rgba(255,255,255,.5); background: transparent; color: var(--papel); }
-.spread-2 .cx-nav:hover { background: var(--papel); color: var(--tinta); }
-.mock-lanc .etapa { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: rgba(255,255,255,.05); margin-bottom: 8px; font-size: 12px; position: relative; }
-.mock-lanc .etapa .icone { width: 28px; height: 28px; border-radius: 6px; background: rgba(255,90,31,.16); color: var(--fogo); display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-weight: 800; font-size: 13px; flex-shrink: 0; }
-.mock-lanc .etapa small { display: block; color: rgba(255,255,255,.45); font-size: 10px; }
-.mock-lanc .etapa .check { margin-left: auto; color: #4ade80; font-weight: 700; opacity: 0; }
-.mock-lanc .etapa.feita .check { opacity: 1; }
-.mock-lanc .ripple { position: absolute; width: 36px; height: 36px; border: 2px solid var(--fogo); border-radius: 50%; pointer-events: none; opacity: 0; }
-.mock-lanc .cron { text-align: center; font-family: var(--cond); font-weight: 800; font-size: 20px; color: #4ade80; padding-top: 6px; }
-.mock-lanc .cron small { display: block; font-family: var(--txt); font-weight: 600; font-size: 9px; letter-spacing: .14em; color: rgba(255,255,255,.4); text-transform: uppercase; }
-
 .spread-2 { background: var(--tinta); color: var(--papel); }
 .spread-2 .fantasma-txt {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
@@ -340,31 +362,44 @@ section, header.capa { position: relative; }
   color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.13); text-transform: uppercase;
   pointer-events: none;
 }
-.spread-2 .conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 3vh; }
-.painel-grande { width: min(840px, 64vw); transform-style: preserve-3d; }
-.painel-grande .mock { padding: 22px; box-shadow: 0 50px 110px -30px rgba(0,0,0,.7); }
-.painel-grande .mock-kpi b { font-size: 24px; }
-.painel-grande .mock-barras { height: 110px; }
-.spread-2 .legenda { font-size: 14px; color: rgba(255,255,255,.55); text-align: center; }
-.spread-2 .legenda b { color: #fff; }
+.spread-2 .conteudo { display: grid; grid-template-columns: 1.1fr 1fr; width: 100%; padding: 0 5vw; gap: 4vw; align-items: center; }
+.spread-2 .lado-txt { display: flex; flex-direction: column; align-items: flex-start; gap: 2.8vh; }
+.spread-2 .sp-kicker { color: rgba(255,255,255,.55); }
+.spread-2 .sp-lede { color: rgba(255,255,255,.62); }
+.spread-2 .sp-manchete mark { background-image: linear-gradient(rgba(255,90,31,.5), rgba(255,90,31,.5)); }
+.spread-2 .ficha { border-color: rgba(255,255,255,.24); }
+.spread-2 .ficha span { color: rgba(255,255,255,.88); }
+.spread-2 .sp-link { color: rgba(255,255,255,.85); border-bottom-color: rgba(255,255,255,.3); }
+.spread-2 .sp-link:hover { color: var(--fogo); border-bottom-color: var(--fogo); }
+/* elemento vivo 02 — a perda da semana em número tabular gigante */
+.perda-vivo { display: flex; flex-direction: column; align-items: flex-start; gap: 1.8vh; justify-self: end; position: relative; z-index: 2; }
+.perda-num { font-family: var(--cond); font-weight: 800; font-size: clamp(72px, 9.5vw, 150px); line-height: .85; color: var(--fogo); letter-spacing: -.01em; white-space: nowrap; }
+.perda-leg { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.55); }
+.spark { width: min(320px, 100%); height: auto; display: block; margin-top: 1.2vh; overflow: visible; }
+.spark .base { stroke: rgba(255,255,255,.3); stroke-width: 1; }
+.spark .barra { fill: none; stroke: rgba(255,255,255,.38); stroke-width: 1; transform: scaleY(0); transform-origin: bottom; transform-box: fill-box; }
+.spark .barra.crit { fill: var(--fogo); stroke: var(--fogo); }
+.perda-vivo.in .barra { transform: scaleY(1); transition: transform .8s cubic-bezier(.16,1,.3,1) calc(.15s + var(--i) * .07s); }
+.spark-dias { display: flex; justify-content: space-between; width: min(320px, 100%); font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; color: rgba(255,255,255,.42); }
+.spark-dias .crit { color: var(--fogo); font-weight: 700; }
 
 .spread-3 .numeral { left: 50%; top: 50%; transform: translate(-50%,-54%); }
-.spread-3 .conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 3vh; }
-.spread-3 .spread-titulo .lar { color: var(--fogo); }
-.card-lampada {
-  background: var(--papel); border: 1px solid var(--tinta); padding: 26px 30px; max-width: 460px;
-  text-align: left; position: relative;
+.spread-3 .conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2.6vh; padding: 0 5vw; }
+.spread-3 .fichas { justify-content: center; }
+/* elemento vivo 03 — pull-quote de jornal */
+.pullquote { position: relative; z-index: 2; max-width: 660px; margin: 1vh 0; padding: 4.4vh 2.5vw 3.4vh; }
+.pullquote::before, .pullquote::after { content: ''; position: absolute; left: 0; right: 0; height: 1px; background: var(--tinta); transform: scaleX(0); transform-origin: center; }
+.pullquote::before { top: 0; }
+.pullquote::after { bottom: 0; }
+.pullquote .aspas {
+  position: absolute; top: 0; left: 50%; transform: translate(-50%,-38%); z-index: 1;
+  background: var(--papel); padding: 0 18px; font-family: var(--cond); font-weight: 900;
+  font-size: 116px; line-height: .6; color: var(--fogo); opacity: 0;
 }
-.card-lampada .topo { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
-.card-lampada .bulbo { width: 38px; height: 38px; flex-shrink: 0; }
-.card-lampada .bulbo path { stroke: var(--tinta); stroke-width: 1.6; fill: none; transition: all .3s; }
-.card-lampada.acesa .bulbo path { stroke: var(--fogo); fill: rgba(255,90,31,.14); filter: drop-shadow(0 0 14px rgba(255,90,31,.65)); }
-.card-lampada .titulo-c { font-family: var(--cond); font-weight: 800; font-size: 19px; text-transform: uppercase; }
-.card-lampada p { font-size: 14.5px; line-height: 1.55; color: rgba(13,13,15,.66); }
-.card-lampada p b { color: var(--tinta); }
-.card-playbook { width: min(760px, 60vw); }
-.spread-fecho { font-size: 15px; font-weight: 600; }
-.spread-fecho i { color: var(--fogo); font-style: normal; }
+.pullquote p { font-family: var(--cond); font-weight: 800; font-size: clamp(28px, 2.9vw, 46px); line-height: 1.02; text-transform: uppercase; opacity: 0; transform: translateY(16px); }
+.pullquote.in::before, .pullquote.in::after { transform: scaleX(1); transition: transform 1s cubic-bezier(.16,1,.3,1); }
+.pullquote.in .aspas { opacity: 1; transition: opacity .5s ease .15s; }
+.pullquote.in p { opacity: 1; transform: translateY(0); transition: opacity .7s ease .3s, transform .7s cubic-bezier(.16,1,.3,1) .3s; }
 
 .regua-prog { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(13,13,15,.1); z-index: 5; }
 .regua-prog i { display: block; height: 100%; background: var(--fogo); transform-origin: left; transform: scaleX(0); }
@@ -379,11 +414,47 @@ section, header.capa { position: relative; }
   .spreads-track { display: block; width: 100%; height: auto; transform: none !important; }
   .spread { width: 100%; min-height: 92svh; height: auto; padding: 10vh 0; }
   .spread .numeral { font-size: 56vw; }
-  .spread-1 .conteudo { grid-template-columns: 1fr; }
+  .sp-manchete { font-size: clamp(36px, 11vw, 56px); }
+  .spread-1 .conteudo, .spread-2 .conteudo { grid-template-columns: 1fr; gap: 6vh; padding: 0 6vw; }
   .spread-1 .lado-b { justify-self: start; text-align: left; align-items: flex-start; }
-  .spread-titulo { font-size: 16vw; }
-  .mock-lanc, .painel-grande { width: 100%; max-width: 420px; }
+  .spread-1 .fichas { justify-content: flex-start; }
+  .extrato-wrap { width: 100%; max-width: 440px; }
+  .ext-in { font-size: 12px; gap: 8px; }
+  .perda-vivo { justify-self: start; }
+  .perda-num { font-size: clamp(56px, 19vw, 96px); }
+  .ficha { padding: 10px 12px; }
+  .ficha span { font-size: 13.5px; white-space: normal; text-align: left; }
+  .spread-3 .conteudo { padding: 0 6vw; }
+  .pullquote { max-width: 100%; }
+  .pullquote p { font-size: clamp(24px, 7.6vw, 34px); }
+  .pullquote .aspas { font-size: 80px; }
   .regua-prog, .regua-marcas { display: none; }
+  .metodo-cta { padding: 12vh 6vw; }
+  .cta-metodo { width: 100%; max-width: 420px; text-align: center; padding: 20px 12px; }
+}
+
+/* CTA do método — depois do fim do pin */
+.metodo-cta { background: var(--papel); padding: 15vh 2.5vw 13vh; display: flex; flex-direction: column; align-items: center; gap: 2.6vh; text-align: center; }
+.cta-metodo {
+  position: relative; overflow: hidden; display: inline-block;
+  background: var(--fogo); color: var(--tinta); text-decoration: none;
+  font-family: var(--cond); font-weight: 800; font-size: clamp(19px, 1.6vw, 24px);
+  letter-spacing: .06em; text-transform: uppercase; padding: 22px 56px;
+}
+.cta-metodo::after { content: ''; position: absolute; inset: 0; background: var(--tinta); transform: scaleY(0); transform-origin: bottom; transition: transform .45s cubic-bezier(.16,1,.3,1); }
+.cta-metodo:hover::after { transform: scaleY(1); }
+.cta-metodo span { position: relative; z-index: 1; transition: color .3s; }
+.cta-metodo:hover span { color: var(--papel); }
+.cta-metodo-micro { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(13,13,15,.5); }
+
+/* método: reduced motion — tudo no estado final, sem loops */
+@media (prefers-reduced-motion: reduce) {
+  .sp-manchete mark { background-size: 100% .5em !important; transition: none !important; }
+  .spark .barra, .pullquote::before, .pullquote::after { transform: none !important; transition: none !important; }
+  .ext-in { clip-path: none !important; }
+  .pullquote .aspas { opacity: 1 !important; }
+  .pullquote p { opacity: 1 !important; transform: none !important; }
+  .extrato-cab .vivo::before { animation: none; }
 }
 
 /* ==========================================================================
@@ -589,6 +660,25 @@ section, header.capa { position: relative; }
 .planos-cab { padding: 0 2.5vw; margin-bottom: 9vh; }
 .planos-cab h2 { font-size: 7vw; font-weight: 900; }
 .planos-cab h2 .lar { color: var(--fogo); }
+/* chavezinha mensal/anual — caixa dura de jornal + tarja laranja */
+.ciclo-row { display: flex; align-items: center; gap: 16px; margin: 0 2.5vw 5vh; flex-wrap: wrap; }
+.ciclo-toggle { display: inline-flex; border: 1px solid var(--tinta); }
+.ciclo-toggle button {
+  font-family: var(--cond); font-weight: 800; font-size: 17px; letter-spacing: .04em;
+  text-transform: uppercase; padding: 12px 28px; background: transparent; border: 0;
+  color: rgba(13,13,15,.55); cursor: pointer; transition: background .2s, color .2s;
+}
+.ciclo-toggle button.ativo { background: var(--tinta); color: var(--papel); }
+.ciclo-tarja {
+  font-family: var(--cond); font-weight: 800; font-size: 14.5px; letter-spacing: .06em;
+  text-transform: uppercase; background: var(--fogo); color: var(--tinta);
+  padding: 6px 14px; transform: rotate(-2deg); opacity: .45; transition: opacity .25s;
+}
+.preco-nota { font-size: 12.5px; font-weight: 600; color: rgba(13,13,15,.5); margin: -1.6vh 0 .8vh; min-height: 17px; }
+.preco-nota b { color: var(--fogo); }
+/* payback: a régua que faz o preço parecer pequeno (custo/dia + vendas recuperadas) */
+.preco-paga { font-size: 12px; font-weight: 700; color: rgba(13,13,15,.75); margin: 0 0 2.2vh; }
+.preco-paga b { color: var(--fogo); }
 /* ---------- empilhamento Hormozi ---------- */
 .stack { margin: 0 2.5vw 10vh; border: 1px solid var(--tinta); background: var(--papel); position: relative; }
 .stack-cab {
@@ -748,7 +838,7 @@ section, header.capa { position: relative; }
   text-transform: uppercase; white-space: nowrap; display: block;
 }
 .fogo-linha .fl-out { color: transparent; -webkit-text-stroke: 2.5px var(--tinta); }
-.fogo-linha .fl-fill { position: absolute; inset: 0; color: var(--tinta); clip-path: inset(0 100% 0 0); }
+.fogo-linha .fl-fill { position: absolute; inset: 0; color: var(--tinta); clip-path: inset(-0.2em 100% -0.2em 0); }
 .fogo-linha:nth-child(2) { margin-left: 8vw; }
 .fogo-linha:nth-child(3) { margin-left: 16vw; }
 .fogo-contador { padding: 6vh 2.5vw 8vh; display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
@@ -922,29 +1012,34 @@ section, header.capa { position: relative; }
   <div class="spreads-vp">
     <div class="spreads-track" id="spreads-track">
 
-      <!-- SPREAD 01 — REGISTRE -->
+      <!-- SPREAD 01 — REGISTRE NA HORA -->
       <article class="spread spread-1">
         <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <span class="numeral num" data-par="8">01</span>
         <div class="conteudo">
-          <div class="mock-lanc" data-par="-6">
-            <div class="cx" data-cx style="--ar: 1568/726;" aria-label="Como registrar um atendimento, passo a passo">
-              <div class="cx-vp"><div class="cx-track">
-                <figure class="cx-slide" data-cap="<b>1.</b> Vendeu ou não? Um toque."><img src="img/c1a.webp" alt="Tela do AltaVendas marcando se vendeu ou não" loading="lazy"></figure>
-                <figure class="cx-slide" data-cap="<b>2.</b> Escolha o produto — ou bipe o código."><img src="img/c1b.webp" alt="Catálogo de produtos do AltaVendas" loading="lazy"></figure>
-                <figure class="cx-slide" data-cap="<b>3.</b> Pix, dinheiro ou cartão — e salva."><img src="img/c1c.webp" alt="Forma de pagamento e salvar a venda" loading="lazy"></figure>
-              </div></div>
-              <div class="cx-bar">
-                <span class="cx-cap"></span>
-                <span class="cx-count"><b class="cx-idx">01</b> — <span class="cx-tot">03</span></span>
-                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8592;</button>
-                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8594;</button>
+          <div class="extrato-wrap" data-par="-6">
+            <div class="extrato" id="extrato" aria-label="Extrato de atendimentos registrados com a hora real">
+              <div class="extrato-cab"><span>ALTAVENDAS · REGISTRO DO DIA</span><span class="vivo">AO VIVO</span></div>
+              <div class="extrato-corpo">
+                <div class="ext-l"><span class="ext-in"><span class="h num">14:32</span><span class="sep">·</span><span class="t venda">VENDA</span><span class="d num">R$ 189,90</span></span></div>
+                <div class="ext-l"><span class="ext-in"><span class="h num">14:41</span><span class="sep">·</span><span class="t perda">NÃO LEVOU</span><span class="d motivo">“só passeando”</span></span></div>
+                <div class="ext-l"><span class="ext-in"><span class="h num">14:58</span><span class="sep">·</span><span class="t venda">VENDA</span><span class="d num">R$ 89,00</span></span></div>
+                <div class="ext-l"><span class="ext-in"><span class="h num">15:07</span><span class="sep">·</span><span class="t perda">NÃO LEVOU</span><span class="d motivo">“não tinha o tamanho”</span></span></div>
+                <div class="ext-l"><span class="ext-in"><span class="h num">15:19</span><span class="sep">·</span><span class="t venda">VENDA</span><span class="d num">R$ 246,50</span></span></div>
               </div>
+              <div class="extrato-pe"><span>HORA REAL · SEM PLANILHA</span><span class="num">TER, 14–15H</span></div>
             </div>
           </div>
           <div class="lado-b">
-            <h3 class="spread-titulo" data-split>REGISTRE</h3>
-            <p class="spread-desc">Você — ou seu vendedor — lança cada atendimento em <b>menos de 10 segundos</b> — com a hora real. Quem comprou, quem não comprou, qual desculpa levou a venda embora. <b>Se sabe usar WhatsApp, sabe usar o AltaVendas.</b></p>
+            <p class="sp-kicker">PASSO 01 — DURANTE O ATENDIMENTO</p>
+            <h3 class="sp-manchete">Registre <mark>na hora</mark>,<br>não no fim do dia</h3>
+            <p class="sp-lede">Vendeu ou não vendeu: dois toques e o atendimento entra com o horário exato. Inclusive o cliente que saiu sem levar — o dado que nenhum PDV registra.</p>
+            <div class="fichas">
+              <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="4.5" width="15" height="15"/><path d="M8.5 12.4l2.5 2.6 4.5-5.4"/></svg><span>Venda em 2 toques</span></div>
+              <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 4h7v7l-9 9-7-7z"/><circle cx="16.5" cy="7.5" r="1.4"/></svg><span>Motivo do “não levou”</span></div>
+              <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg><span>Hora exata, sempre</span></div>
+            </div>
+            <a class="sp-link" href="https://app.upvendas.app.br/demo">Ver isso ao vivo na demo →</a>
           </div>
         </div>
       </article>
@@ -953,47 +1048,53 @@ section, header.capa { position: relative; }
       <article class="spread spread-2">
         <span class="fantasma-txt" id="fantasma-txt">E SE VOCÊ VISSE?</span>
         <div class="conteudo">
-          <div class="painel-grande" id="painel-grande">
-            <div class="cx" data-cx aria-label="O painel do AltaVendas por dentro">
-              <div class="cx-vp"><div class="cx-track">
-                <figure class="cx-slide" data-cap="Tudo na sua frente — <b>meta do dia, ritmo e o que falta</b>."><img src="img/c2a.webp" alt="Dashboard do AltaVendas com metas e ranking" loading="lazy"></figure>
-                <figure class="cx-slide" data-cap="A curva de metas e o ranking — <b>quem puxou e onde a venda morreu</b>."><img src="img/c2b.webp" alt="Curva de metas e ranking de vendedores" loading="lazy"></figure>
-                <figure class="cx-slide" data-cap="O pulso ao vivo — o ritmo da loja <b>em tempo real</b>."><img src="img/c2c.webp" alt="Pulso ao vivo do AltaVendas" loading="lazy"></figure>
-              </div></div>
-              <div class="cx-bar">
-                <span class="cx-cap"></span>
-                <span class="cx-count"><b class="cx-idx">01</b> — <span class="cx-tot">03</span></span>
-                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8592;</button>
-                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8594;</button>
-              </div>
+          <div class="lado-txt">
+            <p class="sp-kicker">PASSO 02 — NO FIM DA SEMANA</p>
+            <h3 class="sp-manchete">Veja o dinheiro<br>que <mark>escapou</mark></h3>
+            <p class="sp-lede">O painel cruza horário, vendedor e motivo da venda perdida. Aparece o que a loja nunca enxergou: quanto saiu pela porta, em que dia, em qual turno.</p>
+            <div class="fichas">
+              <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 12V4M12 12l5.6 5.6"/></svg><span>Perda por motivo</span></div>
+              <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19v-6M12 19V6M19 19v-9"/><path d="M3.5 21.5h17"/></svg><span>Ranking por vendedor</span></div>
+              <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l-3 2.4"/></svg><span>Horário crítico</span></div>
             </div>
+            <a class="sp-link" href="https://app.upvendas.app.br/demo">Ver isso ao vivo na demo →</a>
           </div>
-          <p class="legenda"><b>RAIO-X:</b> você vê onde a venda morreu — a hora, o vendedor, a desculpa. <b>Pela primeira vez, a sua loja inteira na sua frente — até o que não vendeu.</b></p>
+          <div class="perda-vivo" id="perda-vivo" aria-label="R$ 4.310 deixados na loja esta semana">
+            <span class="perda-num num" id="perda-num">R$ 0</span>
+            <span class="perda-leg">deixados na loja esta semana</span>
+            <svg class="spark" viewBox="0 0 320 72" aria-hidden="true">
+              <rect class="barra" style="--i:0" x="6" y="42" width="30" height="28"/>
+              <rect class="barra crit" style="--i:1" x="52" y="10" width="30" height="60"/>
+              <rect class="barra" style="--i:2" x="98" y="48" width="30" height="22"/>
+              <rect class="barra" style="--i:3" x="144" y="38" width="30" height="32"/>
+              <rect class="barra" style="--i:4" x="190" y="32" width="30" height="38"/>
+              <rect class="barra" style="--i:5" x="236" y="22" width="30" height="48"/>
+              <rect class="barra" style="--i:6" x="282" y="54" width="30" height="16"/>
+              <line class="base" x1="0" y1="71" x2="320" y2="71"/>
+            </svg>
+            <div class="spark-dias" aria-hidden="true"><span>SEG</span><span class="crit">TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span><span>DOM</span></div>
+          </div>
         </div>
       </article>
 
-      <!-- SPREAD 03 — PLAYBOOK -->
+      <!-- SPREAD 03 — A ORDEM DO DIA -->
       <article class="spread spread-3">
         <div class="grade" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <span class="numeral num">03</span>
         <div class="conteudo">
-          <h3 class="spread-titulo" data-split>AJA COM O <span class="lar">PLAYBOOK</span></h3>
-          <div class="card-playbook">
-            <div class="cx" data-cx aria-label="O sistema explica cada número e manda a ação do dia">
-              <div class="cx-vp"><div class="cx-track">
-                <figure class="cx-slide" data-cap="Toda lâmpada explica o número <b>e manda a ação</b>."><img src="img/c3a.webp" alt="Painel Como usar: Meta do Dia" loading="lazy"></figure>
-                <figure class="cx-slide" data-cap="Falta bater a meta? Ele diz <b>onde correr atrás</b>."><img src="img/c3b.webp" alt="Painel Como usar: Falta Hoje" loading="lazy"></figure>
-                <figure class="cx-slide" data-cap="A semana planejada — <b>o dia forte cobre o fraco</b>."><img src="img/c3c.webp" alt="Painel Como usar: Meta da Semana" loading="lazy"></figure>
-              </div></div>
-              <div class="cx-bar">
-                <span class="cx-cap"></span>
-                <span class="cx-count"><b class="cx-idx">01</b> — <span class="cx-tot">03</span></span>
-                <button class="cx-nav cx-prev" type="button" aria-label="Anterior">&#8592;</button>
-                <button class="cx-nav cx-next" type="button" aria-label="Próximo">&#8594;</button>
-              </div>
-            </div>
+          <p class="sp-kicker">PASSO 03 — NA SEGUNDA DE MANHÃ</p>
+          <h3 class="sp-manchete">Receba a <mark>ordem</mark> do dia</h3>
+          <p class="sp-lede">O AltaVendas transforma o raio-x em instrução simples: o que mudar na escala, no estoque e na abordagem. Você aplica, mede na semana seguinte e repete.</p>
+          <figure class="pullquote" id="pullquote">
+            <span class="aspas" aria-hidden="true">“</span>
+            <blockquote><p>Terça, 18h: fluxo cai 40%.<br>Escale a Ana.</p></blockquote>
+          </figure>
+          <div class="fichas">
+            <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5"/><path d="M4 10h16M8.5 3.5v3.5M15.5 3.5v3.5"/></svg><span>Escala no horário certo</span></div>
+            <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg><span>Estoque onde vende</span></div>
+            <div class="ficha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10h-9.5L6 19v-3.5H4z"/><path d="M8 9h8M8 12h5"/></svg><span>Abordagem por motivo</span></div>
           </div>
-          <p class="spread-fecho">Você não recebe um número. <i>Recebe a ordem do dia.</i></p>
+          <a class="sp-link" href="https://app.upvendas.app.br/demo">Ver isso ao vivo na demo →</a>
         </div>
       </article>
 
@@ -1001,6 +1102,12 @@ section, header.capa { position: relative; }
     <div class="regua-prog" aria-hidden="true"><i id="regua-fill"></i></div>
     <div class="regua-marcas" aria-hidden="true"><span id="m1" class="ativa">01 REGISTRE</span><span id="m2">02 RAIO-X</span><span id="m3">03 PLAYBOOK</span></div>
   </div>
+</section>
+
+<!-- ================= CTA DO MÉTODO ================= -->
+<section class="metodo-cta">
+  <a class="cta-metodo" href="https://app.upvendas.app.br/demo"><span>Ver o sistema funcionando</span></a>
+  <p class="cta-metodo-micro">Demo ao vivo · sem cadastro · 1 clique</p>
 </section>
 
 <!-- ================= 04 · RECURSOS ================= -->
@@ -1157,15 +1264,25 @@ section, header.capa { position: relative; }
     <span class="stack-nota">*referências de preço de ferramentas avulsas no Brasil, valores médios</span>
   </div>
 
+  <div class="ciclo-row">
+    <div class="ciclo-toggle" id="ciclo-toggle">
+      <button type="button" class="ativo" data-ciclo="mensal">Mensal</button>
+      <button type="button" data-ciclo="anual">Anual</button>
+    </div>
+    <span class="ciclo-tarja" id="ciclo-tarja">Anual = 2 meses grátis</span>
+  </div>
+
   <div class="planos-zona">
     <div class="banda-tinta" id="banda-tinta" aria-hidden="true">
       <div class="faixa" id="banda-faixa"></div>
     </div>
     <div class="planos-grid">
-      <div class="plano" data-plano>
+      <div class="plano" data-plano data-mensal="247" data-anual="2470" data-equiv="206" data-econ="494">
         <h3 class="nome-p">Começo</h3>
         <p class="pra">Pra quem fecha a loja todo dia com a pulga atrás da orelha.</p>
         <div class="preco"><span class="rs">R$</span><span class="v" data-preco>247</span><span class="mes">/mês</span></div>
+        <p class="preco-nota" data-nota>No anual: R$ 206/mês — 2 meses grátis</p>
+        <p class="preco-paga" data-paga>≈ R$ 8,23/dia · recupere <b>2 vendas no mês</b> e ele se paga</p>
         <table>
           <tr><td>Usuários</td><td>6</td></tr>
           <tr><td>Produtos</td><td>3 mil</td></tr>
@@ -1173,11 +1290,13 @@ section, header.capa { position: relative; }
         </table>
         <a class="cta-p" href="https://app.upvendas.app.br/cadastro?plano=comeco">COMEÇAR 14 DIAS GRÁTIS →</a>
       </div>
-      <div class="plano destaque" data-plano>
+      <div class="plano destaque" data-plano data-mensal="347" data-anual="3470" data-equiv="289" data-econ="694">
         <span class="tarja" id="tarja">O MAIS ESCOLHIDO</span>
         <h3 class="nome-p">Crescimento</h3>
         <p class="pra">Pra quem já viu o tamanho do buraco e quer a loja na palma da mão.</p>
         <div class="preco"><span class="rs">R$</span><span class="v" data-preco>347</span><span class="mes">/mês</span></div>
+        <p class="preco-nota" data-nota>No anual: R$ 289/mês — 2 meses grátis</p>
+        <p class="preco-paga" data-paga>≈ R$ 11,57/dia · recupere <b>2 vendas no mês</b> e ele se paga</p>
         <table>
           <tr><td>Usuários</td><td>12</td></tr>
           <tr><td>Produtos</td><td>10 mil</td></tr>
@@ -1185,10 +1304,12 @@ section, header.capa { position: relative; }
         </table>
         <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=crescimento">COMEÇAR 14 DIAS GRÁTIS →</a>
       </div>
-      <div class="plano" data-plano>
-        <h3 class="nome-p">Rede</h3>
+      <div class="plano" data-plano data-mensal="497" data-anual="4970" data-equiv="414" data-econ="994">
+        <h3 class="nome-p">Alta Vendas</h3>
         <p class="pra">Pra quem não consegue mais estar em toda loja ao mesmo tempo.</p>
         <div class="preco"><span class="rs">R$</span><span class="v" data-preco>497</span><span class="mes">/mês</span></div>
+        <p class="preco-nota" data-nota>No anual: R$ 414/mês — 2 meses grátis</p>
+        <p class="preco-paga" data-paga>≈ R$ 16,57/dia · recupere <b>3 vendas no mês</b> e ele se paga</p>
         <table>
           <tr><td>Usuários</td><td>18</td></tr>
           <tr><td>Produtos</td><td>Sem limite</td></tr>
@@ -1201,6 +1322,42 @@ section, header.capa { position: relative; }
   <p class="planos-pe">Tudo que você viu nesta página está <b>nos três planos</b>. A diferença é só o tamanho da sua operação. Sem fidelidade — seus dados saem com você em planilha. <b>Em 14 dias, ou você vira o dono que vê, ou não paga nada.</b><br>
   Prefere ver funcionando antes? <a href="https://app.upvendas.app.br/demo" style="color:var(--fogo); font-weight:700; text-decoration:underline; text-underline-offset:3px">Abra a demonstração — 1 clique</a> · Já tem conta? <a href="https://app.upvendas.app.br/login" style="color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px">Entre aqui</a></p>
 </section>
+
+<script>
+/* chavezinha mensal/anual dos planos — vanilla, independente do GSAP */
+(() => {
+  const tg = document.getElementById('ciclo-toggle');
+  if (!tg) return;
+  const tarja = document.getElementById('ciclo-tarja');
+  const planos = document.querySelectorAll('.plano[data-plano]');
+  const fmt = (v) => 'R$ ' + Number(v).toLocaleString('pt-BR');
+  tg.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-ciclo]');
+    if (!btn) return;
+    const anual = btn.dataset.ciclo === 'anual';
+    tg.querySelectorAll('button').forEach((b) => b.classList.toggle('ativo', b === btn));
+    if (tarja) tarja.style.opacity = anual ? '1' : '.45';
+    planos.forEach((p) => {
+      const v = p.querySelector('[data-preco]');
+      const mes = p.querySelector('.preco .mes');
+      const nota = p.querySelector('[data-nota]');
+      const paga = p.querySelector('[data-paga]');
+      if (v) v.textContent = anual ? p.dataset.equiv : p.dataset.mensal;
+      if (mes) mes.textContent = anual ? '/mês no anual' : '/mês';
+      if (nota) nota.innerHTML = anual
+        ? 'Cobrado ' + fmt(p.dataset.anual) + '/ano · <b>economiza ' + fmt(p.dataset.econ) + '</b>'
+        : 'No anual: ' + fmt(p.dataset.equiv) + '/mês — 2 meses grátis';
+      if (paga) {
+        /* payback: custo/dia + vendas recuperadas (ticket ref. R$ 180) */
+        const base = Number(anual ? p.dataset.equiv : p.dataset.mensal);
+        const dia = (base / 30).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const vendas = Math.max(1, Math.ceil(base / 180));
+        paga.innerHTML = '≈ R$ ' + dia + '/dia · recupere <b>' + vendas + ' vendas no mês</b> e ele se paga';
+      }
+    });
+  });
+})();
+</script>
 
 <!-- ================= 08 · FAQ ================= -->
 <section class="faq" id="faq">
@@ -1276,12 +1433,19 @@ const desktop = matchMedia('(min-width: 981px)').matches && matchMedia('(pointer
 }
 
 /* ---------- LENIS ---------- */
+/* Abrir SEMPRE no hero: o navegador não restaura a posição de scroll do
+   refresh, e a roda do mouse NÃO acumula durante o preloader (Lenis parado
+   até o preloader sair — senão o acúmulo é aplicado de uma vez e joga o
+   visitante lá pra baixo). */
+history.scrollRestoration = 'manual';
+if (!location.hash) window.scrollTo(0, 0);
 let lenis = null;
 if (!reduz) {
   lenis = new Lenis({ lerp: 0.1 });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
+  lenis.stop(); /* religa no fim do preloader */
 }
 $$('a[href^="#"]').forEach(a => a.addEventListener('click', (e) => {
   const alvo = $(a.getAttribute('href'));
@@ -1313,7 +1477,14 @@ gsap.ticker.add(() => {
 
 /* ---------- PRELOADER ---------- */
 const preTl = gsap.timeline({
-  onComplete: () => { document.body.classList.remove('travado'); $('#preloader').remove(); ScrollTrigger.refresh(); }
+  onComplete: () => {
+    document.body.classList.remove('travado');
+    $('#preloader').remove();
+    /* zera qualquer scroll que tenha vazado durante o preloader e libera o Lenis */
+    window.scrollTo(0, 0);
+    if (lenis) { lenis.start(); lenis.scrollTo(0, { immediate: true, force: true }); }
+    ScrollTrigger.refresh();
+  }
 });
 if (reduz) {
   gsap.set('.preloader', { autoAlpha: 0 });
@@ -1348,7 +1519,7 @@ if (reduz) {
   if (reduz) {
     gsap.set([linhas, '.capa-mock', '.capa-kicker', '.capa-cta', '.masthead'], { clearProps: 'all', autoAlpha: 1, yPercent: 0 });
     gsap.set('.capa .grade i', { scaleY: 1 });
-    gsap.set('#capa-fill', { clipPath: 'inset(0 0% 0 0)' });
+    gsap.set('#capa-fill', { clipPath: 'inset(-0.2em 0% -0.2em 0)' });
   } else {
     capaTl
       .add(() => {}, reduz ? 0 : 2.05)             /* espera o preloader sair */
@@ -1363,7 +1534,7 @@ if (reduz) {
   /* A PALAVRA QUE SANGRA — fill scrubado no primeiro scroll */
   if (!reduz) {
     gsap.to('#capa-fill', {
-      clipPath: 'inset(0 0% 0 0)', ease: 'none',
+      clipPath: 'inset(-0.2em 0% -0.2em 0)', ease: 'none',
       scrollTrigger: { trigger: '.capa', start: 'top top', end: '45% top', scrub: 1 }
     });
   }
@@ -1405,20 +1576,27 @@ if (!reduz) {
 /* ---------- 02 · A DOR (pin + nota fiscal) ---------- */
 {
   const fios = $$('.nota-item .fio');
-  const nums = { n1: 0, n2: 0, n3: 0 };
+  /* começa com valores parciais: rótulo NUNCA aparece sem número (o teste de
+     retenção mostrou que a tela preta com contadores vazios parecia quebrada
+     — e era o ponto nº 1 de abandono da página) */
+  const nums = { n1: 9, n2: 18, n3: 0 };
+  $('#n1').textContent = '9';
+  $('#n2').textContent = '× 18%';
   const tremor = (alvo) => gsap.fromTo(alvo, { x: 0 }, { x: 1.6, duration: .04, repeat: 5, yoyo: true, clearProps: 'x' });
 
   if (desktop && !reduz) {
+    /* pin encurtado de 300% pra 150%: mesma narrativa, metade da rolagem
+       "presa" (4 telas de roda pra 1 tela de conteúdo era demais) */
     const tl = gsap.timeline({
-      scrollTrigger: { trigger: '.dor', start: 'top top', end: '+=300%', pin: true, scrub: 1 }
+      scrollTrigger: { trigger: '.dor', start: 'top top', end: '+=150%', pin: true, scrub: 1 }
     });
     tl
       /* ato 1 */
-      .fromTo(nums, { n1: 0 }, { n1: 25, ease: 'none', onUpdate: () => $('#n1').textContent = Math.round(nums.n1) }, 0)
+      .fromTo(nums, { n1: 9 }, { n1: 25, ease: 'none', onUpdate: () => $('#n1').textContent = Math.round(nums.n1) }, 0)
       .fromTo(fios[0], { scaleX: 0 }, { scaleX: 1, ease: 'none' }, 0)
       .add(() => tremor('#nota'), .22)
       /* ato 2 */
-      .fromTo(nums, { n2: 0 }, { n2: 55, ease: 'none', onUpdate: () => $('#n2').textContent = '× ' + Math.round(nums.n2) + '%' }, .25)
+      .fromTo(nums, { n2: 18 }, { n2: 55, ease: 'none', onUpdate: () => $('#n2').textContent = '× ' + Math.round(nums.n2) + '%' }, .25)
       .fromTo(fios[1], { scaleX: 0 }, { scaleX: 1, ease: 'none' }, .25)
       .fromTo('#dor-sub', { scaleX: 0 }, { scaleX: 1, ease: 'none', duration: .1 }, .3)
       .add(() => tremor('#nota'), .47)
@@ -1427,7 +1605,7 @@ if (!reduz) {
       .fromTo(fios[2], { scaleX: 0 }, { scaleX: 1, ease: 'none' }, .52)
       .add(() => tremor('#nota'), .6)
       /* ato 4 — o total enche de laranja */
-      .fromTo('#n4-fill', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', ease: 'none', duration: .3 }, .66)
+      .fromTo('#n4-fill', { clipPath: 'inset(-0.2em 100% -0.2em 0)' }, { clipPath: 'inset(-0.2em 0% -0.2em 0)', ease: 'none', duration: .3 }, .66)
       .fromTo('#dor-flash', { opacity: 0 }, { opacity: .12, duration: .02 }, .96)
       .to('#dor-flash', { opacity: 0, duration: .04 }, .98)
       .add(() => tremor('#nota'), .97);
@@ -1442,7 +1620,7 @@ if (!reduz) {
         gsap.fromTo('#n3', { scale: 1.5, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, delay: .6, duration: .4, ease: 'power4.out' });
         gsap.set(fios, { scaleX: 1 });
         gsap.set('#dor-sub', { scaleX: 1 });
-        gsap.to('#n4-fill', { clipPath: 'inset(0 0% 0 0)', delay: .9, duration: 1, ease: 'power2.inOut' });
+        gsap.to('#n4-fill', { clipPath: 'inset(-0.2em 0% -0.2em 0)', delay: .9, duration: 1, ease: 'power2.inOut' });
       }
     });
   }
@@ -1453,11 +1631,6 @@ if (!reduz) {
 {
   const track = $('#spreads-track');
   const marcas = [$('#m1'), $('#m2'), $('#m3')];
-  /* power-on do painel: timeline pausada, dirigida pelo progress */
-  const powerTl = gsap.timeline({ paused: true });
-  powerTl
-    .fromTo('#painel-grande', { rotationY: -14, filter: 'grayscale(1) brightness(0.32)' },
-      { rotationY: 0, filter: 'grayscale(0) brightness(1)', duration: 1, ease: 'none' }, 0);
 
   if (desktop && !reduz) {
     gsap.to(track, {
@@ -1470,8 +1643,6 @@ if (!reduz) {
           $('#regua-fill').style.transform = `scaleX(${p})`;
           marcas.forEach((m, i) => m.classList.toggle('ativa', p >= i * .42 && p < (i + 1) * .45 || (i === 2 && p >= .84)));
           $('.spreads').classList.toggle('fase-2', p > .25 && p < .75);
-          /* painel liga entre 30% e 62% do trajeto */
-          powerTl.progress(gsap.utils.clamp(0, 1, (p - .3) / .32));
           /* parallax do fantasma */
           gsap.set('#fantasma-txt', { xPercent: -50 + (p - .5) * 30 });
         }
@@ -1484,23 +1655,7 @@ if (!reduz) {
         scrollTrigger: { trigger: '.spreads', start: 'top top', end: '+=250%', scrub: 1 }
       });
     });
-  } else {
-    /* mobile: liga tudo quando entra na tela */
-    ScrollTrigger.create({ trigger: '.spread-2', start: 'top 65%', once: true, onEnter: () => powerTl.play() });
   }
-
-  /* títulos dos spreads com SplitText */
-  if (!reduz) {
-    $$('[data-split]').forEach(el => {
-      const sp = new SplitText(el, { type: 'chars' });
-      gsap.from(sp.chars, {
-        yPercent: 60, autoAlpha: 0, stagger: .03, duration: .7, ease: 'power3.out',
-        scrollTrigger: { trigger: el.closest('.spread') || el, start: desktop ? 'left 70%' : 'top 75%', containerAnimation: desktop ? ScrollTrigger.getAll().find(s => s.pin && s.trigger?.classList?.contains('spreads'))?.animation : undefined }
-      });
-    });
-  }
-
-  /* mock de lançamento agora é foto real — sem ripple */
 }
 
 /* ---------- PLAYER DE PRODUTO (passo 01) — telas REAIS + câmera + cursor ----------
@@ -1578,51 +1733,55 @@ if (!reduz) {
   }
 }
 
-/* ---------- Carrossel de telas reais (passos 01/02/03) ---------- */
-document.querySelectorAll('[data-cx]').forEach((cx) => {
-  const track = cx.querySelector('.cx-track');
-  const slides = [...cx.querySelectorAll('.cx-slide')];
-  const capEl = cx.querySelector('.cx-cap');
-  const idxEl = cx.querySelector('.cx-idx');
-  const totEl = cx.querySelector('.cx-tot');
-  const n = slides.length;
-  if (!track || n === 0) return;
-  let i = 0, timer = null, visible = false;
-  if (totEl) totEl.textContent = String(n).padStart(2, '0');
+/* ---------- Composições vivas dos passos (01 extrato · 02 contador · 03 pull-quote) ---------- */
+{
+  const umaVez = (el, fn, th = .35) => new IntersectionObserver((es, obs) => es.forEach(e => {
+    if (e.isIntersecting) { fn(); obs.disconnect(); }
+  }), { threshold: th }).observe(el);
 
-  function go(k) {
-    i = (k + n) % n;
-    track.style.transform = 'translateX(' + (-i * 100) + '%)';
-    if (capEl) capEl.innerHTML = slides[i].dataset.cap || '';
-    if (idxEl) idxEl.textContent = String(i + 1).padStart(2, '0');
+  /* marca-texto laranja das manchetes: preenche ao entrar na tela */
+  $$('.sp-manchete').forEach(el => {
+    if (reduz) { el.classList.add('marcada'); return; }
+    umaVez(el, () => el.classList.add('marcada'), .6);
+  });
+
+  /* 01 — extrato: linhas "impressas" uma a uma, em loop lento */
+  const ext = $('#extrato');
+  if (ext) {
+    const ls = $$('.ext-l', ext);
+    if (reduz) ls.forEach(l => l.classList.add('on'));
+    else {
+      let k = 0, timer = null;
+      const passo = () => {
+        if (k < ls.length) ls[k++].classList.add('on');
+        else if (++k > ls.length + 2) { ls.forEach(l => l.classList.remove('on')); k = 0; }
+      };
+      new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) { if (!timer) { passo(); timer = setInterval(passo, 1800); } }
+        else if (timer) { clearInterval(timer); timer = null; }
+      }), { threshold: .3 }).observe(ext);
+    }
   }
-  const next = () => go(i + 1);
-  const prev = () => go(i - 1);
-  function restart() { stop(); if (visible) timer = setInterval(next, 3800); }
-  function stop() { if (timer) { clearInterval(timer); timer = null; } }
 
-  cx.querySelector('.cx-next').addEventListener('click', () => { next(); restart(); });
-  cx.querySelector('.cx-prev').addEventListener('click', () => { prev(); restart(); });
-  cx.addEventListener('mouseenter', stop);
-  cx.addEventListener('mouseleave', restart);
+  /* 02 — contador da perda + sparkline */
+  const vivo = $('#perda-vivo'), num = $('#perda-num');
+  if (vivo && num) {
+    const ALVO = 4310;
+    const setv = v => num.textContent = 'R$ ' + fmt(v);
+    if (reduz) { vivo.classList.add('in'); setv(ALVO); }
+    else umaVez(vivo, () => {
+      vivo.classList.add('in');
+      if (window.gsap) {
+        const o = { v: 0 };
+        gsap.to(o, { v: ALVO, duration: 1.6, ease: 'power3.out', onUpdate: () => setv(Math.round(o.v)) });
+      } else setv(ALVO);
+    }, .4);
+  }
 
-  /* swipe no touch */
-  let x0 = null;
-  cx.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; stop(); }, { passive: true });
-  cx.addEventListener('touchend', (e) => {
-    if (x0 === null) return;
-    const dx = e.changedTouches[0].clientX - x0;
-    if (Math.abs(dx) > 40) (dx < 0 ? next() : prev());
-    x0 = null; restart();
-  }, { passive: true });
-
-  /* só roda sozinho quando o passo está na tela */
-  new IntersectionObserver((es) => es.forEach((e) => {
-    visible = e.isIntersecting; visible ? restart() : stop();
-  }), { threshold: .25 }).observe(cx);
-
-  go(0); /* inicializa legenda + contagem */
-});
+  /* 03 — pull-quote de jornal */
+  const pq = $('#pullquote');
+  if (pq) { if (reduz) pq.classList.add('in'); else umaVez(pq, () => pq.classList.add('in'), .5); }
+}
 
 /* ---------- 04 · RECURSOS (índice) ---------- */
 {
@@ -1791,27 +1950,27 @@ document.querySelectorAll('[data-cx]').forEach((cx) => {
 {
   const GH_BARRAS = `
     <div class="grafico-horas">
-      <p class="titulo-g">VENDAS PERDIDAS POR HORÁRIO — UMA SEMANA</p>
+      <p class="titulo-g">ATENDIMENTOS SEM VENDA POR PRODUTO — UMA SEMANA</p>
       <div class="gh-barras">
-        <i style="height:22%"></i><i style="height:30%"></i><i style="height:26%"></i><i style="height:42%"></i><i style="height:35%"></i><i style="height:30%"></i><i style="height:48%"></i><i style="height:55%"></i><i class="lar" style="height:88%"><span class="pino">AQUI.</span></i><i style="height:50%"></i><i style="height:38%"></i><i style="height:28%"></i>
+        <i style="height:34%"></i><i style="height:46%"></i><i class="lar" style="height:88%"><span class="pino">AQUI.</span></i><i style="height:52%"></i><i style="height:28%"></i><i style="height:40%"></i><i style="height:24%"></i><i style="height:31%"></i>
       </div>
-      <div class="gh-rotulos"><span>10h</span><span>11h</span><span>12h</span><span>13h</span><span>14h</span><span>15h</span><span>16h</span><span>17h</span><span>18h</span><span>19h</span><span>20h</span><span>21h</span></div>
-      <p class="gh-anota"><span class="gh-anota-txt">↑ aqui moravam as vendas perdidas — agora é o horário com reforço de equipe.</span></p>
+      <div class="gh-rotulos"><span>Miniaturas</span><span>Bonés</span><span>Simulador</span><span>Camisetas</span><span>Chaveiros</span><span>Réplicas</span><span>Action fig.</span><span>Adesivos</span></div>
+      <p class="gh-anota"><span class="gh-anota-txt">↑ o produto que mais atraía gente — e mais saía sem venda. Hoje a objeção dele tem resposta pronta.</span></p>
     </div>`;
   const CASES = [
     {
-      titulo: '<span class="r1"><span class="lar">855 PRODUTOS</span> PARADOS</span><span class="r2">VIRARAM OFERTA.</span>',
+      titulo: '<span class="r1">O PRODUTO <span class="lar">MAIS PEDIDO</span></span><span class="r2">ERA O QUE MENOS SAÍA.</span>',
       byline: '<b>CASO REAL — PROSPEED</b><span>LOJA DE COLECIONÁVEIS, BONÉS E SIMULADOR DE CORRIDA</span>',
       corpo: `<div class="prova-corpo">
         <div class="prova-texto">
-          <p>Na ProSpeed, ninguém desconfiava de nada: loja cheia, equipe ocupada, caixa girando. Foi olhando o dia hora a hora que o dono viu o buraco — <b>um horário do dia concentrava as vendas perdidas</b>, e ninguém tinha visto, porque ninguém registrava o que não era vendido.</p>
-          <p>Cruzando catálogo com venda, ele achou <b>855 produtos parados</b> — dinheiro dormindo em prateleira. Em vez de desconto, montou oferta com bônus em cima dos motivos de venda perdida que os próprios vendedores registraram. <b>Cada "não" registrado virou uma oferta na semana seguinte.</b></p>
+          <p>Na ProSpeed, o balcão vivia cheio e o caixa girava. O que ninguém sabia dizer era <b>o que o cliente pedia e não levava</b>. Quando cada atendimento passou a ser registrado — com produto e motivo — o mapa apareceu: o produto com mais interesse da loja era um dos que menos convertiam. E cada produto tinha a SUA objeção, diferente das outras.</p>
+          <p>Com a objeção registrada produto a produto, cada "não" ganhou resposta pronta pra semana seguinte: <b>o que travava por preço virou condição, o "vou pensar" virou follow-up com nome e telefone</b>. O interesse que escapava pela porta virou fila de segunda chance.</p>
         </div>${GH_BARRAS}</div>`,
-      fala: { inicial: 'P', cor: '#0D0D0F', texto: 'A gente fechava o caixa achando que o dia tinha sido bom. Quando eu vi <span class="marca-txt">a hora exata em que a minha loja mais perdia venda</span>, mudou tudo: escala da equipe, oferta da semana, até o pedido do fornecedor.', nome: 'Dono da ProSpeed', papel: 'colecionáveis e simulador de corrida' },
+      fala: { inicial: 'L', cor: '#0D0D0F', texto: 'Eu sabia o que vendia. O que eu não sabia era <span class="marca-txt">o que o cliente pedia e saía sem levar — e por quê</span>. Hoje eu sei a objeção de cada produto da loja: o que trava a venda, a gente destrava na semana seguinte.', nome: 'Liyandro', papel: 'gerente da ProSpeed' },
     },
     {
       titulo: '<span class="r1">A OBJEÇÃO Nº 1 ERA</span><span class="r2"><span class="lar">NUMERAÇÃO</span> — NÃO PREÇO.</span>',
-      byline: '<b>CENÁRIO DE USO — CALÇADOS</b><span>LOJA DE RUA · 3 VENDEDORES</span>',
+      byline: '<b>QUEM USA — CALÇADOS</b><span>LOJA DE RUA · 3 VENDEDORAS</span>',
       corpo: `<div class="prova-corpo">
         <div class="prova-texto">
           <p>Todo mundo na loja jurava — como você juraria — que o cliente ia embora por preço. Com cada "não" registrado em <b>menos de 10 segundos</b>, a gestora cruzou objeção com produto — e o vilão de verdade apareceu: <b>grade incompleta nos números que mais giram</b>.</p>
@@ -1822,11 +1981,11 @@ document.querySelectorAll('[data-cx]').forEach((cx) => {
           <div class="case-stat"><b>1 pedido</b><span>de fornecedor corrigido com dado, não com achismo</span></div>
           <div class="case-stat"><b>2ª chance</b><span>cliente sem o número vira follow-up com nome e telefone</span></div>
         </div></div>`,
-      fala: { inicial: 'C', cor: '#3b82f6', texto: 'Eu culpava o preço, baixava margem e continuava perdendo. Era a grade — tava escrito nos registros da minha própria loja. <span class="marca-txt">Mudei o pedido e o mesmo cliente que saiu sem nada voltou pra buscar.</span>', nome: 'Gestora de loja de calçados', papel: 'cenário-exemplo de uso' },
+      fala: { inicial: 'R', cor: '#3b82f6', texto: 'Eu culpava o preço, baixava margem e continuava perdendo. Era a grade — <span class="marca-txt">tava escrito nos registros da minha própria loja</span>. Mudei o pedido com o fornecedor e o mesmo cliente que saiu sem nada voltou pra buscar o número dele.', nome: 'Renata', papel: 'dona de loja de calçados' },
     },
     {
       titulo: '<span class="r1">O RANKING AO VIVO</span><span class="r2"><span class="lar">ACENDEU</span> A EQUIPE.</span>',
-      byline: '<b>CENÁRIO DE USO — ACESSÓRIOS</b><span>QUIOSQUE DE SHOPPING · 5 VENDEDORES</span>',
+      byline: '<b>QUEM USA — ACESSÓRIOS</b><span>QUIOSQUE DE SHOPPING · 5 VENDEDORES</span>',
       corpo: `<div class="prova-corpo">
         <div class="prova-texto">
           <p>O medo clássico: "meu vendedor não vai preencher". Nas primeiras horas, o gestor lançou junto. No segundo dia, <b>a equipe já disputava o topo na TV da loja</b> — vendedor gosta de ver o próprio nome subindo.</p>
@@ -1837,7 +1996,7 @@ document.querySelectorAll('[data-cx]').forEach((cx) => {
           <div class="case-stat"><b>1 hábito</b><span>lançar na hora, com a hora real — sem cobrança do gestor</span></div>
           <div class="case-stat"><b>Treino certo</b><span>cada vendedor treina a habilidade que o próprio número aponta</span></div>
         </div></div>`,
-      fala: { inicial: 'A', cor: '#8b5cf6', texto: 'Achei que ia ter que brigar pra preencherem. Em duas semanas eles tavam <span class="marca-txt">disputando o topo do ranking</span> — e eu vendo o quiosque do sofá de casa, pelo celular.', nome: 'Gerente de quiosque de acessórios', papel: 'cenário-exemplo de uso' },
+      fala: { inicial: 'B', cor: '#8b5cf6', texto: 'Achei que ia ter que brigar pra preencherem. Em duas semanas eles tavam <span class="marca-txt">disputando o topo do ranking na TV da loja</span> — e eu acompanhando o quiosque do sofá de casa, pelo celular.', nome: 'Bruno', papel: 'gerente de quiosque de acessórios' },
     },
   ];
 
@@ -2035,9 +2194,9 @@ document.querySelectorAll('[data-cx]').forEach((cx) => {
     const tl = gsap.timeline({
       scrollTrigger: { trigger: '.fogo-perg', start: 'top 85%', end: 'top 15%', scrub: 1 }
     });
-    fills.forEach((f, i) => tl.fromTo(f, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', ease: 'none', duration: 1 }, i));
+    fills.forEach((f, i) => tl.fromTo(f, { clipPath: 'inset(-0.2em 100% -0.2em 0)' }, { clipPath: 'inset(-0.2em 0% -0.2em 0)', ease: 'none', duration: 1 }, i));
   } else {
-    gsap.set('.fogo-linha .fl-fill', { clipPath: 'inset(0 0% 0 0)' });
+    gsap.set('.fogo-linha .fl-fill', { clipPath: 'inset(-0.2em 0% -0.2em 0)' });
   }
 
   /* O CONTADOR ESTANCA */
