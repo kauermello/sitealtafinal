@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>Alta Vendas — Background</title>
+
+    <!-- Peach Worlds runtime bootstrap (mesmo que o index.html da landing) -->
+    <script>window._pwInitialPath = "/";</script>
+
+    <!-- Shims do Peach: o Router do runtime usa window._pwLoadFileFromCache /
+         _pwSetFileCache pra resolver assets (model.glb, scene-state.json, etc).
+         Sem estes, o boot trava em "Load file from cache function missing." e
+         o canvas nunca monta. Bloco copiado 1:1 do index.html da landing. -->
+    <script type="text/javascript">
+      window._pwPreviewResourceUrls = [];
+      (function waterfallOptimizationScript(){window._pwPreviewResourceUrls=window._pwPreviewResourceUrls||[];if(!window._pwLoadFileRequestsCache)window._pwLoadFileRequestsCache=new Map;if(!window._pwLoadFileResolveFnCache)window._pwLoadFileResolveFnCache=new Map;window._pwSetFileCache=(fileUrl,blob)=>{if(!window._pwLoadFileResolveFnCache)throw new Error(`Variable "_pwLoadFileResolveFnCache" is undefined.`);const blobUrl=(window.URL||window.webkitURL).createObjectURL(blob);const resolveFn=window._pwLoadFileResolveFnCache.get(fileUrl);if(!resolveFn)throw new Error(`Resolve function for file "${fileUrl}" not found.`);resolveFn(blobUrl)};window._pwWaitForExplicitFileResolve=fileUrl=>{if(!window._pwLoadFileResolveFnCache)throw new Error(`Variable "_pwLoadFileResolveFnCache" is undefined.`);if(!window._pwLoadFileRequestsCache)throw new Error(`Variable "_pwLoadFileRequestsCache" is undefined.`);if(window._pwLoadFileResolveFnCache.has(fileUrl)&&window._pwLoadFileRequestsCache.has(fileUrl))return;let resolveFn=void 0;const explicitWaitPromise=new Promise(resolve=>{resolveFn=resolve});window._pwLoadFileResolveFnCache.set(fileUrl,resolveFn);window._pwLoadFileRequestsCache.set(fileUrl,explicitWaitPromise)};window._pwLoadFileFromCacheHelper=async fileUrl=>{if(!fileUrl)return void 0;try{const response=await fetch(fileUrl);if(!response.ok)return void 0;const blob=await response.blob();const blobUrl=(window.URL||window.webkitURL).createObjectURL(blob);return blobUrl}catch(error){return void 0}};window._pwLoadFileFromCache=async fileUrl=>{if(!fileUrl)return void 0;if(!window._pwLoadFileRequestsCache)throw new Error(`Variable "_pwLoadFileRequestsCache" is undefined.`);let requestPromise=window._pwLoadFileRequestsCache.get(fileUrl);if(!requestPromise){if(!window._pwLoadFileFromCacheHelper)throw new Error(`Function "_pwLoadFileFromCacheHelper" is undefined.`);requestPromise=window._pwLoadFileFromCacheHelper(fileUrl);window._pwLoadFileRequestsCache.set(fileUrl,requestPromise)}return await requestPromise};for(const explicitResourceUrl of window._pwPreviewResourceUrls)window._pwWaitForExplicitFileResolve(explicitResourceUrl)})();
+      // No-op pro Router (sem loading overlay neste bg minimal)
+      window._pwExecLoadingPageJavascript = () => {};
+    </script>
+
+    <script defer fetchpriority="high" src="/script.js"></script>
+
+    <meta name="pw:has-visual-script" content="false" />
+    <link rel="preload" href="/scene-state/640fb4fb-14fd-49df-b65d-aadfa98f5dd5.json" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/475c0f2b-a06e-41c7-847d-34a4feee431b/model.glb"     as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/a35fc4e7-44e3-47ff-b9e8-4e8c5304a406/alpha-map.png" as="image" crossorigin="anonymous" />
+    <link rel="preload" href="/ui-state.json" as="fetch" crossorigin="anonymous" />
+
+    <style>
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #06040A;
+        overflow: hidden;        /* sem scroll → mesh fica na pose inicial das keyframes */
+      }
+      /* o canvas que o runtime monta */
+      .pwb-scene > canvas { display: block; width: 100%; height: 100%; user-select: none; }
+      /* esconde o loading wrap do Peach (ele mostra uma logo no init) */
+      #pwb-loading-wrap { background-color: #06040A !important; }
+    </style>
+  </head>
+  <body id="i6mb">
+    <!-- Estrutura DOM esperada pelo Router do Peach (copiada do index.html):
+         #pwb-body-wrap > #ip1j.pwb-background > #ijsk.pwb-scene
+         O canvas e injetado em .pwb-scene. Sem esses divs, o Router falha
+         com "Cannot read properties of null (reading 'remove')". -->
+    <div id="pwb-body-wrap">
+      <div id="ip1j" class="pwb-background pwb-flex-grid-wrap">
+        <div id="ijsk" class="pwb-scene"></div>
+      </div>
+    </div>
+  </body>
+</html>
