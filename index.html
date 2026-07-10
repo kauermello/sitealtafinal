@@ -25,6 +25,52 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- As libs de animação vivem no fim do <body>. Sem estas linhas o download só
+     começa quando o parser chega lá, e o preloader (que só sai quando o GSAP
+     roda) fica na tela esse tempo todo.
+     SEM `crossorigin`: as tags de script lá embaixo também não têm. Se os modos
+     não baterem, o Chrome baixa cada lib duas vezes (medido: 8 requisições). -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js">
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js">
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js">
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js">
+
+<script>
+/* REDE DE SEGURANÇA — não depende de nada.
+   O preloader e o body.travado só são desfeitos dentro do runtime do GSAP.
+   Se o jsdelivr cair, for bloqueado por firewall ou demorar demais, a página
+   fica PERMANENTEMENTE coberta e sem scroll. Medido: com o CDN bloqueado o
+   preloader nunca sai e body.travado nunca é removido.
+   Este timer destrava tudo sozinho; o runtime o cancela quando assume. */
+window.__destravaFallback = setTimeout(function () {
+  document.documentElement.classList.add('sem-animacao');
+  document.body && document.body.classList.remove('travado');
+  var p = document.getElementById('preloader');
+  if (p) p.remove();
+}, 3200);
+
+/* A data do masthead também era preenchida só dentro do runtime do GSAP —
+   sem CDN a tarja mostrava "—". Aqui não depende de nada. */
+document.addEventListener('DOMContentLoaded', function () {
+  var el = document.getElementById('data-hoje');
+  if (!el) return;
+  el.textContent = new Date()
+    .toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    .toUpperCase();
+});
+</script>
+<style>
+/* Se a rede de segurança disparar, nada pode ter ficado invisível esperando o GSAP. */
+html.sem-animacao .preloader { display: none !important; }
+html.sem-animacao .capa-kicker,
+html.sem-animacao .capa-cta,
+html.sem-animacao .masthead { opacity: 1 !important; visibility: visible !important; transform: none !important; }
+html.sem-animacao .manchete .linha > span { transform: none !important; }
+html.sem-animacao .capa .grade i { transform: scaleY(1) !important; }
+</style>
+
 <style>
 /* ==========================================================================
    ALTAVENDAS — O JORNAL DA VENDA PERDIDA · EDIÇÃO Nº 001
@@ -1437,27 +1483,35 @@ section, header.capa { position: relative; }
    ========================================================================== */
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+/* O runtime chegou: cancela a rede de segurança do <head>. */
+clearTimeout(window.__destravaFallback);
+
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 const fmt = (v, dec = 0) => v.toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
 const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const desktop = matchMedia('(min-width: 981px)').matches && matchMedia('(pointer: fine)').matches;
 
-/* ---------- data do masthead ---------- */
-{
-  const d = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  $('#data-hoje').textContent = d.toUpperCase();
-}
+/* clearTimeout NÃO desfaz um timer que já disparou. Se o jsdelivr demorou mais
+   que 3.2s, a rede de segurança já rodou: o #preloader foi removido e o hero já
+   está visível por CSS. Encenar a intro agora estouraria em null e reesconderia
+   o texto. Medido: 175 TypeErrors com o CDN atrasado em 4.2s. */
+const fallbackAssumiu = document.documentElement.classList.contains('sem-animacao');
+
+/* A data do masthead agora é preenchida pelo script do <head>, que não depende
+   de nada. Preenchê-la de novo aqui seria trabalho repetido. */
 
 /* ---------- LENIS ---------- */
 /* Abrir SEMPRE no hero: o navegador não restaura a posição de scroll do
    refresh, e a roda do mouse NÃO acumula durante o preloader (Lenis parado
    até o preloader sair — senão o acúmulo é aplicado de uma vez e joga o
    visitante lá pra baixo). */
+/* Scroll suave só no desktop: em toque o Lenis rouba o scroll nativo e
+   desorienta quem tem objetivo (NN/g). O resto do código já guarda `if (lenis)`. */
 history.scrollRestoration = 'manual';
 if (!location.hash) window.scrollTo(0, 0);
 let lenis = null;
-if (!reduz) {
+if (!reduz && desktop) {
   lenis = new Lenis({ lerp: 0.1 });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
@@ -1493,33 +1547,48 @@ gsap.ticker.add(() => {
 });
 
 /* ---------- PRELOADER ---------- */
-const preTl = gsap.timeline({
-  onComplete: () => {
-    document.body.classList.remove('travado');
-    $('#preloader').remove();
-    /* zera qualquer scroll que tenha vazado durante o preloader e libera o Lenis */
-    window.scrollTo(0, 0);
-    if (lenis) { lenis.start(); lenis.scrollTo(0, { immediate: true, force: true }); }
-    ScrollTrigger.refresh();
-  }
-});
-if (reduz) {
-  gsap.set('.preloader', { autoAlpha: 0 });
+/* Duração da contagem e o instante em que a capa começa a subir por trás das
+   colunas. O segundo é derivado do primeiro: antes eram dois números mágicos
+   (1.5 e 2.05) que dessincronizavam a cada ajuste. Os valores são os originais. */
+const PRE_CONTAGEM = 1.5;
+const CAPA_ENTRA_EM = PRE_CONTAGEM + 0.55;
+
+/* Um único caminho de saída, idempotente: o #preloader pode já ter sido removido
+   pela rede de segurança do <head>. Sem a guarda, o .remove() lançava e as linhas
+   seguintes — inclusive lenis.start() — nunca rodavam, deixando a roda do mouse
+   travada no desktop. */
+const liberar = () => {
   document.body.classList.remove('travado');
-  $('#preloader').remove();
+  const pl = $('#preloader');
+  if (pl) pl.remove();
+  /* zera qualquer scroll que tenha vazado durante o preloader e libera o Lenis */
+  window.scrollTo(0, 0);
+  if (lenis) { lenis.start(); lenis.scrollTo(0, { immediate: true, force: true }); }
+  ScrollTrigger.refresh();
+};
+
+const preTl = gsap.timeline({ onComplete: liberar });
+if (fallbackAssumiu) {
+  /* A rede de segurança já destravou tudo. Não há preloader para encenar. */
+  liberar();
+} else if (reduz) {
+  gsap.set('.preloader', { autoAlpha: 0 });
+  liberar();
 } else {
   const preObj = { v: 0 };
   const status = ['ABRINDO O SEU CAIXA', 'CONTANDO O QUE VOCÊ NÃO VIU', 'EDIÇÃO Nº 001'];
   preTl
     .to(preObj, {
-      v: 1980, duration: 1.5, ease: 'power2.inOut',
+      v: 1980, duration: PRE_CONTAGEM, ease: 'power2.inOut',
       onUpdate: () => {
-        $('#pre-num').textContent = fmt(Math.round(preObj.v));
+        const num = $('#pre-num'), st = $('#pre-status');
+        if (!num || !st) return;   /* a rede de segurança pode ter levado o preloader no meio da contagem */
+        num.textContent = fmt(Math.round(preObj.v));
         const p = preObj.v / 1980;
-        $('#pre-status').textContent = status[Math.min(2, Math.floor(p * 3))];
+        st.textContent = status[Math.min(2, Math.floor(p * 3))];
       }
     })
-    .to('#pre-regua', { scaleX: 1, duration: 1.5, ease: 'power2.inOut' }, 0)
+    .to('#pre-regua', { scaleX: 1, duration: PRE_CONTAGEM, ease: 'power2.inOut' }, 0)
     .to('.pre-conteudo', { scale: 1.05, autoAlpha: 0, duration: .45, ease: 'power3.in' }, '+=0.15')
     .to('#pre-regua', { autoAlpha: 0, duration: .3 }, '<')
     .to('.preloader .coluna', { yPercent: -100, duration: .85, stagger: .09, ease: 'expo.inOut' }, '-=0.25');
@@ -1528,18 +1597,20 @@ if (reduz) {
 /* ---------- ENTRADA DA CAPA ---------- */
 {
   const linhas = $$('.manchete .linha > span, .manchete .l4 .fantasma');
-  gsap.set(linhas, { yPercent: 115 });
-  gsap.set('.capa-mock', { autoAlpha: 0, rotate: -10, scale: .92, y: 40 });
-  gsap.set('.capa-kicker, .capa-cta, .masthead', { autoAlpha: 0, y: 18 });
-  gsap.set('.capa .grade i', { scaleY: 0 });
   const capaTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-  if (reduz) {
+  /* fallbackAssumiu: o hero já está na tela há segundos. Escondê-lo para
+     reanimá-lo agora seria um flash gratuito. Vai direto ao estado final. */
+  if (reduz || fallbackAssumiu) {
     gsap.set([linhas, '.capa-mock', '.capa-kicker', '.capa-cta', '.masthead'], { clearProps: 'all', autoAlpha: 1, yPercent: 0 });
     gsap.set('.capa .grade i', { scaleY: 1 });
     gsap.set('#capa-fill', { clipPath: 'inset(-0.2em 0% -0.2em 0)' });
   } else {
+    gsap.set(linhas, { yPercent: 115 });
+    gsap.set('.capa-mock', { autoAlpha: 0, rotate: -10, scale: .92, y: 40 });
+    gsap.set('.capa-kicker, .capa-cta, .masthead', { autoAlpha: 0, y: 18 });
+    gsap.set('.capa .grade i', { scaleY: 0 });
     capaTl
-      .add(() => {}, reduz ? 0 : 2.05)             /* espera o preloader sair */
+      .add(() => {}, CAPA_ENTRA_EM)               /* espera o preloader sair */
       .to('.capa .grade i', { scaleY: 1, duration: .8, stagger: .04, ease: 'power2.out', transformOrigin: 'top' })
       .to('.masthead', { autoAlpha: 1, y: 0, duration: .7 }, '<+0.1')
       .to('.capa-kicker', { autoAlpha: 1, y: 0, duration: .7 }, '<+0.05')
