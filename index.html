@@ -461,11 +461,19 @@ section, header.capa { position: relative; }
 /* Vídeo de produto (Remotion) — UI recriada e renderizada como MP4: roda liso */
 .sys-video { display: block; width: 100%; aspect-ratio: 1280 / 760; margin: 10px 0 4px; border-radius: 6px; border: 1px solid rgba(255,255,255,.1); background: #0c0c0e; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); object-fit: cover; }
 .spread-2 { background: var(--tinta); color: var(--papel); }
+/* 02 na mesma assinatura do 01 (canto direito, cortado no topo); no fundo
+   tinta o stroke é branco fraquíssimo. */
+.spread-2 .numeral { right: 4vw; top: -4vh; -webkit-text-stroke-color: rgba(255,255,255,.09); }
+/* "E SE VOCÊ VISSE?" saiu do centro (brigava com as fichas) e virou SANGRIA
+   DE BASE editorial: gigante, cortado pela borda de baixo, com fade lateral
+   — o parallax continua deslizando ele no scroll. */
 .spread-2 .fantasma-txt {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
-  font-family: var(--cond); font-weight: 900; font-size: 13vw; white-space: nowrap;
-  color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.13); text-transform: uppercase;
+  position: absolute; left: 2vw; bottom: -0.16em;
+  font-family: var(--cond); font-weight: 900; font-size: 15vw; line-height: 1; white-space: nowrap;
+  color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.15); text-transform: uppercase;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 50%, transparent 97%);
+  mask-image: linear-gradient(90deg, #000 50%, transparent 97%);
 }
 .spread-2 .conteudo { display: grid; grid-template-columns: 1.1fr 1fr; width: 100%; padding: 0 5vw; gap: 4vw; align-items: center; }
 .spread-2 .lado-txt { display: flex; flex-direction: column; align-items: flex-start; gap: 2.8vh; }
@@ -488,7 +496,9 @@ section, header.capa { position: relative; }
 .spark-dias { display: flex; justify-content: space-between; width: min(320px, 100%); font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; color: rgba(255,255,255,.42); }
 .spark-dias .crit { color: var(--fogo); font-weight: 700; }
 
-.spread-3 .numeral { left: 50%; top: 50%; transform: translate(-50%,-54%); }
+/* 03 na mesma pegada do 01: canto direito cortado, atrás de área vazia —
+   antes ficava centralizado ATRÁS do conteúdo, conflitando. */
+.spread-3 .numeral { right: 4vw; top: -4vh; }
 .spread-3 .conteudo { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2.6vh; padding: 0 5vw; }
 .spread-3 .fichas { justify-content: center; }
 /* elemento vivo 03 — pull-quote de jornal */
@@ -1196,6 +1206,7 @@ section, header.capa { position: relative; }
 
       <!-- SPREAD 02 — RAIO-X (a página de tinta) -->
       <article class="spread spread-2">
+        <span class="numeral num">02</span>
         <span class="fantasma-txt" id="fantasma-txt">E SE VOCÊ VISSE?</span>
         <div class="conteudo">
           <div class="lado-txt">
@@ -1818,8 +1829,8 @@ if (!reduz) {
           $('#regua-fill').style.transform = `scaleX(${p})`;
           marcas.forEach((m, i) => m.classList.toggle('ativa', p >= i * .42 && p < (i + 1) * .45 || (i === 2 && p >= .84)));
           $('.spreads').classList.toggle('fase-2', p > .25 && p < .75);
-          /* parallax do fantasma */
-          gsap.set('#fantasma-txt', { xPercent: -50 + (p - .5) * 30 });
+          /* parallax do fantasma (agora ancorado à esquerda, sangrando na base) */
+          gsap.set('#fantasma-txt', { xPercent: (p - .5) * 14 });
         }
       }
     });
