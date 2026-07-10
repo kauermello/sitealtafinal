@@ -991,6 +991,57 @@ section, header.capa { position: relative; }
   .grain, .selo { animation: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ============== MOBILE (10/07) — organização e respiro ==============
+   Auditoria seção a seção em 390px: mata os vãos gigantes e desalinhos.
+   FICA NO FIM do style de propósito: cascata vence as regras originais.
+   Só espaçamento/alinhamento — desktop 100% intacto. */
+@media (max-width: 640px) {
+  /* nav: a demo volta (compacta); "Entrar" cede o lugar */
+  .nav-entrar { display: none; }
+  .nav-demo { display: inline-block !important; font-size: 11px; padding: 8px 12px; }
+  .nav .demo-pill { font-size: 11px; padding: 9px 14px; }
+
+  /* masthead: uma linha compacta (a data quebrava em duas) */
+  .masthead { padding: 10px 4vw; font-size: 9px; letter-spacing: .08em; gap: 8px; }
+
+  /* CTAs da capa: pilha uniforme full-width, gap contido */
+  .capa-cta { margin-top: 4vh; gap: 14px; }
+  .capa-cta .btn-pill { width: 100%; justify-content: center; padding: 16px 20px; font-size: 14px; }
+  .capa-nota { font-size: 12px; }
+
+  /* nota fiscal: rótulo e valor na MESMA linha (morre o vão vertical) */
+  .nota-item { padding: 1.4vh 0; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .nota-item .rotulo { margin-bottom: 0; flex: 1; font-size: 10px; letter-spacing: .14em; }
+  .nota-item .valor { flex-shrink: 0; }
+
+  /* fichas dos passos: largura cheia (morre a escadinha desalinhada) */
+  .ficha { width: 100%; }
+
+  /* método/índice: vãos brancos de 15-16vh viram respiro são */
+  .metodo-cta { padding: 7vh 5vw 6vh; }
+  .indice { padding: 8vh 0 6vh; }
+
+  /* botão-bloco: ganha margem lateral e altura contida */
+  .botao-bloco { margin: 0 4vw; height: auto; min-height: 88px; padding: 24px 16px; }
+  .botao-bloco .bb-txt { font-size: 7.5vw; }
+
+  /* simulador: campos aproximados (os vãos eram ~150px entre réguas) */
+  .regua-campo { padding: 1.8vh 0 2.4vh; }
+
+  /* legenda do gráfico do case: quebra em linhas dentro da tela */
+  .gh-anota, .gh-anota-txt { max-width: 100%; white-space: normal; display: block; }
+
+  /* planos: miolo compacto (menos ar entre descrição e preço) */
+  .plano { padding: 3.2vh 5vw 3vh; }
+
+  /* fim (fogo): respiro contido no topo e no contador */
+  .fogo { padding: 13vh 0 0; }
+  .fogo-contador { padding: 4vh 4vw 5vh; gap: 12px; }
+
+  /* rodapé */
+  .expediente { padding: 4vh 5vw 3vh; }
+}
 </style>
 </head>
 <body class="travado">
