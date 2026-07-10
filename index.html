@@ -237,9 +237,51 @@ section, header.capa { position: relative; }
   clip-path: inset(-0.2em 100% -0.2em 0); will-change: clip-path;
 }
 /* mockup entalado na manchete */
-.capa-mock {
-  position: absolute; right: 7vw; top: 16%;
-  width: 300px; transform: rotate(-4deg); z-index: -1;
+/* O SHOT DO PRODUTO (10/07) — foto REAL do sistema na hero, receituário
+   extraído do CSS de produção de Linear/Clerk/Attio: largo e centralizado
+   ABAIXO do CTA (manchete intocada), moldura passe-partout 8px, glow
+   laranja sutil (blur 40, ≤14%), sombra em camadas tingida de marrom-quente
+   + halo laranja 4%. É um LINK pra demo; chip "ao vivo" pisca no canto. */
+.capa-shot {
+  position: relative; display: block; width: min(1104px, 95%);
+  margin: 7vh auto 2vh; z-index: 1;
+  padding: 8px; border-radius: 20px;
+  background: #faf9f7; border: 1px solid rgba(0,0,0,.06);
+  cursor: pointer; text-decoration: none;
+  transition: transform .45s cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+.capa-shot::before {
+  content: ""; position: absolute; inset: -16px; z-index: -1;
+  border-radius: 24px; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,90,31,.14) 0%, rgba(255,90,31,.05) 55%, transparent 100%);
+  filter: blur(40px);
+}
+.capa-shot img {
+  display: block; width: 100%; height: auto; border-radius: 13px;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow:
+    0 0 0 4px rgba(255,90,31,.04),
+    0 2px 6px rgba(46,26,18,.06),
+    0 12px 32px -4px rgba(46,26,18,.10),
+    0 32px 64px -16px rgba(46,26,18,.14);
+}
+.capa-shot:hover, .capa-shot:focus-visible { transform: translateY(-6px); }
+.shot-live {
+  position: absolute; top: 22px; right: 22px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--fogo); background: rgba(255,255,255,.94);
+  border: 1px solid rgba(255,90,31,.35); border-radius: 999px; padding: 7px 13px;
+  box-shadow: 0 6px 18px -6px rgba(46,26,18,.25); transition: all .25s;
+}
+.shot-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--fogo); animation: pisca 1.4s infinite; }
+.capa-shot:hover .shot-live { background: var(--fogo); color: #fff; border-color: var(--fogo); }
+@media (max-width: 640px) {
+  .capa-shot { padding: 4px; border-radius: 14px; margin-top: 4vh; }
+  .capa-shot img { border-radius: 11px; }
+  .capa-shot::before { inset: -8px; filter: blur(24px); }
+  .shot-live { top: 12px; right: 12px; font-size: 9px; padding: 5px 9px; }
 }
 .capa-cta { margin-top: 6vh; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
 .btn-pill {
@@ -989,17 +1031,6 @@ section, header.capa { position: relative; }
     <span>EDIÇÃO Nº 001 · GRÁTIS</span>
   </div>
   <div class="capa-miolo">
-    <div class="capa-mock" aria-hidden="true">
-      <div class="mock">
-        <div class="mock-top"><span class="mock-logo">ALTA<b>VENDAS</b></span><span class="mock-live"><i></i>AO VIVO</span></div>
-        <div class="mock-kpis">
-          <div class="mock-kpi"><small>Vendido</small><b class="num" id="capa-mock-num">R$ 4.380</b></div>
-          <div class="mock-kpi"><small>Conversão</small><b class="lar">58%</b></div>
-          <div class="mock-kpi"><small>Perdidas</small><b class="verm">7</b></div>
-        </div>
-        <div class="mock-barras"><i class="off" style="height:30%"></i><i style="height:46%"></i><i class="off" style="height:38%"></i><i style="height:64%"></i><i style="height:52%"></i><i style="height:84%"></i><i class="off" style="height:44%"></i><i style="height:95%"></i></div>
-      </div>
-    </div>
     <p class="capa-kicker kicker">PRO DONO QUE SENTE QUE O CAIXA NÃO CONTA A HISTÓRIA INTEIRA</p>
     <h1 class="manchete">
       <span class="linha"><span class="l1">TODO PDV REGISTRA</span></span>
@@ -1015,6 +1046,11 @@ section, header.capa { position: relative; }
       <a class="btn-pill fantasma" data-magnetic href="https://app.upvendas.app.br/demo">VER A DEMO AO VIVO — 1 CLIQUE</a>
       <span class="capa-nota">Sem cartão. Sem conversa com vendedor. A demo abre sem cadastro.</span>
     </div>
+    <!-- A FOTO DO SISTEMA (clique abre a demo) -->
+    <a class="capa-shot" href="https://app.upvendas.app.br/demo?utm_source=site&utm_content=hero-shot" aria-label="Abrir a demonstração ao vivo do AltaVendas — 1 clique, sem cadastro">
+      <span class="shot-live"><i></i>SUA LOJA, AO VIVO — ABRIR A DEMO →</span>
+      <img src="img/hero-dash.png" alt="Dashboard do AltaVendas mostrando metas do dia, vendas e clientes perdidos" width="2720" height="1580" fetchpriority="high" decoding="async">
+    </a>
   </div>
   <div class="ticker" aria-hidden="true">
     <div class="ticker-faixa" id="ticker-faixa"></div>
@@ -1601,12 +1637,12 @@ if (fallbackAssumiu) {
   /* fallbackAssumiu: o hero já está na tela há segundos. Escondê-lo para
      reanimá-lo agora seria um flash gratuito. Vai direto ao estado final. */
   if (reduz || fallbackAssumiu) {
-    gsap.set([linhas, '.capa-mock', '.capa-kicker', '.capa-cta', '.masthead'], { clearProps: 'all', autoAlpha: 1, yPercent: 0 });
+    gsap.set([linhas, '.capa-shot', '.capa-kicker', '.capa-cta', '.masthead'], { clearProps: 'all', autoAlpha: 1, yPercent: 0 });
     gsap.set('.capa .grade i', { scaleY: 1 });
     gsap.set('#capa-fill', { clipPath: 'inset(-0.2em 0% -0.2em 0)' });
   } else {
     gsap.set(linhas, { yPercent: 115 });
-    gsap.set('.capa-mock', { autoAlpha: 0, rotate: -10, scale: .92, y: 40 });
+    gsap.set('.capa-shot', { autoAlpha: 0, y: 70, scale: .975 });
     gsap.set('.capa-kicker, .capa-cta, .masthead', { autoAlpha: 0, y: 18 });
     gsap.set('.capa .grade i', { scaleY: 0 });
     capaTl
@@ -1615,7 +1651,7 @@ if (fallbackAssumiu) {
       .to('.masthead', { autoAlpha: 1, y: 0, duration: .7 }, '<+0.1')
       .to('.capa-kicker', { autoAlpha: 1, y: 0, duration: .7 }, '<+0.05')
       .to(linhas, { yPercent: 0, duration: 1.15, stagger: .09 }, '<')
-      .to('.capa-mock', { autoAlpha: 1, rotate: -4, scale: 1, y: 0, duration: 1, ease: 'back.out(1.4)' }, '-=0.55')
+      .to('.capa-shot', { autoAlpha: 1, y: 0, scale: 1, duration: 1.1, ease: 'power4.out', onComplete: () => gsap.set('.capa-shot', { clearProps: 'transform' }) }, '-=0.55')
       .to('.capa-cta', { autoAlpha: 1, y: 0, duration: .7 }, '-=0.5');
   }
 
@@ -1694,8 +1730,8 @@ if (!reduz) {
       .add(() => tremor('#nota'), .6)
       /* ato 4 — o total enche de laranja */
       .fromTo('#n4-fill', { clipPath: 'inset(-0.2em 100% -0.2em 0)' }, { clipPath: 'inset(-0.2em 0% -0.2em 0)', ease: 'none', duration: .3 }, .66)
-      .fromTo('#dor-flash', { opacity: 0 }, { opacity: .12, duration: .02 }, .96)
-      .to('#dor-flash', { opacity: 0, duration: .04 }, .98)
+      /* flash laranja REMOVIDO (10/07, pedido do Kauer): no scrub de scroll o
+         ponto .96 dispara toda hora que a rolagem passa por ali — "flashbang". */
       .add(() => tremor('#nota'), .97);
   } else {
     /* mobile / reduzido: counters once */
