@@ -2233,7 +2233,7 @@ if (!reduz) {
     const lancMes = a * d;
     const faixa = ESCADA.find(f => lancMes <= f[0]) || ESCADA[ESCADA.length - 1];
     const plano = { n: faixa[2], v: faixa[1] };
-    const payback = ganhoDia > 0 ? Math.max(1, Math.ceil(plano.v / ganhoDia)) : 0;
+    const vendasPraPagar = t > 0 ? Math.max(1, Math.ceil(plano.v / t)) : 0;
 
     setOdometro(valorMes);
     $('#sf-qtd').textContent = fmt(perdidasMes) + ' atendimentos';
@@ -2241,9 +2241,12 @@ if (!reduz) {
       valorMes > 30000 ? 'Um carro popular por mês — saindo pela sua porta sem você ver.' :
       valorMes > 10000 ? 'É um aluguel inteiro indo embora pela porta, todo mês.' :
       'Ainda assim, é estoque novo todo mês.';
-    $('#sim-payback').innerHTML = payback && payback <= 31
-      ? `${plano.n} CUSTA R$ ${plano.v} — RECUPERANDO 1 VENDA EM CADA 10, <b>SE PAGA EM ${payback} ${payback === 1 ? 'DIA' : 'DIAS'}.</b>`
-      : `RECUPERANDO 1 VENDA EM CADA 10 PERDIDAS: <b>+R$ ${fmt(recupera)}/MÊS.</b>`;
+    /* Se as vendas necessarias chegam perto do que ele perde, a comparacao
+       perde a forca (e pode ate constranger). Ai o argumento vira o dinheiro
+       recuperado, que continua verdadeiro em qualquer tamanho de loja. */
+    $('#sim-payback').innerHTML = vendasPraPagar > 0 && perdidasMes >= vendasPraPagar * 4
+      ? `${plano.n} CUSTA R$ ${plano.v} — <b>${vendasPraPagar === 1 ? 'UMA' : fmt(vendasPraPagar)} DAS ${fmt(perdidasMes)} VENDAS QUE VOCÊ PERDE JÁ PAGA${vendasPraPagar === 1 ? '' : 'M'} O MÊS.</b>`
+      : `RECUPERANDO 1 EM CADA 10 QUE ESCAPAM: <b>+R$ ${fmt(recupera)}/MÊS.</b>`;
 
     /* ESTADO ALARME */
     $('.sim').classList.toggle('alarme', valorMes > 30000);
