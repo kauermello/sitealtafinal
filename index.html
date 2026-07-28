@@ -799,158 +799,175 @@ section, header.capa { position: relative; }
 }
 .ciclo-tarja .t-anual { display: none; }
 
-/* ==========================================================================
-   A ESCADA — seletor → degrau escolhido → os outros cinco em linha → tabela
-   --------------------------------------------------------------------------
-   REGRA DE OURO DESTE BLOCO: o HTML nasce completo e verdadeiro. Nada aqui
-   esconde conteúdo esperando JS ou CDN pra voltar. Sem :has() e sem JS
-   nenhum, a seção mostra os SEIS degraus abertos, no preço mensal, com os
-   seis CTAs funcionando — só não troca de modo. Tudo que está no ar é fato.
-   ========================================================================== */
-.escada { padding: 0 2.5vw; }
-.escada-cab { margin-bottom: 5vh; }
-.escada-cab h3 { font-family: var(--cond); font-weight: 900; font-size: clamp(30px, 4.4vw, 74px); line-height: .9; text-transform: uppercase; }
-.escada-cab h3 .lar { color: var(--fogo); }
-.escada-cab .sub { margin-top: 2.2vh; font-size: 17px; max-width: 60ch; color: rgba(13,13,15,.6); line-height: 1.6; }
-
-/* ---------- o seletor: a única pergunta da página ---------- */
-.seletor { border: 1px solid var(--tinta); background: var(--papel-2); padding: 3.2vh 2vw; margin-bottom: 4.5vh; }
-.seletor-perg { font-family: var(--cond); font-weight: 800; font-size: clamp(20px, 2.3vw, 34px); text-transform: uppercase; line-height: .96; }
-.regua-degraus { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 2.8vh 0 2.6vh; }
-.deg-opt { display: block; position: relative; }
-.deg-opt input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
-.deg-opt .pill {
-  display: block; text-align: center; border: 1px solid var(--tinta); background: var(--papel);
-  padding: 13px 6px; font-family: var(--cond); font-weight: 800; font-size: clamp(14px, 1.15vw, 19px);
-  text-transform: uppercase; letter-spacing: .03em; cursor: var(--cur-seta), pointer;
-  transition: background .2s, color .2s;
+/* SELETOR — uma pergunta, um card. Substituiu a grade de 3 cards + banda GSAP.
+   Tudo aqui é largura contida: a régua mudou de "escolha entre 3" pra
+   "responda 1 número e receba a sua faixa". Grade larga contradiz isso. */
+/* Grade de 2 colunas da seção de planos. */
+.planos-duo {
+  max-width: 1180px; margin: 0 auto; padding: 4.5vh 2.5vw 0;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 2.5vw; align-items: start;
 }
-.deg-opt .pill:hover { background: var(--fogo); }
-.deg-opt input:checked ~ .pill { background: var(--tinta); color: var(--papel); }
-.deg-opt input:focus-visible ~ .pill { outline: 3px solid var(--fogo); outline-offset: 3px; }
-.seletor-vend { font-family: var(--cond); font-weight: 800; font-size: clamp(18px, 1.7vw, 25px); text-transform: uppercase; }
-.seletor-apoio { margin-top: 9px; font-size: 15px; line-height: 1.55; color: rgba(13,13,15,.72); max-width: 70ch; }
+/* A pergunta acompanha a rolagem enquanto a resposta é lida. */
+.duo-pergunta { position: sticky; top: 3vh; }
 
-/* ---------- a banda que atravessa a seção ---------- */
-.banda-tinta {
-  position: relative; height: 11vh; min-height: 74px; background: var(--tinta);
-  display: flex; align-items: center; overflow: hidden; transform-origin: left; margin-bottom: 4.5vh;
+.seletor { padding: 0; }
+.sel-lbl {
+  display: block; font-family: var(--cond); font-weight: 800; font-size: 30px;
+  text-transform: uppercase; letter-spacing: -.01em; margin-bottom: 2.2vh;
 }
-.banda-tinta .faixa { display: flex; white-space: nowrap; will-change: transform; }
-.banda-tinta span { font-family: var(--cond); font-weight: 800; font-size: 5vw; color: var(--papel); text-transform: uppercase; padding-right: 4vw; }
-.banda-tinta span b { color: var(--fogo); }
+.sel-linha { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.sel-campo {
+  display: inline-flex; align-items: center; gap: 2px;
+  border: 1px solid var(--tinta); background: var(--papel); padding: 4px 6px;
+}
+.sel-btn {
+  width: 38px; height: 38px; border: none; background: transparent; cursor: pointer;
+  font-family: var(--cond); font-weight: 800; font-size: 24px; line-height: 1;
+  color: var(--tinta); transition: background .18s, color .18s;
+}
+.sel-btn:hover { background: var(--tinta); color: var(--papel); }
+.sel-rs { font-family: var(--cond); font-weight: 700; font-size: 18px; opacity: .55; padding-left: 6px; }
+#fat {
+  width: 148px; border: none; background: transparent; outline: none;
+  font-family: var(--cond); font-weight: 900; font-size: 40px; line-height: 1.1;
+  color: var(--tinta); text-align: center; letter-spacing: -.02em;
+}
+.sel-campo.pequeno #vend {
+  width: 54px; border: none; background: transparent; outline: none; text-align: center;
+  font-family: var(--cond); font-weight: 800; font-size: 24px; color: var(--tinta);
+}
+.sel-campo.pequeno .sel-btn { width: 30px; height: 30px; font-size: 19px; }
+.sel-conta { font-size: 15px; color: rgba(13,13,15,.62); line-height: 1.5; }
+.sel-conta b { color: var(--tinta); }
+.sel-vend { display: flex; align-items: center; gap: 12px; margin-top: 2.6vh; flex-wrap: wrap; }
+.sel-vend label { font-size: 14.5px; font-weight: 600; }
+.sel-nada { font-size: 13px; color: rgba(13,13,15,.45); font-style: italic; }
+.sel-premissa { margin-top: 2.2vh; font-size: 12.5px; color: rgba(13,13,15,.42); line-height: 1.6; }
 
-/* ---------- os degraus ---------- */
-/* PADRÃO (= sem :has()): os seis abertos, lado a lado. */
-.degraus { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5vh 2vw; align-items: start; }
-.degrau { position: relative; border: 1px solid var(--tinta); background: var(--papel); }
-.d-in { padding: 4.2vh 2vw 3.4vh; }
-.d-linha { display: none; }
-.d-badge {
-  position: absolute; top: -15px; left: 2vw; transform: rotate(-2.5deg); z-index: 4;
+/* Mensal ↔ anual. Mensal vem selecionado de propósito: abrir no anual mostra
+   R$81 e o checkout cobra R$970 — dissonância na pior hora possível. */
+.ciclo-row {
+  margin: 3vh 0 0;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.ciclo-toggle { display: inline-flex; border: 1px solid var(--tinta); }
+.ciclo-toggle button {
+  border: none; background: transparent; cursor: pointer; padding: 11px 22px;
+  font-family: var(--cond); font-weight: 700; font-size: 15px; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--tinta); transition: background .2s, color .2s;
+}
+.ciclo-toggle button.ativo { background: var(--tinta); color: var(--papel); }
+/* A tarja diz o BENEFÍCIO, não o nome do ciclo — e é legível nos DOIS estados.
+   Antes ela vivia em opacity .45 no mensal e "acendia" no anual: apagada
+   ninguém lia, e acesa era a mesma frase de sempre, então o clique parecia
+   não ter feito nada. Agora é contorno no mensal (convite) e marca-texto
+   cheio no anual (confirmação). */
+.ciclo-tarja {
+  font-family: var(--cond); font-weight: 800; font-size: 13px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--tinta);
+  border: 2px solid var(--fogo); background: transparent;
+  padding: 5px 12px; transform: rotate(-2deg);
+  transition: background .2s;
+}
+.ciclo-tarja.acesa { background: var(--fogo); }
+
+/* O card do resultado. Um só — o recomendado pelo volume dele. */
+.card-plano {
+  margin: 0; padding: 4vh 2.2vw 3.4vh;
+  background: var(--papel); border: 1px solid var(--tinta); position: relative;
+}
+.cp-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.cp-nome {
+  font-family: var(--cond); font-weight: 900; font-size: 44px; line-height: .95;
+  text-transform: uppercase; letter-spacing: -.02em;
+}
+.cp-pra { font-size: 15px; color: rgba(13,13,15,.6); margin-top: 8px; max-width: 46ch; line-height: 1.5; }
+.cp-tag {
   background: var(--fogo); color: var(--tinta); font-family: var(--cond); font-weight: 800;
-  font-size: 14px; letter-spacing: .08em; text-transform: uppercase; padding: 7px 16px; white-space: nowrap;
+  font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; padding: 7px 12px;
+  white-space: nowrap;
 }
-.d-unid { display: block; font-family: var(--cond); font-weight: 800; font-size: 13px; letter-spacing: .18em; text-transform: uppercase; color: var(--fogo); }
-.d-nome { font-family: var(--cond); font-weight: 800; font-size: clamp(24px, 2.4vw, 38px); text-transform: uppercase; line-height: .95; margin-top: 5px; }
-.d-pos { font-size: 14.5px; color: rgba(13,13,15,.6); margin-top: 9px; line-height: 1.5; min-height: 44px; }
-.d-preco { display: flex; align-items: baseline; gap: 8px; margin: 3vh 0 .8vh; overflow: hidden; }
-.d-preco .rs { font-family: var(--cond); font-weight: 700; font-size: 22px; align-self: flex-start; margin-top: 8px; }
-.d-preco .v { font-family: var(--cond); font-weight: 900; font-size: clamp(46px, 6vw, 108px); line-height: .85; font-variant-numeric: tabular-nums; }
-.d-preco .mes { font-size: 13px; font-weight: 600; color: rgba(13,13,15,.45); }
-.d-nota { font-size: 12.5px; font-weight: 600; color: rgba(13,13,15,.5); min-height: 17px; }
-.d-nota b { color: var(--fogo); }
-/* payback: só a metade que é conta de padaria — o "R$ x/dia" fica fora até
-   o divisor oficial (26 no site, 30 no app) ser decidido. */
-.d-paga { font-size: 12.5px; font-weight: 700; color: rgba(13,13,15,.75); margin: 1.3vh 0 2.4vh; }
-.d-paga b { color: var(--fogo); }
-.d-tab { width: 100%; border-collapse: collapse; font-size: 14px; }
-.d-tab td { padding: 9px 0; border-top: 1px solid var(--hairline); }
-.d-tab td:first-child { font-weight: 600; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: rgba(13,13,15,.5); }
-.d-tab td:last-child { text-align: right; font-weight: 700; }
-.d-tab .livre { color: var(--fogo); }
-.cta-p {
-  display: block; text-align: center; text-decoration: none; margin-top: 3vh;
-  border: 1px solid var(--tinta); padding: 15px; font-weight: 700; font-size: 14px;
-  letter-spacing: .04em; transition: all .25s;
+.cp-preco { display: flex; align-items: baseline; gap: 8px; margin: 3.2vh 0 .6vh; }
+.cp-preco .rs { font-family: var(--cond); font-weight: 700; font-size: 26px; opacity: .55; }
+.cp-preco .v { font-family: var(--cond); font-weight: 900; font-size: 96px; line-height: .82; letter-spacing: -.035em; }
+.cp-preco .mes { font-size: 15px; font-weight: 600; color: rgba(13,13,15,.5); }
+.cp-anual { font-size: 14.5px; color: rgba(13,13,15,.62); margin-bottom: 1vh; }
+.cp-anual b { color: var(--fogo); }
+.cp-lim { font-size: 15.5px; color: rgba(13,13,15,.7); border-top: 1px solid var(--hairline); padding-top: 2.2vh; margin-top: 1.4vh; }
+.cp-lim b { color: var(--tinta); }
+.cp-perto {
+  margin-top: 1.6vh; font-size: 14px; line-height: 1.55; color: rgba(13,13,15,.7);
+  border-left: 3px solid var(--fogo); padding-left: 12px;
 }
-.cta-p:hover { background: var(--tinta); color: var(--papel); }
-.cta-p.cheia { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
-.cta-p.cheia:hover { background: var(--fogo); border-color: var(--fogo); color: var(--tinta); }
-.cta-p:focus-visible { outline: 3px solid var(--fogo); outline-offset: 3px; }
-.cta-sub { text-align: center; margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: rgba(13,13,15,.45); }
-
-/* linha compacta dos degraus não escolhidos (unidade · nome · preço) */
-.d-linha {
-  grid-template-columns: minmax(104px, 13ch) 1fr auto; gap: 6px 18px; align-items: baseline;
-  padding: 2.1vh 2vw; cursor: var(--cur-seta), pointer; transition: background .2s;
+.cp-lista { list-style: none; margin: 3vh 0 0; padding: 0; }
+.cp-lista li {
+  position: relative; padding: 11px 0 11px 26px; font-size: 15px; line-height: 1.5;
+  border-top: 1px solid var(--hairline);
 }
-.d-linha:hover { background: var(--papel-2); }
-.dl-unid { font-family: var(--cond); font-weight: 800; font-size: 17px; text-transform: uppercase; letter-spacing: .04em; }
-.dl-nome { font-size: 14px; color: rgba(13,13,15,.6); }
-.dl-nome .dl-badge { font-family: var(--cond); font-weight: 800; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; background: var(--fogo); color: var(--tinta); padding: 2px 8px; margin-left: 8px; }
-.dl-preco { font-family: var(--cond); font-weight: 800; font-size: 21px; white-space: nowrap; }
-
-/* ---------- o modo escada (depende de :has(); sem ele, os seis ficam abertos) ---------- */
-.p-anual { display: none; }
-@supports selector(:has(*)) {
-  /* 1) ciclo anual: troca o número grande e a linha fina, sem JS */
-  .escada:has(#ciclo-anual:checked) .p-mensal { display: none; }
-  .escada:has(#ciclo-anual:checked) div.p-anual { display: flex; }
-  .escada:has(#ciclo-anual:checked) p.p-anual { display: block; }
-  .escada:has(#ciclo-anual:checked) span.p-anual { display: inline; }
-  /* a tarja acende e troca de frase junto com o preço */
-  .escada:has(#ciclo-anual:checked) .ciclo-tarja { background: var(--fogo); }
-  .escada:has(#ciclo-anual:checked) .ciclo-tarja .t-mensal { display: none; }
-  .escada:has(#ciclo-anual:checked) .ciclo-tarja .t-anual { display: inline; }
-
-  /* 2) um degrau escolhido → vira card no topo; os outros cinco viram linha */
-  .escada:has(input[name="degrau"]:checked) .degraus { display: flex; flex-direction: column; }
-  .escada:has(input[name="degrau"]:checked) .degrau { order: 2; margin-top: -1px; }
-  .escada:has(#deg-comeco:checked)  .degrau[data-degrau="comeco"],
-  .escada:has(#deg-crescimento:checked)  .degrau[data-degrau="crescimento"],
-  .escada:has(#deg-expansao:checked)  .degrau[data-degrau="expansao"],
-  .escada:has(#deg-operacao:checked) .degrau[data-degrau="operacao"],
-  .escada:has(#deg-escala:checked) .degrau[data-degrau="escala"],
-  .escada:has(#deg-rede:checked) .degrau[data-degrau="rede"] { order: 1; margin: 0 0 4vh; }
-  .escada:has(#deg-comeco:checked)  .degrau:not([data-degrau="comeco"])  .d-in,
-  .escada:has(#deg-crescimento:checked)  .degrau:not([data-degrau="crescimento"])  .d-in,
-  .escada:has(#deg-expansao:checked)  .degrau:not([data-degrau="expansao"])  .d-in,
-  .escada:has(#deg-operacao:checked) .degrau:not([data-degrau="operacao"]) .d-in,
-  .escada:has(#deg-escala:checked) .degrau:not([data-degrau="escala"]) .d-in,
-  .escada:has(#deg-rede:checked) .degrau:not([data-degrau="rede"]) .d-in { display: none; }
-  .escada:has(#deg-comeco:checked)  .degrau:not([data-degrau="comeco"])  .d-linha,
-  .escada:has(#deg-crescimento:checked)  .degrau:not([data-degrau="crescimento"])  .d-linha,
-  .escada:has(#deg-expansao:checked)  .degrau:not([data-degrau="expansao"])  .d-linha,
-  .escada:has(#deg-operacao:checked) .degrau:not([data-degrau="operacao"]) .d-linha,
-  .escada:has(#deg-escala:checked) .degrau:not([data-degrau="escala"]) .d-linha,
-  .escada:has(#deg-rede:checked) .degrau:not([data-degrau="rede"]) .d-linha { display: grid; }
+.cp-lista li::before {
+  content: '✓'; position: absolute; left: 0; top: 11px;
+  color: var(--fogo); font-weight: 800; font-size: 15px;
+}
+.cp-cta {
+  display: block; text-align: center; text-decoration: none; margin-top: 3.4vh;
+  background: var(--tinta); color: var(--papel); border: 1px solid var(--tinta);
+  padding: 17px; font-family: var(--cond); font-weight: 800; font-size: 17px;
+  text-transform: uppercase; letter-spacing: .05em; transition: background .25s, border-color .25s;
+}
+.cp-cta:hover { background: var(--fogo); border-color: var(--fogo); color: var(--tinta); }
+/* "sem cartão" DENTRO do card, colado no botão — não no rodapé, não no FAQ. */
+.cp-semcartao { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: rgba(13,13,15,.5); }
+.cp-garantia {
+  text-align: center; margin-top: 1.8vh; font-size: 13.5px; line-height: 1.5;
+  color: rgba(13,13,15,.62); border-top: 1px solid var(--hairline); padding-top: 1.8vh;
 }
 
-/* ---------- tabela comparativa: só a primeira linha muda ---------- */
-.tab-comp-bloco { margin-top: 8vh; }
-.tab-comp-kicker { font-family: var(--cond); font-weight: 800; font-size: clamp(19px, 2vw, 30px); text-transform: uppercase; margin-bottom: 2.4vh; }
-.tab-comp-wrap { overflow-x: auto; border: 1px solid var(--tinta); }
-.tab-comp { width: 100%; min-width: 700px; border-collapse: collapse; }
-.tab-comp th, .tab-comp td { border: 1px solid var(--hairline); padding: 13px 10px; text-align: center; font-size: 14px; font-weight: 700; }
-.tab-comp thead th { font-family: var(--cond); font-weight: 800; font-size: 16px; text-transform: uppercase; background: var(--papel-2); line-height: 1.1; }
-.tab-comp thead th small { display: block; font-family: var(--txt); font-weight: 600; font-size: 11px; letter-spacing: .1em; color: rgba(13,13,15,.5); margin-top: 3px; }
-.tab-comp th[scope="row"] { text-align: left; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: rgba(13,13,15,.5); white-space: nowrap; }
-.tab-comp .tudo { background: var(--tinta); color: var(--papel); font-family: var(--cond); font-weight: 800; font-size: clamp(15px, 1.5vw, 22px); text-transform: uppercase; line-height: 1.3; padding: 20px 14px; }
-.tab-comp .tudo b { color: var(--fogo); }
-.tab-comp-apoio { margin-top: 2.6vh; font-size: 15.5px; color: rgba(13,13,15,.6); max-width: 74ch; line-height: 1.6; }
-.tab-comp-apoio b { color: var(--tinta); }
+/* Estourar o limite não bloqueia nada. Texto normal, nunca asterisco. */
+.nao-trava {
+  margin: 2.4vh 0 0; padding: 0;
+  font-size: 15px; line-height: 1.6; color: rgba(13,13,15,.62);
+}
+.nao-trava b { color: var(--tinta); }
+
+.ver-faixas {
+  display: block; margin: 3.4vh auto 0; border: none; background: transparent; cursor: pointer;
+  font-size: 14.5px; font-weight: 700; color: var(--tinta);
+  text-decoration: underline; text-underline-offset: 5px;
+}
+.ver-faixas:hover { color: var(--fogo); }
+
+.tabela-faixas { max-width: 900px; margin: 3vh auto 0; padding: 0 2vw; overflow-x: auto; }
+.tabela-faixas table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 640px; }
+.tabela-faixas th {
+  text-align: left; font-family: var(--cond); font-weight: 800; font-size: 11.5px;
+  text-transform: uppercase; letter-spacing: .07em; color: rgba(13,13,15,.5);
+  padding: 10px 12px; border-bottom: 1px solid var(--tinta);
+}
+.tabela-faixas td { padding: 13px 12px; border-bottom: 1px solid var(--hairline); }
+.tabela-faixas tr.sua { background: rgba(255,90,31,.07); }
+.tabela-faixas tr.sua td { border-bottom-color: var(--fogo); }
+.tag-sua {
+  background: var(--fogo); color: var(--tinta); font-family: var(--cond); font-weight: 800;
+  font-size: 10px; letter-spacing: .07em; padding: 3px 7px; margin-left: 6px; white-space: nowrap;
+}
+.tab-exc { margin-top: 2.4vh; font-size: 13.5px; color: rgba(13,13,15,.55); line-height: 1.6; }
 
 .planos-pe { text-align: center; margin-top: 7vh; font-size: 14.5px; color: rgba(13,13,15,.55); padding: 0 2.5vw; line-height: 1.7; }
 .planos-pe b { color: var(--tinta); }
+
 @media (max-width: 980px) {
+  .planos-duo { grid-template-columns: 1fr; gap: 4vh; padding: 3.5vh 5vw 0; }
+  .duo-pergunta { position: static; }
   .planos-cab h2 { font-size: 11vw; }
-  .banda-tinta { display: none; }
-  .degraus { grid-template-columns: 1fr; }
-  .regua-degraus { grid-template-columns: repeat(3, 1fr); }
-  .d-preco .v { font-size: 19vw; }
-  .d-linha { grid-template-columns: 1fr auto; }
-  .dl-nome { grid-column: 1 / -1; }
+  .sel-lbl { font-size: 24px; }
+  #fat { width: 120px; font-size: 32px; }
+  .cp-preco .v { font-size: 22vw; }
+  /* O nome não pode escalar livre: "Sua loja passou das faixas" tem 26 caracteres
+     e a 12vw virava três linhas gigantes. O preço é que carrega o peso visual. */
+  .cp-nome { font-size: clamp(30px, 8vw, 46px); }
+  .cp-tag { font-size: 10.5px; }
+  .card-plano { padding: 4vh 5vw 3.5vh; }
 }
 
 /* ==========================================================================
@@ -1102,12 +1119,9 @@ section, header.capa { position: relative; }
   .gh-anota, .gh-anota-txt { max-width: 100%; white-space: normal; display: block; }
 
   /* planos: miolo compacto (menos ar entre descrição e preço) */
-  .d-in { padding: 3.2vh 5vw 3vh; }
-  .d-linha { padding: 2vh 5vw; }
   .seletor { padding: 3vh 5vw; }
   .escada, .planos-pe { padding: 0 5vw; }
   .d-badge { left: 5vw; }
-  .regua-degraus { gap: 6px; }
   .deg-opt .pill { padding: 12px 4px; font-size: 15px; }
 
   /* fim (fogo): respiro contido no topo e no contador */
@@ -1430,259 +1444,197 @@ section, header.capa { position: relative; }
     <p style="margin-top:2.4vh; font-size:17px; max-width:56ch; color:rgba(13,13,15,.6); line-height:1.6">Aqui não se paga por cabeça. Cadastre a loja inteira — você, o gerente, quem fecha o caixa e todo vendedor — sem pagar por vaga. De um plano pro outro muda <b style="color:var(--tinta)">um número só</b>: quantas vendas e atendimentos você registra por mês. As funções são as mesmas do primeiro ao último.</p>
   </div>
 
-  <!-- ---------- A ESCADA: seis degraus, um eixo só ----------
-       O eixo é o MOVIMENTO da loja: cada venda registrada e cada atendimento
-       registrado conta um lançamento. Nunca escrever só "vendas" — quem lê
-       "vendas" subestima o próprio volume, escolhe a faixa errada e se sente
-       enganado depois. É a fonte de confusão nº 1 deste modelo.
 
-       O seletor e a chavezinha mensal/anual são <input type="radio"> de
-       verdade: funcionam com o JS desligado e com o CDN fora do ar. Sem
-       :has(), a seção mostra os SEIS degraus abertos, no preço mensal, com os
-       seis CTAs funcionando — só não troca de modo. Tudo que está no ar é fato. -->
-  <div class="escada" id="escada">
-    <div class="escada-cab">
-      <h3>TODO PLANO VEM COMPLETO.<br>MUDA SÓ <span class="lar">O TAMANHO DO MOVIMENTO.</span></h3>
-      <p class="sub">Nos seis, o sistema registra quem comprou e quem saiu sem levar. Usuário e vendedor são ilimitados em todos — você escolhe só o tamanho do movimento da loja.</p>
-    </div>
-
-    <div class="ciclo-row">
-      <div class="ciclo-toggle">
-        <label><input type="radio" name="ciclo" id="ciclo-mensal" checked><span class="pill">Mensal</span></label>
-        <label><input type="radio" name="ciclo" id="ciclo-anual"><span class="pill">Anual</span></label>
+  <!-- SELETOR DE VOLUME — uma pergunta, um card.
+       Nenhuma empresa que cobra por volume mostra um card por faixa. E o que
+       trava o dono não é ter 6 opções: é não saber quantos lançamentos faz. -->
+  <!-- DUAS COLUNAS: pergunta à esquerda, resposta à direita.
+       Empilhado, a pergunta ficava numa dobra e o plano na seguinte — a pessoa
+       mexia na calculadora sem ver o card mudar, que é o exato momento em que a
+       página se explica sozinha. Abaixo de 980px volta a empilhar. -->
+  <div class="planos-duo">
+  <div class="duo-pergunta">
+  <div class="seletor" id="seletor">
+    <label class="sel-lbl" for="fat">Quanto sua loja fatura por mês?</label>
+    <div class="sel-linha">
+      <div class="sel-campo">
+        <button type="button" class="sel-btn" id="fat-menos" aria-label="Diminuir">−</button>
+        <span class="sel-rs">R$</span>
+        <input id="fat" type="text" inputmode="numeric" value="45.000" aria-label="Faturamento mensal">
+        <button type="button" class="sel-btn" id="fat-mais" aria-label="Aumentar">+</button>
       </div>
-      <span class="ciclo-tarja"><span class="t-mensal">No anual: 2 meses grátis</span><span class="t-anual">✓ 2 meses grátis</span></span>
+      <p class="sel-conta" id="sel-conta"></p>
     </div>
 
-    <!-- A pergunta é o FATURAMENTO, não o tamanho do negócio: "pequena/média/
-         grande" é autoimagem, e dono de loja de bairro sempre se classifica como
-         pequeno — ancoraria todo mundo no R$49 e estouraria na primeira semana.
-         Faturamento é número objetivo, e ele sabe de cabeça. -->
-    <div class="seletor">
-      <p class="seletor-perg">QUANTO SUA LOJA FATURA POR MÊS?</p>
-      <div class="regua-degraus" role="radiogroup" aria-label="Quanto sua loja fatura por mês">
-        <label class="deg-opt"><input type="radio" name="degrau" id="deg-comeco"><span class="pill">até 40 mil</span></label>
-        <label class="deg-opt"><input type="radio" name="degrau" id="deg-crescimento" checked><span class="pill">40 a 100 mil</span></label>
-        <label class="deg-opt"><input type="radio" name="degrau" id="deg-expansao"><span class="pill">100 a 200 mil</span></label>
-        <label class="deg-opt"><input type="radio" name="degrau" id="deg-operacao"><span class="pill">200 a 350 mil</span></label>
-        <label class="deg-opt"><input type="radio" name="degrau" id="deg-escala"><span class="pill">350 a 600 mil</span></label>
-        <label class="deg-opt"><input type="radio" name="degrau" id="deg-rede"><span class="pill">acima de 600 mil</span></label>
+    <div class="sel-vend">
+      <label for="vend">Quantas pessoas vendem?</label>
+      <div class="sel-campo pequeno">
+        <button type="button" class="sel-btn" id="v-menos" aria-label="Menos">−</button>
+        <input id="vend" type="text" inputmode="numeric" value="3" aria-label="Pessoas que vendem">
+        <button type="button" class="sel-btn" id="v-mais" aria-label="Mais">+</button>
       </div>
-      <p class="seletor-vend">Passou do limite num mês? Não trava — todo plano tem 500 de folga.</p>
-      <p class="seletor-apoio">Faturamento é orientação, não regra — o que conta é o movimento. Loja de ticket alto e pouco volume (joalheria, móveis planejados) cai num plano menor do que o faturamento sugere, e está certo. E a troca de faixa vem dos <b>3 meses seguidos</b> acima, nunca de um pico: dezembro sozinho não sobe ninguém. Antes disso, a folga de 500 lançamentos que todo plano tem já cobre o mês forte.</p>
+      <span class="sel-nada">não muda o preço</span>
     </div>
 
-    <div class="degraus">
-
-      <article class="degrau" data-plano data-degrau="comeco">
-        <div class="d-in">
-          <span class="d-unid">até 400 por mês</span>
-          <h4 class="d-nome">Começo</h4>
-          <p class="d-pos">Balcão pequeno, uma ou duas pessoas atendendo.</p>
-          <div class="d-preco p-mensal"><span class="rs">R$</span><span class="v" data-preco>49</span><span class="mes">/mês</span></div>
-          <div class="d-preco p-anual"><span class="rs">R$</span><span class="v">41</span><span class="mes">/mês</span></div>
-          <p class="d-nota p-mensal">No anual sai por R$ 41/mês — 2 meses grátis</p>
-          <p class="d-nota p-anual">Cobrado R$ 490 por ano · <b>você economiza R$ 98</b></p>
-          <p class="d-paga">recupere <b>1 venda de R$ 180 no mês</b> e o sistema já se pagou</p>
-          <table class="d-tab">
-            <tr><td>Vendas e atendimentos</td><td>até 400/mês</td></tr>
-            <tr><td>Dá mais ou menos</td><td>15 por dia</td></tr>
-            <tr><td>Usuários com senha</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Vendedores</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Produtos e histórico</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Funcionalidades</td><td class="livre">todas</td></tr>
-          </table>
-          <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=comeco">COMEÇAR 14 DIAS GRÁTIS →</a>
-          <p class="cta-sub">sem cartão</p>
-        </div>
-        <label class="d-linha" for="deg-comeco">
-          <span class="dl-unid">até 400/mês</span>
-          <span class="dl-nome">Começo</span>
-          <span class="dl-preco num"><span class="p-mensal">R$ 49</span><span class="p-anual">R$ 41</span>/mês</span>
-        </label>
-      </article>
-
-      <article class="degrau" data-plano data-degrau="crescimento">
-        <div class="d-in">
-          <span class="d-unid">até 1.000 por mês</span>
-          <h4 class="d-nome">Crescimento</h4>
-          <p class="d-pos">Loja de bairro com movimento constante e um time pequeno.</p>
-          <div class="d-preco p-mensal"><span class="rs">R$</span><span class="v" data-preco>97</span><span class="mes">/mês</span></div>
-          <div class="d-preco p-anual"><span class="rs">R$</span><span class="v">81</span><span class="mes">/mês</span></div>
-          <p class="d-nota p-mensal">No anual sai por R$ 81/mês — 2 meses grátis</p>
-          <p class="d-nota p-anual">Cobrado R$ 970 por ano · <b>você economiza R$ 194</b></p>
-          <p class="d-paga">recupere <b>1 venda de R$ 180 no mês</b> e o sistema já se pagou</p>
-          <table class="d-tab">
-            <tr><td>Vendas e atendimentos</td><td>até 1.000/mês</td></tr>
-            <tr><td>Dá mais ou menos</td><td>38 por dia</td></tr>
-            <tr><td>Usuários com senha</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Vendedores</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Produtos e histórico</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Funcionalidades</td><td class="livre">todas</td></tr>
-          </table>
-          <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=crescimento">COMEÇAR 14 DIAS GRÁTIS →</a>
-          <p class="cta-sub">sem cartão</p>
-        </div>
-        <label class="d-linha" for="deg-crescimento">
-          <span class="dl-unid">até 1.000/mês</span>
-          <span class="dl-nome">Crescimento</span>
-          <span class="dl-preco num"><span class="p-mensal">R$ 97</span><span class="p-anual">R$ 81</span>/mês</span>
-        </label>
-      </article>
-
-      <article class="degrau" data-plano data-degrau="expansao">
-        <div class="d-in">
-          <span class="d-unid">até 2.000 por mês</span>
-          <h4 class="d-nome">Expansão</h4>
-          <p class="d-pos">A loja encheu e já tem gente demais pra controlar de cabeça.</p>
-          <div class="d-preco p-mensal"><span class="rs">R$</span><span class="v" data-preco>167</span><span class="mes">/mês</span></div>
-          <div class="d-preco p-anual"><span class="rs">R$</span><span class="v">139</span><span class="mes">/mês</span></div>
-          <p class="d-nota p-mensal">No anual sai por R$ 139/mês — 2 meses grátis</p>
-          <p class="d-nota p-anual">Cobrado R$ 1.670 por ano · <b>você economiza R$ 334</b></p>
-          <p class="d-paga">recupere <b>1 venda de R$ 180 no mês</b> e o sistema já se pagou</p>
-          <table class="d-tab">
-            <tr><td>Vendas e atendimentos</td><td>até 2.000/mês</td></tr>
-            <tr><td>Dá mais ou menos</td><td>77 por dia</td></tr>
-            <tr><td>Usuários com senha</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Vendedores</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Produtos e histórico</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Funcionalidades</td><td class="livre">todas</td></tr>
-          </table>
-          <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=expansao">COMEÇAR 14 DIAS GRÁTIS →</a>
-          <p class="cta-sub">sem cartão</p>
-        </div>
-        <label class="d-linha" for="deg-expansao">
-          <span class="dl-unid">até 2.000/mês</span>
-          <span class="dl-nome">Expansão</span>
-          <span class="dl-preco num"><span class="p-mensal">R$ 167</span><span class="p-anual">R$ 139</span>/mês</span>
-        </label>
-      </article>
-
-      <article class="degrau" data-plano data-degrau="operacao">
-        <div class="d-in">
-          <span class="d-unid">até 3.500 por mês</span>
-          <h4 class="d-nome">Operação</h4>
-          <p class="d-pos">Movimento o dia inteiro, turnos e um caixa que não pode errar.</p>
-          <div class="d-preco p-mensal"><span class="rs">R$</span><span class="v" data-preco>267</span><span class="mes">/mês</span></div>
-          <div class="d-preco p-anual"><span class="rs">R$</span><span class="v">223</span><span class="mes">/mês</span></div>
-          <p class="d-nota p-mensal">No anual sai por R$ 223/mês — 2 meses grátis</p>
-          <p class="d-nota p-anual">Cobrado R$ 2.670 por ano · <b>você economiza R$ 534</b></p>
-          <p class="d-paga">recupere <b>2 vendas de R$ 180 no mês</b> e o sistema já se pagou</p>
-          <table class="d-tab">
-            <tr><td>Vendas e atendimentos</td><td>até 3.500/mês</td></tr>
-            <tr><td>Dá mais ou menos</td><td>135 por dia</td></tr>
-            <tr><td>Usuários com senha</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Vendedores</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Produtos e histórico</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Funcionalidades</td><td class="livre">todas</td></tr>
-          </table>
-          <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=operacao">COMEÇAR 14 DIAS GRÁTIS →</a>
-          <p class="cta-sub">sem cartão</p>
-        </div>
-        <label class="d-linha" for="deg-operacao">
-          <span class="dl-unid">até 3.500/mês</span>
-          <span class="dl-nome">Operação</span>
-          <span class="dl-preco num"><span class="p-mensal">R$ 267</span><span class="p-anual">R$ 223</span>/mês</span>
-        </label>
-      </article>
-
-      <article class="degrau" data-plano data-degrau="escala">
-        <div class="d-in">
-          <span class="d-unid">até 6.000 por mês</span>
-          <h4 class="d-nome">Escala</h4>
-          <p class="d-pos">Operação grande, com equipe e metas por vendedor.</p>
-          <div class="d-preco p-mensal"><span class="rs">R$</span><span class="v" data-preco>397</span><span class="mes">/mês</span></div>
-          <div class="d-preco p-anual"><span class="rs">R$</span><span class="v">331</span><span class="mes">/mês</span></div>
-          <p class="d-nota p-mensal">No anual sai por R$ 331/mês — 2 meses grátis</p>
-          <p class="d-nota p-anual">Cobrado R$ 3.970 por ano · <b>você economiza R$ 794</b></p>
-          <p class="d-paga">recupere <b>3 vendas de R$ 180 no mês</b> e o sistema já se pagou</p>
-          <table class="d-tab">
-            <tr><td>Vendas e atendimentos</td><td>até 6.000/mês</td></tr>
-            <tr><td>Dá mais ou menos</td><td>231 por dia</td></tr>
-            <tr><td>Usuários com senha</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Vendedores</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Produtos e histórico</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Funcionalidades</td><td class="livre">todas</td></tr>
-          </table>
-          <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=escala">COMEÇAR 14 DIAS GRÁTIS →</a>
-          <p class="cta-sub">sem cartão</p>
-        </div>
-        <label class="d-linha" for="deg-escala">
-          <span class="dl-unid">até 6.000/mês</span>
-          <span class="dl-nome">Escala</span>
-          <span class="dl-preco num"><span class="p-mensal">R$ 397</span><span class="p-anual">R$ 331</span>/mês</span>
-        </label>
-      </article>
-
-      <article class="degrau" data-plano data-degrau="rede">
-        <div class="d-in">
-          <span class="d-unid">até 10.000 por mês</span>
-          <h4 class="d-nome">Rede</h4>
-          <p class="d-pos">Mais de um ponto de venda, com quem toca o dia a dia longe do dono.</p>
-          <div class="d-preco p-mensal"><span class="rs">R$</span><span class="v" data-preco>547</span><span class="mes">/mês</span></div>
-          <div class="d-preco p-anual"><span class="rs">R$</span><span class="v">456</span><span class="mes">/mês</span></div>
-          <p class="d-nota p-mensal">No anual sai por R$ 456/mês — 2 meses grátis</p>
-          <p class="d-nota p-anual">Cobrado R$ 5.470 por ano · <b>você economiza R$ 1.094</b></p>
-          <p class="d-paga">recupere <b>4 vendas de R$ 180 no mês</b> e o sistema já se pagou</p>
-          <table class="d-tab">
-            <tr><td>Vendas e atendimentos</td><td>até 10.000/mês</td></tr>
-            <tr><td>Dá mais ou menos</td><td>385 por dia</td></tr>
-            <tr><td>Usuários com senha</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Vendedores</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Produtos e histórico</td><td class="livre">ilimitados</td></tr>
-            <tr><td>Passou de 10.000</td><td>R$ 40 a cada mil a mais</td></tr>
-          </table>
-          <a class="cta-p cheia" href="https://app.upvendas.app.br/cadastro?plano=rede">COMEÇAR 14 DIAS GRÁTIS →</a>
-          <p class="cta-sub">sem cartão</p>
-        </div>
-        <label class="d-linha" for="deg-rede">
-          <span class="dl-unid">até 10.000/mês</span>
-          <span class="dl-nome">Rede</span>
-          <span class="dl-preco num"><span class="p-mensal">R$ 547</span><span class="p-anual">R$ 456</span>/mês</span>
-        </label>
-      </article>
-
-    </div>
-
-    <!-- ---------- a tabela: só a primeira linha muda ---------- -->
-    <div class="tab-comp-bloco">
-      <p class="tab-comp-kicker">Nesta tabela, só a primeira linha muda.</p>
-      <div class="tab-comp-wrap" tabindex="0" role="region" aria-label="Comparação dos seis planos">
-        <table class="tab-comp">
-          <thead>
-            <tr>
-              <td></td>
-              <th scope="col">Começo<small>R$ 49</small></th>
-              <th scope="col">Crescimento<small>R$ 97</small></th>
-              <th scope="col">Expansão<small>R$ 167</small></th>
-              <th scope="col">Operação<small>R$ 267</small></th>
-              <th scope="col">Escala<small>R$ 397</small></th>
-              <th scope="col">Rede<small>R$ 547</small></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Vendas e atendimentos por mês</th>
-              <td>400</td><td>1.000</td><td>2.000</td><td>3.500</td><td>6.000</td><td>10.000</td>
-            </tr>
-            <tr>
-              <th scope="row">Custo por lançamento</th>
-              <td>R$ 0,12</td><td>R$ 0,10</td><td>R$ 0,08</td><td>R$ 0,08</td><td>R$ 0,07</td><td>R$ 0,05</td>
-            </tr>
-            <tr>
-              <th scope="row">Todo o resto</th>
-              <td class="tudo" colspan="6">Igual nos seis — todas as funcionalidades, usuários, vendedores, produtos e histórico. <b>Sem teto, do R$ 49 ao R$ 547.</b></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="tab-comp-apoio">Não tem nada guardado pro plano de cima. <b>Quem paga R$ 49 abre o mesmo sistema de quem paga R$ 547.</b> Muda só o tamanho do movimento — e quanto maior a faixa, mais barato sai cada lançamento.</p>
-    </div>
+    <p class="sel-premissa">Conta usada: faturamento ÷ R$ 180 de ticket médio = vendas · vendas ÷ 0,55 = vendas e atendimentos. Loja de ticket alto e pouco volume cai num plano menor do que o faturamento sugere — e está certo.</p>
   </div>
 
-  <p class="planos-pe"><b>Sem fidelidade e sem multa</b> — você cancela quando quiser, sem ligar pra ninguém. <b>Seus dados saem com você em planilha</b>, no dia que você pedir. Acabaram os 14 dias e você não ativou? <b>O sistema tranca. Seus dados, não.</b> Seu histórico fica aqui, inteiro.<br>
-  Prefere ver funcionando antes? <a href="https://app.upvendas.app.br/demo" style="color:var(--fogo); font-weight:700; text-decoration:underline; text-underline-offset:3px">Abra a demonstração — 1 clique, sem cadastro</a> · Já tem conta? <a href="https://app.upvendas.app.br/login" style="color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px">Entre aqui</a></p>
+  <div class="ciclo-row">
+    <div class="ciclo-toggle" id="ciclo-toggle">
+      <button type="button" class="ativo" data-ciclo="mensal">Mensal</button>
+      <button type="button" data-ciclo="anual">Anual</button>
+    </div>
+    <span class="ciclo-tarja" id="ciclo-tarja">No anual: 4 meses grátis</span>
+  </div>
+  </div><!-- /duo-pergunta -->
+
+  <div class="duo-resposta">
+  <div class="card-plano" id="card-plano"></div>
+
+  <p class="nao-trava"><b>Passou do limite em um mês?</b> Não trava. Todo plano vem com <b>20% de folga</b> além do contratado — cerca de uma semana de movimento, em qualquer faixa. E se o mês fechar acima, a gente avisa e não cobra nada a mais: são <b>3 meses seguidos</b> assim antes de pedir o acerto da faixa. Nada do que você registrou se perde.</p>
+
+  </div><!-- /duo-resposta -->
+  </div><!-- /planos-duo -->
+
+  <button type="button" class="ver-faixas" id="ver-faixas">ver as 6 faixas ▾</button>
+  <div class="tabela-faixas" id="tabela-faixas" hidden></div>
+
+  <p class="planos-pe">Todas as funções estão em <b>todos os planos</b> — a diferença é só o tamanho da operação. Usuários e vendedores ilimitados, sem fidelidade, e seus dados saem com você em planilha. <b>Em 14 dias, ou você vira o dono que vê, ou não paga nada.</b><br>
+  Prefere ver funcionando antes? <a href="https://app.upvendas.app.br/demo" style="color:var(--fogo); font-weight:700; text-decoration:underline; text-underline-offset:3px">Abra a demonstração — 1 clique</a> · Já tem conta? <a href="/login" style="color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px">Entre aqui</a></p>
 </section>
+
+<script>
+/* SELETOR DE VOLUME — vanilla, independente do GSAP.
+   Espelha src/lib/planosCatalogo.ts. Quando os dois divergem, o site mente:
+   já aconteceu (o site prometia 3 meses de histórico e o app entregava 6). */
+(() => {
+  const PLANOS = [
+    { slug:'comeco',      nome:'Começo',      lanc:400,   mensal:49,  pra:'Balcão pequeno, uma ou duas pessoas atendendo.' },
+    { slug:'crescimento', nome:'Crescimento', lanc:1000,  mensal:97,  pra:'Loja de bairro com movimento constante e um time pequeno.' },
+    { slug:'expansao',    nome:'Expansão',    lanc:2000,  mensal:167, pra:'A loja encheu e já tem gente demais pra controlar de cabeça.' },
+    { slug:'operacao',    nome:'Operação',    lanc:3500,  mensal:267, pra:'Movimento o dia inteiro, turnos e um caixa que não pode errar.' },
+    { slug:'escala',      nome:'Escala',      lanc:6000,  mensal:397, pra:'Operação grande, com equipe e metas por vendedor.' },
+    { slug:'rede',        nome:'Rede',        lanc:10000, mensal:547, pra:'Mais de um ponto de venda, com quem toca o dia a dia longe do dono.' }
+  ];
+  const TICKET = 180, CONV = 0.55, DIAS = 26, EXC_CADA = 1000, EXC_PRECO = 40;
+  /* Espelham src/lib/planosCatalogo.ts. Divergir aqui = site cobrando um
+     preco e app mostrando outro — ja aconteceu com a tabela antiga. */
+  const MESES_PAGOS = 8, MESES_GRATIS = 12 - MESES_PAGOS, MARGEM_PCT = 0.20;
+  const margemDe = (teto) => Math.round(teto * MARGEM_PCT);
+
+  const g = (s) => document.getElementById(s);
+  const elFat = g('fat'), elVend = g('vend'), elConta = g('sel-conta'), elCard = g('card-plano');
+  const elTg = g('ciclo-toggle'), elTarja = g('ciclo-tarja'), elVer = g('ver-faixas'), elTab = g('tabela-faixas');
+  if (!elFat || !elCard) return;
+
+  let faturamento = 45000, ciclo = 'mensal';
+  const n = (v) => Number(v).toLocaleString('pt-BR');
+  const n2 = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const anualDe = (p) => p.mensal * MESES_PAGOS;
+  const equivDe = (p) => Math.round(anualDe(p) / 12);
+  const econDe = (p) => p.mensal * 12 - anualDe(p);
+  const diaDe = (p) => Math.round(p.lanc / DIAS);
+  const lancDe = (f) => Math.round((f / TICKET) / CONV);
+
+  function render() {
+    const lanc = lancDe(faturamento);
+    const vendas = Math.round(faturamento / TICKET);
+    const p = PLANOS.find((x) => lanc <= x.lanc) || null;
+    const anual = ciclo === 'anual';
+
+    elConta.innerHTML = '&asymp; ' + n(vendas) + ' vendas &middot; <b>' + n(lanc) + ' vendas e atendimentos</b> por m&ecirc;s';
+
+    if (!p) {
+      const ult = PLANOS[PLANOS.length - 1];
+      const mil = Math.ceil((lanc - ult.lanc) / EXC_CADA);
+      const total = ult.mensal + mil * EXC_PRECO;
+      elCard.innerHTML =
+        '<h3 class="cp-nome">Sua loja passou das faixas</h3>' +
+        '<p class="cp-pra">Com ' + n(lanc) + ' vendas e atendimentos por m&ecirc;s, a conta &eacute; o plano Rede mais o excedente:</p>' +
+        '<div class="cp-preco"><span class="rs">R$</span><span class="v">' + n(total) + '</span><span class="mes">/m&ecirc;s</span></div>' +
+        '<p class="cp-lim">R$ ' + n(ult.mensal) + ' do plano Rede + R$ ' + n(mil * EXC_PRECO) + ' de excedente</p>' +
+        '<a class="cp-cta" href="https://wa.me/5595991654312" target="_blank" rel="noreferrer">FALAR COM A GENTE &rarr;</a>';
+      return;
+    }
+
+    const preco = anual ? equivDe(p) : p.mensal;
+    const perto = lanc >= p.lanc * 0.85;
+    elCard.innerHTML =
+      '<div class="cp-topo"><div>' +
+        '<h3 class="cp-nome">' + p.nome + '</h3>' +
+        '<p class="cp-pra">' + p.pra + '</p>' +
+      '</div><span class="cp-tag">RECOMENDADO PELO SEU VOLUME</span></div>' +
+      '<div class="cp-preco"><span class="rs">R$</span><span class="v">' + n(preco) + '</span><span class="mes">/m&ecirc;s</span></div>' +
+      (anual ? '<p class="cp-anual">R$ ' + n(anualDe(p)) + ' no ano &middot; ' + MESES_GRATIS + ' meses gr&aacute;tis &middot; voc&ecirc; economiza <b>R$ ' + n(econDe(p)) + '</b></p>' : '') +
+      '<p class="cp-lim">at&eacute; <b>' + n(p.lanc) + '</b> vendas e atendimentos por m&ecirc;s &middot; cerca de ' + n(diaDe(p)) + ' por dia</p>' +
+      (perto ? '<p class="cp-perto">Voc&ecirc; est&aacute; perto do teto desta faixa. Se passar, entra na folga de ' + n(margemDe(p.lanc)) + ' que vem com ela &mdash; nada trava no m&ecirc;s.</p>' : '') +
+      '<ul class="cp-lista">' +
+        '<li>Cadastre a loja inteira. Vendedor e usu&aacute;rio n&atilde;o contam no pre&ccedil;o &mdash; nem no plano de R$ 49.</li>' +
+        '<li>Todas as fun&ccedil;&otilde;es, em todos os planos.</li>' +
+        '<li>Sem fidelidade. Seus dados saem com voc&ecirc; em planilha.</li>' +
+      '</ul>' +
+      '<a class="cp-cta" href="https://app.upvendas.app.br/cadastro?plano=' + p.slug + '&ciclo=' + ciclo + '">TESTAR 14 DIAS GR&Aacute;TIS &rarr;</a>' +
+      '<span class="cp-semcartao">sem cart&atilde;o de cr&eacute;dito</span>' +
+      (anual ? '<p class="cp-garantia">Se em 30 dias n&atilde;o servir, devolvemos os 12 meses. Sem pergunta.</p>' : '');
+  }
+
+  function tabela() {
+    const lanc = lancDe(faturamento);
+    const sua = PLANOS.find((x) => lanc <= x.lanc);
+    let linhas = '';
+    PLANOS.forEach((p) => {
+      const eSua = sua && sua.slug === p.slug;
+      linhas +=
+        '<tr' + (eSua ? ' class="sua"' : '') + '>' +
+        '<td><b>' + p.nome + '</b>' + (eSua ? ' <span class="tag-sua">SUA FAIXA</span>' : '') + '</td>' +
+        '<td>at&eacute; ' + n(p.lanc) + '</td><td>~' + n(diaDe(p)) + '</td>' +
+        '<td><b>R$ ' + n(p.mensal) + '</b></td><td>R$ ' + n(equivDe(p)) + '/m&ecirc;s</td>' +
+        '<td>R$ ' + n2(p.mensal / p.lanc) + '</td></tr>';
+    });
+    elTab.innerHTML =
+      '<table><thead><tr><th>Plano</th><th>Vendas e atendimentos/m&ecirc;s</th><th>~por dia</th>' +
+      '<th>Mensal</th><th>No anual</th><th>Por lan&ccedil;amento</th></tr></thead><tbody>' + linhas + '</tbody></table>' +
+      '<p class="tab-exc">Acima de 10.000: R$ 547 + R$ 40 a cada mil a mais. Ex.: 13.500 = R$ 547 + R$ 160 = <b>R$ 707/m&ecirc;s</b>.</p>';
+  }
+
+  const atualiza = () => { render(); if (!elTab.hidden) tabela(); };
+  const setFat = (v) => { faturamento = Math.max(0, Math.min(v, 9999999)); elFat.value = n(faturamento); atualiza(); };
+  const passo = () => (faturamento >= 100000 ? 25000 : 5000);
+
+  elFat.addEventListener('input', () => {
+    const v = parseInt(elFat.value.replace(/\D/g, ''), 10);
+    faturamento = Number.isFinite(v) ? v : 0;
+    atualiza();
+  });
+  elFat.addEventListener('blur', () => setFat(faturamento));
+  g('fat-menos').addEventListener('click', () => setFat(faturamento - passo()));
+  g('fat-mais').addEventListener('click', () => setFat(faturamento + passo()));
+
+  const setVend = (v) => { elVend.value = Math.max(1, v); };
+  g('v-menos').addEventListener('click', () => setVend(parseInt(elVend.value, 10) - 1));
+  g('v-mais').addEventListener('click', () => setVend(parseInt(elVend.value, 10) + 1));
+
+  elTg.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-ciclo]');
+    if (!b) return;
+    ciclo = b.dataset.ciclo;
+    elTg.querySelectorAll('button').forEach((x) => x.classList.toggle('ativo', x === b));
+    elTarja.classList.toggle('acesa', ciclo === 'anual');
+    elTarja.textContent = ciclo === 'anual' ? '✓ ' + MESES_GRATIS + ' meses grátis' : 'No anual: ' + MESES_GRATIS + ' meses grátis';
+    atualiza();
+  });
+
+  elVer.addEventListener('click', () => {
+    const abrir = elTab.hidden;
+    elTab.hidden = !abrir;
+    elVer.textContent = abrir ? 'esconder as faixas ▴' : 'ver as 6 faixas ▾';
+    if (abrir) tabela();
+  });
+
+
+  render();
+})();
+</script>
 
 <!-- ================= 08 · FAQ ================= -->
 <section class="faq" id="faq">
