@@ -788,11 +788,16 @@ section, header.capa { position: relative; }
 }
 .ciclo-toggle input:checked ~ .pill { background: var(--tinta); color: var(--papel); }
 .ciclo-toggle input:focus-visible ~ .pill { outline: 3px solid var(--fogo); outline-offset: -3px; }
+/* A tarja diz o BENEFÍCIO e CONFIRMA o clique: contorno no mensal (convite),
+   marca-texto cheio no anual (confirmação). Sem :has() fica o convite — que
+   é verdade nos dois casos, então o degradado não mente. */
 .ciclo-tarja {
-  font-family: var(--cond); font-weight: 800; font-size: 14.5px; letter-spacing: .06em;
-  text-transform: uppercase; background: var(--fogo); color: var(--tinta);
-  padding: 6px 14px; transform: rotate(-2deg);
+  font-family: var(--cond); font-weight: 800; font-size: 13.5px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--tinta);
+  border: 2px solid var(--fogo); background: transparent;
+  padding: 5px 12px; transform: rotate(-2deg); transition: background .2s;
 }
+.ciclo-tarja .t-anual { display: none; }
 
 /* ==========================================================================
    A ESCADA — seletor → degrau escolhido → os outros cinco em linha → tabela
@@ -894,6 +899,10 @@ section, header.capa { position: relative; }
   .escada:has(#ciclo-anual:checked) div.p-anual { display: flex; }
   .escada:has(#ciclo-anual:checked) p.p-anual { display: block; }
   .escada:has(#ciclo-anual:checked) span.p-anual { display: inline; }
+  /* a tarja acende e troca de frase junto com o preço */
+  .escada:has(#ciclo-anual:checked) .ciclo-tarja { background: var(--fogo); }
+  .escada:has(#ciclo-anual:checked) .ciclo-tarja .t-mensal { display: none; }
+  .escada:has(#ciclo-anual:checked) .ciclo-tarja .t-anual { display: inline; }
 
   /* 2) um degrau escolhido → vira card no topo; os outros cinco viram linha */
   .escada:has(input[name="degrau"]:checked) .degraus { display: flex; flex-direction: column; }
@@ -1417,8 +1426,8 @@ section, header.capa { position: relative; }
 <section class="planos" id="planos">
   <div class="planos-cab">
     <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">TABELA DE PREÇOS — SEM LETRA MIÚDA</p>
-    <h2>FAÇA A CONTA <span class="lar">ANTES DE PAGAR.</span></h2>
-    <p style="margin-top:2.4vh; font-size:17px; max-width:54ch; color:rgba(13,13,15,.6); line-height:1.6">Isso aqui não nasceu em escritório. Nasceu atrás do balcão, fechando caixa com a mesma dúvida que você. Por isso não tem letra miúda: a sacola completa, peça por peça — faça a conta antes de pagar:</p>
+    <h2>SEU PLANO É DO TAMANHO <span class="lar">DO SEU MOVIMENTO.</span></h2>
+    <p style="margin-top:2.4vh; font-size:17px; max-width:56ch; color:rgba(13,13,15,.6); line-height:1.6">Aqui não se paga por cabeça. Cadastre a loja inteira — você, o gerente, quem fecha o caixa e todo vendedor — sem pagar por vaga. De um plano pro outro muda <b style="color:var(--tinta)">um número só</b>: quantas vendas e atendimentos você registra por mês. As funções são as mesmas do primeiro ao último.</p>
   </div>
 
   <!-- ---------- A ESCADA: seis degraus, um eixo só ----------
@@ -1442,7 +1451,7 @@ section, header.capa { position: relative; }
         <label><input type="radio" name="ciclo" id="ciclo-mensal" checked><span class="pill">Mensal</span></label>
         <label><input type="radio" name="ciclo" id="ciclo-anual"><span class="pill">Anual</span></label>
       </div>
-      <span class="ciclo-tarja">Anual = 2 meses grátis</span>
+      <span class="ciclo-tarja"><span class="t-mensal">No anual: 2 meses grátis</span><span class="t-anual">✓ 2 meses grátis</span></span>
     </div>
 
     <!-- A pergunta é o FATURAMENTO, não o tamanho do negócio: "pequena/média/
@@ -1459,8 +1468,8 @@ section, header.capa { position: relative; }
         <label class="deg-opt"><input type="radio" name="degrau" id="deg-escala"><span class="pill">350 a 600 mil</span></label>
         <label class="deg-opt"><input type="radio" name="degrau" id="deg-rede"><span class="pill">acima de 600 mil</span></label>
       </div>
-      <p class="seletor-vend">Passou do limite? Nada trava, nada bloqueia.</p>
-      <p class="seletor-apoio">Faturamento é orientação, não regra — o que conta é o movimento. Loja de ticket alto e pouco volume (joalheria, móveis planejados) cai num plano menor do que o faturamento sugere, e está certo. E a troca de faixa vem da <b>média dos últimos 3 meses</b>, nunca do pico: dezembro sozinho não sobe ninguém.</p>
+      <p class="seletor-vend">Passou do limite num mês? Não trava — todo plano tem 500 de folga.</p>
+      <p class="seletor-apoio">Faturamento é orientação, não regra — o que conta é o movimento. Loja de ticket alto e pouco volume (joalheria, móveis planejados) cai num plano menor do que o faturamento sugere, e está certo. E a troca de faixa vem dos <b>3 meses seguidos</b> acima, nunca de um pico: dezembro sozinho não sobe ninguém. Antes disso, a folga de 500 lançamentos que todo plano tem já cobre o mês forte.</p>
     </div>
 
     <div class="degraus">
