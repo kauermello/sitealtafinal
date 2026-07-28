@@ -945,6 +945,8 @@ section, header.capa { position: relative; }
   padding: 10px 12px; border-bottom: 1px solid var(--tinta);
 }
 .tabela-faixas td { padding: 13px 12px; border-bottom: 1px solid var(--hairline); }
+.tabela-faixas tbody tr { cursor: pointer; transition: background .15s; }
+.tabela-faixas tbody tr:hover { background: rgba(13,13,15,.04); }
 .tabela-faixas tr.sua { background: rgba(255,90,31,.07); }
 .tabela-faixas tr.sua td { border-bottom-color: var(--fogo); }
 .tag-sua {
@@ -1528,6 +1530,10 @@ section, header.capa { position: relative; }
   if (!elFat || !elCard) return;
 
   let faturamento = 45000, ciclo = 'mensal';
+  /* Faixa clicada na tabela. null = quem manda e a calculadora. Regra: o
+     ultimo input tocado manda — mexer no faturamento zera a escolha manual.
+     Sem isso a tela mostra um plano e o campo diz outro. */
+  let faixaManual = null;
   const n = (v) => Number(v).toLocaleString('pt-BR');
   const n2 = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const anualDe = (p) => p.mensal * MESES_PAGOS;
@@ -1539,7 +1545,8 @@ section, header.capa { position: relative; }
   function render() {
     const lanc = lancDe(faturamento);
     const vendas = Math.round(faturamento / TICKET);
-    const p = PLANOS.find((x) => lanc <= x.lanc) || null;
+    const calculado = PLANOS.find((x) => lanc <= x.lanc) || null;
+    const p = faixaManual ? (PLANOS.find((x) => x.slug === faixaManual) || calculado) : calculado;
     const anual = ciclo === 'anual';
 
     elConta.innerHTML = '&asymp; ' + n(vendas) + ' vendas &middot; <b>' + n(lanc) + ' vendas e atendimentos</b> por m&ecirc;s';
@@ -1563,7 +1570,7 @@ section, header.capa { position: relative; }
       '<div class="cp-topo"><div>' +
         '<h3 class="cp-nome">' + p.nome + '</h3>' +
         '<p class="cp-pra">' + p.pra + '</p>' +
-      '</div><span class="cp-tag">RECOMENDADO PELO SEU VOLUME</span></div>' +
+      '</div><span class="cp-tag">' + (faixaManual ? 'FAIXA ESCOLHIDA' : 'RECOMENDADO PELO SEU VOLUME') + '</span></div>' +
       '<div class="cp-preco"><span class="rs">R$</span><span class="v">' + n(preco) + '</span><span class="mes">/m&ecirc;s</span></div>' +
       (anual ? '<p class="cp-anual">R$ ' + n(anualDe(p)) + ' no ano &middot; ' + MESES_GRATIS + ' meses gr&aacute;tis &middot; voc&ecirc; economiza <b>R$ ' + n(econDe(p)) + '</b></p>' : '') +
       '<p class="cp-lim">at&eacute; <b>' + n(p.lanc) + '</b> vendas e atendimentos por m&ecirc;s &middot; cerca de ' + n(diaDe(p)) + ' por dia</p>' +
@@ -1580,12 +1587,13 @@ section, header.capa { position: relative; }
 
   function tabela() {
     const lanc = lancDe(faturamento);
-    const sua = PLANOS.find((x) => lanc <= x.lanc);
+    const calc = PLANOS.find((x) => lanc <= x.lanc);
+    const sua = faixaManual ? (PLANOS.find((x) => x.slug === faixaManual) || calc) : calc;
     let linhas = '';
     PLANOS.forEach((p) => {
       const eSua = sua && sua.slug === p.slug;
       linhas +=
-        '<tr' + (eSua ? ' class="sua"' : '') + '>' +
+        '<tr data-faixa="' + p.slug + '"' + (eSua ? ' class="sua"' : '') + '>' +
         '<td><b>' + p.nome + '</b>' + (eSua ? ' <span class="tag-sua">SUA FAIXA</span>' : '') + '</td>' +
         '<td>at&eacute; ' + n(p.lanc) + '</td><td>~' + n(diaDe(p)) + '</td>' +
         '<td><b>R$ ' + n(p.mensal) + '</b></td><td>R$ ' + n(equivDe(p)) + '/m&ecirc;s</td>' +
@@ -1598,11 +1606,23 @@ section, header.capa { position: relative; }
   }
 
   const atualiza = () => { render(); if (!elTab.hidden) tabela(); };
-  const setFat = (v) => { faturamento = Math.max(0, Math.min(v, 9999999)); elFat.value = n(faturamento); atualiza(); };
+
+  /* A linha da tabela E um seletor. Quem abre as faixas muitas vezes ja sabe o
+     tamanho da propria loja e quer pular a calculadora — obrigar a estimar
+     faturamento pra ver uma faixa que ele ja escolheu e atrito puro.
+     Delegado no container porque a tabela e reconstruida a cada render. */
+  elTab.addEventListener('click', (e) => {
+    const tr = e.target.closest('tr[data-faixa]');
+    if (!tr) return;
+    faixaManual = tr.dataset.faixa;
+    atualiza();
+  });
+  const setFat = (v) => { faixaManual = null; faturamento = Math.max(0, Math.min(v, 9999999)); elFat.value = n(faturamento); atualiza(); };
   const passo = () => (faturamento >= 100000 ? 25000 : 5000);
 
   elFat.addEventListener('input', () => {
     const v = parseInt(elFat.value.replace(/\D/g, ''), 10);
+    faixaManual = null;
     faturamento = Number.isFinite(v) ? v : 0;
     atualiza();
   });
