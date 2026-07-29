@@ -1133,6 +1133,17 @@ section, header.capa { position: relative; }
   /* rodapé */
   .expediente { padding: 4vh 5vw 3vh; }
 }
+
+/* As tres reguas dentro do card de plano (29/07/2026). Ficam no card, e nao
+   so na tabela escondida: limite que o cliente descobre depois de pagar vira
+   reclamacao, nao upgrade. */
+.cp-reguas { display:grid; grid-template-columns:repeat(3,1fr); gap:0 12px;
+  margin:14px 0 0; padding-top:12px; border-top:1px solid rgba(13,13,15,.14); }
+.cp-reguas dt { font-size:10.5px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.06em; color:rgba(13,13,15,.45); }
+.cp-reguas dd { margin:0; font-size:13.5px; font-weight:700; font-variant-numeric:tabular-nums; }
+.sel-vend-nota { flex-basis:100%; margin:6px 0 0; font-size:12px; line-height:1.4;
+  color:rgba(13,13,15,.45); max-width:52ch; }
 </style>
 </head>
 <body class="travado">
@@ -1443,7 +1454,7 @@ section, header.capa { position: relative; }
   <div class="planos-cab">
     <p class="kicker" style="color:var(--fogo); margin-bottom:2vh">TABELA DE PREÇOS — SEM LETRA MIÚDA</p>
     <h2>SEU PLANO É DO TAMANHO <span class="lar">DO SEU MOVIMENTO.</span></h2>
-    <p style="margin-top:2.4vh; font-size:17px; max-width:56ch; color:rgba(13,13,15,.6); line-height:1.6">Aqui não se paga por cabeça. Cadastre a loja inteira — você, o gerente, quem fecha o caixa e todo vendedor — sem pagar por vaga. De um plano pro outro muda <b style="color:var(--tinta)">um número só</b>: quantas vendas e atendimentos você registra por mês. As funções são as mesmas do primeiro ao último.</p>
+    <p style="margin-top:2.4vh; font-size:17px; max-width:56ch; color:rgba(13,13,15,.6); line-height:1.6">Vendedor não custa vaga: cadastre <b style="color:var(--tinta)">quantos quiser</b> — quem só aparece no "quem vendeu" é ilimitado em qualquer plano, inclusive no de R$ 49. O que muda de um plano pro outro é o <b style="color:var(--tinta)">tamanho da operação</b>: quantas vendas e atendimentos você registra por mês, quantas contas com login e quantos produtos no catálogo. As funções são as mesmas do primeiro ao último, e o histórico é completo em todos.</p>
   </div>
 
 
@@ -1469,16 +1480,17 @@ section, header.capa { position: relative; }
     </div>
 
     <div class="sel-vend">
-      <label for="vend">Quantas pessoas vendem?</label>
+      <label for="vend">Quantos vendedores no balcão?</label>
       <div class="sel-campo pequeno">
         <button type="button" class="sel-btn" id="v-menos" aria-label="Menos">−</button>
         <input id="vend" type="text" inputmode="numeric" value="3" aria-label="Pessoas que vendem">
         <button type="button" class="sel-btn" id="v-mais" aria-label="Mais">+</button>
       </div>
       <span class="sel-nada">não muda o preço</span>
+      <p class="sel-vend-nota">Vendedor é quem aparece no "quem vendeu" — ilimitado em qualquer plano. O que tem teto é <b>conta com login</b>, de quem entra no sistema.</p>
     </div>
 
-    <p class="sel-premissa">Conta usada: faturamento ÷ R$ 180 de ticket médio = vendas · vendas ÷ 0,55 = vendas e atendimentos. Loja de ticket alto e pouco volume cai num plano menor do que o faturamento sugere — e está certo.</p>
+    <p class="sel-premissa">Conta usada: faturamento ÷ R$ 115 de ticket médio = vendas · vendas ÷ 0,62 = vendas e atendimentos. Loja de ticket alto e pouco volume cai num plano menor do que o faturamento sugere — e está certo.</p>
   </div>
 
   <div class="ciclo-row">
@@ -1501,7 +1513,7 @@ section, header.capa { position: relative; }
   <button type="button" class="ver-faixas" id="ver-faixas">ver as 6 faixas ▾</button>
   <div class="tabela-faixas" id="tabela-faixas" hidden></div>
 
-  <p class="planos-pe">Todas as funções estão em <b>todos os planos</b> — a diferença é só o tamanho da operação. Usuários e vendedores ilimitados, sem fidelidade, e seus dados saem com você em planilha. <b>Em 14 dias, ou você vira o dono que vê, ou não paga nada.</b><br>
+  <p class="planos-pe">Todas as funções estão em <b>todos os planos</b> — a diferença é só o tamanho da operação. <b>Vendedor sem login é ilimitado</b> e o <b>histórico é completo</b> em qualquer faixa, sem fidelidade, e seus dados saem com você em planilha. <b>Em 14 dias, ou você vira o dono que vê, ou não paga nada.</b><br>
   Prefere ver funcionando antes? <a href="https://app.upvendas.app.br/demo" style="color:var(--fogo); font-weight:700; text-decoration:underline; text-underline-offset:3px">Abra a demonstração — 1 clique</a> · Já tem conta? <a href="https://app.upvendas.app.br/login" style="color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px">Entre aqui</a></p>
 </section>
 
@@ -1511,18 +1523,24 @@ section, header.capa { position: relative; }
    já aconteceu (o site prometia 3 meses de histórico e o app entregava 6). */
 (() => {
   const PLANOS = [
-    { slug:'comeco',      nome:'Começo',      lanc:400,   mensal:49,  pra:'Balcão pequeno, uma ou duas pessoas atendendo.' },
-    { slug:'crescimento', nome:'Crescimento', lanc:1000,  mensal:97,  pra:'Loja de bairro com movimento constante e um time pequeno.' },
-    { slug:'expansao',    nome:'Expansão',    lanc:2000,  mensal:167, pra:'A loja encheu e já tem gente demais pra controlar de cabeça.' },
-    { slug:'operacao',    nome:'Operação',    lanc:3500,  mensal:267, pra:'Movimento o dia inteiro, turnos e um caixa que não pode errar.' },
-    { slug:'escala',      nome:'Escala',      lanc:6000,  mensal:397, pra:'Operação grande, com equipe e metas por vendedor.' },
-    { slug:'rede',        nome:'Rede',        lanc:10000, mensal:547, pra:'Mais de um ponto de venda, com quem toca o dia a dia longe do dono.' }
+    { slug:'comeco',      nome:'Começo',      lanc:400,   mensal:49,  users:8,    prods:2000,   pra:'Balcão pequeno, uma ou duas pessoas atendendo.' },
+    { slug:'crescimento', nome:'Crescimento', lanc:1000,  mensal:97,  users:15,   prods:5000,   pra:'Loja de bairro com movimento constante e um time pequeno.' },
+    { slug:'expansao',    nome:'Expansão',    lanc:2000,  mensal:167, users:30,   prods:15000,  pra:'A loja encheu e já tem gente demais pra controlar de cabeça.' },
+    { slug:'operacao',    nome:'Operação',    lanc:3500,  mensal:267, users:65,   prods:50000,  pra:'Movimento o dia inteiro, turnos e um caixa que não pode errar.' },
+    { slug:'escala',      nome:'Escala',      lanc:6000,  mensal:397, users:150,  prods:100000, pra:'Operação grande, com equipe e metas por vendedor.' },
+    { slug:'rede',        nome:'Rede',        lanc:10000, mensal:547, users:null, prods:null,   pra:'Mais de um ponto de venda, com quem toca o dia a dia longe do dono.' }
   ];
-  const TICKET = 180, CONV = 0.55, DIAS = 26, EXC_CADA = 1000, EXC_PRECO = 40;
+  /* TICKET e CONV foram MEDIDOS na base real em 29/07/2026 (ProSpeed: R$ 68 mil
+     de faturamento, 862 pessoas atendidas, 554 compraram). Antes eram 180 e
+     0,55, ambos inventados. Espelham src/lib/planosCatalogo.ts. */
+  const TICKET = 115, CONV = 0.62, DIAS = 26, EXC_CADA = 1000, EXC_PRECO = 40;
   /* Espelham src/lib/planosCatalogo.ts. Divergir aqui = site cobrando um
      preco e app mostrando outro — ja aconteceu com a tabela antiga. */
   const MESES_PAGOS = 8, MESES_GRATIS = 12 - MESES_PAGOS, MARGEM_PCT = 0.20;
   const margemDe = (teto) => Math.round(teto * MARGEM_PCT);
+  /* null = sem teto. Escrever 'null' ou '0' na tela ja aconteceu em tabela
+     parecida — o rotulo tem que ser explicito. */
+  const teto = (v) => (v === null ? 'Ilimitado' : n(v));
 
   const g = (s) => document.getElementById(s);
   const elFat = g('fat'), elVend = g('vend'), elConta = g('sel-conta'), elCard = g('card-plano');
@@ -1575,9 +1593,14 @@ section, header.capa { position: relative; }
       (anual ? '<p class="cp-anual">R$ ' + n(anualDe(p)) + ' no ano &middot; ' + MESES_GRATIS + ' meses gr&aacute;tis &middot; voc&ecirc; economiza <b>R$ ' + n(econDe(p)) + '</b></p>' : '') +
       '<p class="cp-lim">at&eacute; <b>' + n(p.lanc) + '</b> vendas e atendimentos por m&ecirc;s &middot; cerca de ' + n(diaDe(p)) + ' por dia</p>' +
       (perto ? '<p class="cp-perto">Voc&ecirc; est&aacute; perto do teto desta faixa. Se passar, entra na folga de ' + n(margemDe(p.lanc)) + ' que vem com ela &mdash; nada trava no m&ecirc;s.</p>' : '') +
+      '<dl class="cp-reguas">' +
+        '<div><dt>Logins</dt><dd>' + teto(p.users) + '</dd></div>' +
+        '<div><dt>Produtos</dt><dd>' + teto(p.prods) + '</dd></div>' +
+        '<div><dt>Hist&oacute;rico</dt><dd>Completo</dd></div>' +
+      '</dl>' +
       '<ul class="cp-lista">' +
-        '<li>Cadastre a loja inteira. Vendedor e usu&aacute;rio n&atilde;o contam no pre&ccedil;o &mdash; nem no plano de R$ 49.</li>' +
-        '<li>Todas as fun&ccedil;&otilde;es, em todos os planos.</li>' +
+        '<li>Vendedor sem login &eacute; <b>ilimitado</b> em qualquer plano &mdash; nem no de R$ 49 ele conta.</li>' +
+        '<li>Todas as fun&ccedil;&otilde;es e o <b>hist&oacute;rico completo</b>, em todos os planos.</li>' +
         '<li>Sem fidelidade. Seus dados saem com voc&ecirc; em planilha.</li>' +
       '</ul>' +
       '<a class="cp-cta" href="https://app.upvendas.app.br/cadastro?plano=' + p.slug + '&ciclo=' + ciclo + '">TESTAR 14 DIAS GR&Aacute;TIS &rarr;</a>' +
@@ -1595,14 +1618,15 @@ section, header.capa { position: relative; }
       linhas +=
         '<tr data-faixa="' + p.slug + '"' + (eSua ? ' class="sua"' : '') + '>' +
         '<td><b>' + p.nome + '</b>' + (eSua ? ' <span class="tag-sua">SUA FAIXA</span>' : '') + '</td>' +
-        '<td>at&eacute; ' + n(p.lanc) + '</td><td>~' + n(diaDe(p)) + '</td>' +
-        '<td><b>R$ ' + n(p.mensal) + '</b></td><td>R$ ' + n(equivDe(p)) + '/m&ecirc;s</td>' +
-        '<td>R$ ' + n2(p.mensal / p.lanc) + '</td></tr>';
+        '<td>at&eacute; ' + n(p.lanc) + '</td>' +
+        '<td>' + teto(p.users) + '</td><td>' + teto(p.prods) + '</td>' +
+        '<td><b>R$ ' + n(p.mensal) + '</b></td><td>R$ ' + n(equivDe(p)) + '/m&ecirc;s</td></tr>';
     });
     elTab.innerHTML =
-      '<table><thead><tr><th>Plano</th><th>Vendas e atendimentos/m&ecirc;s</th><th>~por dia</th>' +
-      '<th>Mensal</th><th>No anual</th><th>Por lan&ccedil;amento</th></tr></thead><tbody>' + linhas + '</tbody></table>' +
-      '<p class="tab-exc">Acima de 10.000: R$ 547 + R$ 40 a cada mil a mais. Ex.: 13.500 = R$ 547 + R$ 160 = <b>R$ 707/m&ecirc;s</b>.</p>';
+      '<table><thead><tr><th>Plano</th><th>Vendas e atendimentos/m&ecirc;s</th><th>Logins</th><th>Produtos</th>' +
+      '<th>Mensal</th><th>No anual</th></tr></thead><tbody>' + linhas + '</tbody></table>' +
+      '<p class="tab-exc">Acima de 10.000: R$ 547 + R$ 40 a cada mil a mais. Ex.: 13.500 = R$ 547 + R$ 160 = <b>R$ 707/m&ecirc;s</b>. ' +
+      'Em toda faixa: vendedor sem login ilimitado, hist&oacute;rico completo e todas as fun&ccedil;&otilde;es.</p>';
   }
 
   const atualiza = () => { render(); if (!elTab.hidden) tabela(); };
