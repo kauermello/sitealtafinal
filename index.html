@@ -1144,6 +1144,18 @@ section, header.capa { position: relative; }
 .cp-reguas dd { margin:0; font-size:13.5px; font-weight:700; font-variant-numeric:tabular-nums; }
 .sel-vend-nota { flex-basis:100%; margin:6px 0 0; font-size:12px; line-height:1.4;
   color:rgba(13,13,15,.45); max-width:52ch; }
+
+/* Blocos da tabela de faixas (29/07/2026). O selo mora no CABECALHO do bloco,
+   nao na linha: e o que deixa "Recomendado" cobrir Crescimento + Expansao com
+   um selo so, no lugar de dois competindo. */
+.tabela-faixas tr.grupo td { background:rgba(13,13,15,.035); padding:9px 12px; }
+.tabela-faixas tr.grupo-rec td { background:rgba(255,90,31,.08); }
+.tabela-faixas tr.grupo b { font-family:var(--cond); text-transform:uppercase;
+  letter-spacing:.02em; font-size:13px; }
+.tabela-faixas .tag-rec { display:inline-block; margin-left:8px; padding:2px 6px;
+  background:var(--fogo); color:var(--tinta); font-family:var(--cond);
+  font-weight:800; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; }
+.tabela-faixas .grupo-desc { margin-left:8px; font-size:11.5px; color:rgba(13,13,15,.5); }
 </style>
 </head>
 <body class="travado">
@@ -1542,6 +1554,24 @@ section, header.capa { position: relative; }
      parecida — o rotulo tem que ser explicito. */
   const teto = (v) => (v === null ? 'Ilimitado' : n(v));
 
+  /* OS TRES BLOCOS. Espelha GRUPOS de src/lib/planosCatalogo.ts.
+     Estrutura copiada do Bling de proposito: o Titanio deles e UM card com
+     tres sub-planos, e por isso o selo de recomendado cobre uma FAIXA DE PRECO
+     inteira em vez de um preco so. Aqui os 6 degraus viram 3 blocos e o do
+     meio leva o selo — assim Crescimento E Expansao ficam recomendados sem
+     dois selos competindo.
+     "Recomendado" e nao "mais popular": a segunda seria AFIRMACAO DE FATO, e
+     seria falsa (2 das 3 lojas pagantes estao no Comeco). */
+  const GRUPOS = [
+    { nome:'Começando', desc:'Balcão pequeno, movimento que cabe na cabeça.',
+      slugs:['comeco'] },
+    { nome:'Crescendo', desc:'A loja encheu, entrou gente no time e o controle de cabeça não dá mais conta.',
+      slugs:['crescimento','expansao'], recomendado:true },
+    { nome:'Em escala', desc:'Movimento o dia inteiro, turnos, e às vezes mais de um ponto de venda.',
+      slugs:['operacao','escala','rede'] },
+  ];
+  const ehRecomendado = (slug) => GRUPOS.some((g) => g.recomendado && g.slugs.indexOf(slug) !== -1);
+
   const g = (s) => document.getElementById(s);
   const elFat = g('fat'), elVend = g('vend'), elConta = g('sel-conta'), elCard = g('card-plano');
   const elTg = g('ciclo-toggle'), elTarja = g('ciclo-tarja'), elVer = g('ver-faixas'), elTab = g('tabela-faixas');
@@ -1588,7 +1618,11 @@ section, header.capa { position: relative; }
       '<div class="cp-topo"><div>' +
         '<h3 class="cp-nome">' + p.nome + '</h3>' +
         '<p class="cp-pra">' + p.pra + '</p>' +
-      '</div><span class="cp-tag">' + (faixaManual ? 'FAIXA ESCOLHIDA' : 'RECOMENDADO PELO SEU VOLUME') + '</span></div>' +
+      '</div><span class="cp-tag">' +
+        (faixaManual
+          ? (ehRecomendado(p.slug) ? 'FAIXA RECOMENDADA' : 'FAIXA ESCOLHIDA')
+          : (ehRecomendado(p.slug) ? 'RECOMENDADO PELO SEU VOLUME' : 'PELO SEU VOLUME')) +
+      '</span></div>' +
       '<div class="cp-preco"><span class="rs">R$</span><span class="v">' + n(preco) + '</span><span class="mes">/m&ecirc;s</span></div>' +
       (anual ? '<p class="cp-anual">R$ ' + n(anualDe(p)) + ' no ano &middot; ' + MESES_GRATIS + ' meses gr&aacute;tis &middot; voc&ecirc; economiza <b>R$ ' + n(econDe(p)) + '</b></p>' : '') +
       '<p class="cp-lim">at&eacute; <b>' + n(p.lanc) + '</b> vendas e atendimentos por m&ecirc;s &middot; cerca de ' + n(diaDe(p)) + ' por dia</p>' +
@@ -1613,7 +1647,14 @@ section, header.capa { position: relative; }
     const calc = PLANOS.find((x) => lanc <= x.lanc);
     const sua = faixaManual ? (PLANOS.find((x) => x.slug === faixaManual) || calc) : calc;
     let linhas = '';
-    PLANOS.forEach((p) => {
+    GRUPOS.forEach((g) => {
+      /* Cabecalho do bloco: e ELE que carrega o selo, nao a linha. */
+      linhas +=
+        '<tr class="grupo' + (g.recomendado ? ' grupo-rec' : '') + '">' +
+        '<td colspan="6"><b>' + g.nome + '</b>' +
+        (g.recomendado ? ' <span class="tag-rec">RECOMENDADO</span>' : '') +
+        ' <span class="grupo-desc">' + g.desc + '</span></td></tr>';
+    PLANOS.filter((p) => g.slugs.indexOf(p.slug) !== -1).forEach((p) => {
       const eSua = sua && sua.slug === p.slug;
       linhas +=
         '<tr data-faixa="' + p.slug + '"' + (eSua ? ' class="sua"' : '') + '>' +
@@ -1621,6 +1662,7 @@ section, header.capa { position: relative; }
         '<td>at&eacute; ' + n(p.lanc) + '</td>' +
         '<td>' + teto(p.users) + '</td><td>' + teto(p.prods) + '</td>' +
         '<td><b>R$ ' + n(p.mensal) + '</b></td><td>R$ ' + n(equivDe(p)) + '/m&ecirc;s</td></tr>';
+    });
     });
     elTab.innerHTML =
       '<table><thead><tr><th>Plano</th><th>Vendas e atendimentos/m&ecirc;s</th><th>Logins</th><th>Produtos</th>' +
