@@ -1156,6 +1156,12 @@ section, header.capa { position: relative; }
   background:var(--fogo); color:var(--tinta); font-family:var(--cond);
   font-weight:800; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; }
 .tabela-faixas .grupo-desc { margin-left:8px; font-size:11.5px; color:rgba(13,13,15,.5); }
+
+/* Bloco em destaque: o nome fica laranja, sem selo separado. */
+.tabela-faixas tr.grupo-rec b { color:var(--fogo); }
+/* Linha selecionada: fundo leve + regua laranja embaixo, sem rotulo. */
+.tabela-faixas tr.sua { background:rgba(255,90,31,.07); box-shadow:inset 0 -2px 0 var(--fogo); }
+.tabela-faixas tbody tr:not(.grupo):hover { background:rgba(255,90,31,.06); }
 </style>
 </head>
 <body class="travado">
@@ -1492,14 +1498,14 @@ section, header.capa { position: relative; }
     </div>
 
     <div class="sel-vend">
-      <label for="vend">Quantos vendedores no balcão?</label>
+      <label for="vend">Quantas pessoas entram no sistema?</label>
       <div class="sel-campo pequeno">
         <button type="button" class="sel-btn" id="v-menos" aria-label="Menos">−</button>
         <input id="vend" type="text" inputmode="numeric" value="3" aria-label="Pessoas que vendem">
         <button type="button" class="sel-btn" id="v-mais" aria-label="Mais">+</button>
       </div>
-      <span class="sel-nada">não muda o preço</span>
-      <p class="sel-vend-nota">Vendedor é quem aparece no "quem vendeu" — ilimitado em qualquer plano. O que tem teto é <b>conta com login</b>, de quem entra no sistema.</p>
+      <span class="sel-nada" id="sel-mandou" hidden>é isto que define sua faixa</span>
+      <p class="sel-vend-nota">Só quem <b>entra com email e senha</b> conta aqui. Vendedor que só aparece no "quem vendeu" é ilimitado em qualquer plano — nem no de R$ 49 ele ocupa vaga.</p>
     </div>
 
     <p class="sel-premissa">Conta usada: faturamento ÷ R$ 115 de ticket médio = vendas · vendas ÷ 0,62 = vendas e atendimentos. Loja de ticket alto e pouco volume cai num plano menor do que o faturamento sugere — e está certo.</p>
@@ -1554,23 +1560,15 @@ section, header.capa { position: relative; }
      parecida — o rotulo tem que ser explicito. */
   const teto = (v) => (v === null ? 'Ilimitado' : n(v));
 
-  /* OS TRES BLOCOS. Espelha GRUPOS de src/lib/planosCatalogo.ts.
-     Estrutura copiada do Bling de proposito: o Titanio deles e UM card com
-     tres sub-planos, e por isso o selo de recomendado cobre uma FAIXA DE PRECO
-     inteira em vez de um preco so. Aqui os 6 degraus viram 3 blocos e o do
-     meio leva o selo — assim Crescimento E Expansao ficam recomendados sem
-     dois selos competindo.
-     "Recomendado" e nao "mais popular": a segunda seria AFIRMACAO DE FATO, e
-     seria falsa (2 das 3 lojas pagantes estao no Comeco). */
+  /* OS DOIS BLOCOS. Espelha GRUPOS de src/lib/planosCatalogo.ts.
+     Sem frase explicativa em cada bloco: texto de brochura dentro de uma
+     tabela de numeros disputa atencao com o que a pessoa foi ali ler.
+     "Mais populares" aqui e FATO: 100% das lojas pagantes esta nestas tres
+     faixas. Se a base mudar, esta linha vira mentira — confira antes. */
   const GRUPOS = [
-    { nome:'Começando', desc:'Balcão pequeno, movimento que cabe na cabeça.',
-      slugs:['comeco'] },
-    { nome:'Crescendo', desc:'A loja encheu, entrou gente no time e o controle de cabeça não dá mais conta.',
-      slugs:['crescimento','expansao'], recomendado:true },
-    { nome:'Em escala', desc:'Movimento o dia inteiro, turnos, e às vezes mais de um ponto de venda.',
-      slugs:['operacao','escala','rede'] },
+    { nome:'Mais populares',  slugs:['comeco','crescimento','expansao'], destaque:true },
+    { nome:'Operação grande', slugs:['operacao','escala','rede'] },
   ];
-  const ehRecomendado = (slug) => GRUPOS.some((g) => g.recomendado && g.slugs.indexOf(slug) !== -1);
 
   const g = (s) => document.getElementById(s);
   const elFat = g('fat'), elVend = g('vend'), elConta = g('sel-conta'), elCard = g('card-plano');
@@ -1578,6 +1576,11 @@ section, header.capa { position: relative; }
   if (!elFat || !elCard) return;
 
   let faturamento = 45000, ciclo = 'mensal';
+  /* Contas COM LOGIN. Este numero MUDA a faixa — e a segunda regua do plano.
+     Antes era `vendedores` e nao fazia nada: campo morto que, depois do teto
+     de login voltar, tambem mentia (mexer nao mudava a tela, mas o numero
+     real mudava a fatura). */
+  let logins = 3;
   /* Faixa clicada na tabela. null = quem manda e a calculadora. Regra: o
      ultimo input tocado manda — mexer no faturamento zera a escolha manual.
      Sem isso a tela mostra um plano e o campo diz outro. */
@@ -1593,7 +1596,16 @@ section, header.capa { position: relative; }
   function render() {
     const lanc = lancDe(faturamento);
     const vendas = Math.round(faturamento / TICKET);
-    const calculado = PLANOS.find((x) => lanc <= x.lanc) || null;
+    /* A faixa sai da MAIOR das duas reguas. Loja de pouco balcao com 20
+       pessoas no sistema tem que cair na faixa dos 20 logins — senao a
+       calculadora sugere um plano em que ela nao cabe, e a pessoa descobre
+       isso depois de assinar. */
+    const cabe = (v, teto) => teto === null || v <= teto;
+    const porMovimento = PLANOS.find((x) => cabe(lanc, x.lanc)) || null;
+    const calculado = PLANOS.find((x) => cabe(lanc, x.lanc) && cabe(logins, x.users)) || porMovimento;
+    const mandouLogin = !!calculado && !!porMovimento && calculado.slug !== porMovimento.slug;
+    const elMandou = g('sel-mandou');
+    if (elMandou) elMandou.hidden = !mandouLogin;
     const p = faixaManual ? (PLANOS.find((x) => x.slug === faixaManual) || calculado) : calculado;
     const anual = ciclo === 'anual';
 
@@ -1613,16 +1625,12 @@ section, header.capa { position: relative; }
     }
 
     const preco = anual ? equivDe(p) : p.mensal;
-    const perto = lanc >= p.lanc * 0.85;
+    const perto = !mandouLogin && !faixaManual && lanc >= p.lanc * 0.85;
     elCard.innerHTML =
       '<div class="cp-topo"><div>' +
         '<h3 class="cp-nome">' + p.nome + '</h3>' +
         '<p class="cp-pra">' + p.pra + '</p>' +
-      '</div><span class="cp-tag">' +
-        (faixaManual
-          ? (ehRecomendado(p.slug) ? 'FAIXA RECOMENDADA' : 'FAIXA ESCOLHIDA')
-          : (ehRecomendado(p.slug) ? 'RECOMENDADO PELO SEU VOLUME' : 'PELO SEU VOLUME')) +
-      '</span></div>' +
+      '</div><span class="cp-tag">' + (faixaManual ? 'FAIXA ESCOLHIDA' : 'RECOMENDADO PELO SEU VOLUME') + '</span></div>' +
       '<div class="cp-preco"><span class="rs">R$</span><span class="v">' + n(preco) + '</span><span class="mes">/m&ecirc;s</span></div>' +
       (anual ? '<p class="cp-anual">R$ ' + n(anualDe(p)) + ' no ano &middot; ' + MESES_GRATIS + ' meses gr&aacute;tis &middot; voc&ecirc; economiza <b>R$ ' + n(econDe(p)) + '</b></p>' : '') +
       '<p class="cp-lim">at&eacute; <b>' + n(p.lanc) + '</b> vendas e atendimentos por m&ecirc;s &middot; cerca de ' + n(diaDe(p)) + ' por dia</p>' +
@@ -1650,15 +1658,16 @@ section, header.capa { position: relative; }
     GRUPOS.forEach((g) => {
       /* Cabecalho do bloco: e ELE que carrega o selo, nao a linha. */
       linhas +=
-        '<tr class="grupo' + (g.recomendado ? ' grupo-rec' : '') + '">' +
-        '<td colspan="6"><b>' + g.nome + '</b>' +
-        (g.recomendado ? ' <span class="tag-rec">RECOMENDADO</span>' : '') +
-        ' <span class="grupo-desc">' + g.desc + '</span></td></tr>';
+        '<tr class="grupo' + (g.destaque ? ' grupo-rec' : '') + '">' +
+        '<td colspan="6"><b>' + g.nome + '</b></td></tr>';
     PLANOS.filter((p) => g.slugs.indexOf(p.slug) !== -1).forEach((p) => {
       const eSua = sua && sua.slug === p.slug;
       linhas +=
         '<tr data-faixa="' + p.slug + '"' + (eSua ? ' class="sua"' : '') + '>' +
-        '<td><b>' + p.nome + '</b>' + (eSua ? ' <span class="tag-sua">SUA FAIXA</span>' : '') + '</td>' +
+        /* SEM rotulo "sua faixa": a linha selecionada se distingue pelo fundo
+           e pela regua laranja embaixo. O rotulo afirmava que aquela era a
+           faixa DELE quando muitas vezes ele so tinha clicado pra olhar. */
+        '<td><b>' + p.nome + '</b></td>' +
         '<td>at&eacute; ' + n(p.lanc) + '</td>' +
         '<td>' + teto(p.users) + '</td><td>' + teto(p.prods) + '</td>' +
         '<td><b>R$ ' + n(p.mensal) + '</b></td><td>R$ ' + n(equivDe(p)) + '/m&ecirc;s</td></tr>';
@@ -1696,9 +1705,26 @@ section, header.capa { position: relative; }
   g('fat-menos').addEventListener('click', () => setFat(faturamento - passo()));
   g('fat-mais').addEventListener('click', () => setFat(faturamento + passo()));
 
-  const setVend = (v) => { elVend.value = Math.max(1, v); };
+  /* ESTE HANDLER ESTAVA MORTO: escrevia no input e parava ali — nunca gravava
+     em lugar nenhum, nunca chamava atualiza(). Era de proposito quando o campo
+     so servia pra provar que vendedor nao mudava o preco. Virou defeito quando
+     o teto de login voltou: mexer nao mudava a tela, mas o numero real mudava
+     a fatura. Agora grava em `logins` e recalcula a faixa. */
+  const setVend = (v) => {
+    logins = Math.max(1, Number.isFinite(v) ? v : 1);
+    elVend.value = logins;
+    faixaManual = null;      // mexeu na calculadora, a escolha manual sai
+    atualiza();
+  };
   g('v-menos').addEventListener('click', () => setVend(parseInt(elVend.value, 10) - 1));
   g('v-mais').addEventListener('click', () => setVend(parseInt(elVend.value, 10) + 1));
+  elVend.addEventListener('input', () => {
+    const n = parseInt(String(elVend.value).replace(/\D/g, ''), 10);
+    logins = Number.isFinite(n) && n > 0 ? n : 1;
+    faixaManual = null;
+    atualiza();
+  });
+  elVend.addEventListener('blur', () => setVend(logins));
 
   elTg.addEventListener('click', (e) => {
     const b = e.target.closest('button[data-ciclo]');
