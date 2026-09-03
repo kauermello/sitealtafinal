@@ -1541,12 +1541,12 @@ section, header.capa { position: relative; }
    já aconteceu (o site prometia 3 meses de histórico e o app entregava 6). */
 (() => {
   const PLANOS = [
-    { slug:'comeco',      nome:'Começo',      lanc:400,   mensal:49,  users:8,    prods:2000,   pra:'Balcão pequeno, uma ou duas pessoas atendendo.' },
-    { slug:'crescimento', nome:'Crescimento', lanc:1000,  mensal:97,  users:15,   prods:5000,   pra:'Loja de bairro com movimento constante e um time pequeno.' },
-    { slug:'expansao',    nome:'Expansão',    lanc:2000,  mensal:167, users:30,   prods:15000,  pra:'A loja encheu e já tem gente demais pra controlar de cabeça.' },
-    { slug:'operacao',    nome:'Operação',    lanc:3500,  mensal:267, users:65,   prods:50000,  pra:'Movimento o dia inteiro, turnos e um caixa que não pode errar.' },
-    { slug:'escala',      nome:'Escala',      lanc:6000,  mensal:397, users:150,  prods:100000, pra:'Operação grande, com equipe e metas por vendedor.' },
-    { slug:'rede',        nome:'Rede',        lanc:10000, mensal:547, users:null, prods:null,   pra:'Mais de um ponto de venda, com quem toca o dia a dia longe do dono.' }
+    { slug:'comeco',      nome:'Começo',      lanc:1000,   mensal:49,  users:5,    prods:2000,   pra:'Balcão pequeno, uma ou duas pessoas atendendo.' },
+    { slug:'crescimento', nome:'Crescimento', lanc:2500,  mensal:97,  users:12,   prods:5000,   pra:'Loja de bairro com movimento constante e um time pequeno.' },
+    { slug:'expansao',    nome:'Expansão',    lanc:5000,  mensal:167, users:25,   prods:15000,  pra:'A loja encheu e já tem gente demais pra controlar de cabeça.' },
+    { slug:'operacao',    nome:'Operação',    lanc:10000,  mensal:267, users:50,   prods:50000,  pra:'Movimento o dia inteiro, turnos e um caixa que não pode errar.' },
+    { slug:'escala',      nome:'Escala',      lanc:20000,  mensal:397, users:100,  prods:100000, pra:'Operação grande, com equipe e metas por vendedor.' },
+    { slug:'rede',        nome:'Rede',        lanc:40000, mensal:547, users:null, prods:null,   pra:'Mais de um ponto de venda, com quem toca o dia a dia longe do dono.' }
   ];
   /* TICKET e CONV foram MEDIDOS na base real em 29/07/2026 (ProSpeed: R$ 68 mil
      de faturamento, 862 pessoas atendidas, 554 compraram). Antes eram 180 e
@@ -1676,7 +1676,7 @@ section, header.capa { position: relative; }
     elTab.innerHTML =
       '<table><thead><tr><th>Plano</th><th>Vendas e atendimentos/m&ecirc;s</th><th>Logins</th><th>Produtos</th>' +
       '<th>Mensal</th><th>No anual</th></tr></thead><tbody>' + linhas + '</tbody></table>' +
-      '<p class="tab-exc">Acima de 10.000: R$ 547 + R$ 40 a cada mil a mais. Ex.: 13.500 = R$ 547 + R$ 160 = <b>R$ 707/m&ecirc;s</b>. ' +
+      '<p class="tab-exc">Acima de 40.000: R$ 547 + R$ 40 a cada mil a mais. Ex.: 43.500 = R$ 547 + R$ 160 = <b>R$ 707/m&ecirc;s</b>. ' +
       'Em toda faixa: vendedor sem login ilimitado, hist&oacute;rico completo e todas as fun&ccedil;&otilde;es.</p>';
   }
 
@@ -2321,7 +2321,7 @@ if (!reduz) {
        conta atendimentos/dia × dias no mês, que é exatamente o número de
        lançamentos da escada. Antes ele citava um plano fixo porque o eixo era
        "quanta gente entra com senha", coisa que o simulador não sabia. */
-    const ESCADA = [[400,49,'O COMEÇO'],[1000,97,'O CRESCIMENTO'],[2000,167,'A EXPANSÃO'],[3500,267,'A OPERAÇÃO'],[6000,397,'A ESCALA'],[10000,547,'A REDE']];
+    const ESCADA = [[1000,49,'O COMEÇO'],[2500,97,'O CRESCIMENTO'],[5000,167,'A EXPANSÃO'],[10000,267,'A OPERAÇÃO'],[20000,397,'A ESCALA'],[40000,547,'A REDE']];
     const lancMes = a * d;
     const faixa = ESCADA.find(f => lancMes <= f[0]) || ESCADA[ESCADA.length - 1];
     const plano = { n: faixa[2], v: faixa[1] };
